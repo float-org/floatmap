@@ -61,13 +61,11 @@ class GoogleProjection(object):
 
 class RenderThread(object):
 
-    def __init__(self, tile_dir, mapfile, q, printLock, maxZoom):
+    def __init__(self, tile_dir, mmap, q, printLock, maxZoom):
         self.tile_dir = tile_dir
         self.q = q
-        self.m = mapnik.Map(256, 256)
+        self.m = mmap
         self.printLock = printLock
-        # Load style XML
-        mapnik.load_map(self.m, mapfile, True)
         # Obtain <Map> projection
         self.prj = mapnik.Projection(self.m.srs)
         print self.prj
@@ -103,9 +101,7 @@ class RenderThread(object):
         # Render image with default Agg renderer
         im = mapnik.Image(render_size, render_size)
         mapnik.render(self.m, im)
-        # need cairo for svg rendering
-        # im.save(tile_uri, 'png256')
-        im.save(tile_uri, 'svg')
+        im.save(tile_uri, 'png256')
 
 
     def loop(self):
@@ -133,15 +129,16 @@ class RenderThread(object):
             self.q.task_done()
 
 
-def render_tiles(bbox, mapfile, tile_dir, minZoom=1,maxZoom=18, name="unknown", num_threads=DEFAULT_NUM_THREADS, tms_scheme=False):
-    print "render_tiles(",bbox, mapfile, tile_dir, minZoom,maxZoom, name,")"
-
+def render_tiles(mapfile, tile_dir, minZoom=1,maxZoom=18, name="unknown", num_threads=DEFAULT_NUM_THREADS, tms_scheme=False):
+    print "render_tiles(", mapfile, tile_dir, minZoom,maxZoom, name,")"
+    mmap = mapnik.Map(256, 256)
+    mapnik.load_map(mmap, mapfile, True)
     # Launch rendering threads
     queue = Queue(32)
     printLock = threading.Lock()
     renderers = {}
     for i in range(num_threads):
-        renderer = RenderThread(tile_dir, mapfile, queue, printLock, maxZoom)
+        renderer = RenderThread(tile_dir, mmap, queue, printLock, maxZoom)
         render_thread = threading.Thread(target=renderer.loop)
         render_thread.start()
         #print "Started render thread %s" % render_thread.getName()
@@ -152,6 +149,7 @@ def render_tiles(bbox, mapfile, tile_dir, minZoom=1,maxZoom=18, name="unknown", 
 
     gprj = GoogleProjection(maxZoom + 1) 
 
+    bbox = [float(bound.strip()) for bound in  mmap.parameters.get("bounds").split(",")]
     ll0 = (bbox[0], bbox[3])
     ll1 = (bbox[2], bbox[1])
 
@@ -210,6 +208,6 @@ def init_args():
 
 if __name__ == "__main__":
     args = init_args().parse_args()
-    bbox = (-180.0, -90.0, 180.0, 90.0)
-    render_tiles(bbox, args.mapfile, args.tiledir, args.min_zoom, args.max_zoom, args.name)
+    render_tiles(args.mapfile, args.tiledir, args.min_zoom, args.max_zoom, args.name)
+
 

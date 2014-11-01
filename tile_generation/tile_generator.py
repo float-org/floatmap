@@ -103,7 +103,6 @@ class RenderThread(object):
         mapnik.render(self.m, im)
         im.save(tile_uri, 'png256')
 
-
     def loop(self):
         while True:
             #Fetch a tile from the queue and render it
@@ -179,7 +178,9 @@ def render_tiles(mapfile, tile_dir, minZoom=1,maxZoom=18, name="unknown", num_th
                     str_y = "%s" % ((2**z-1) - y)
                 else:
                     str_y = "%s" % y
-                tile_uri = '{dir}/{z}/{x}/{y}.png'.format(dir=tile_dir, z=zoom, x=str_x, y=str_y)
+#                tile_uri = '{dir}/{z}/{x}/{y}.png'.format(dir=tile_dir, z=zoom, x=str_x, y=str_y)
+# TEST SVG
+                tile_uri = '{dir}/{z}/{x}/{y}.svg'.format(dir=tile_dir, z=zoom, x=str_x, y=str_y)
                 # Submit tile to be rendered into the queue
                 t = (name, tile_uri, x, y, z)
                 try:

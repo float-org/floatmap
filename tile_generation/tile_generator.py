@@ -101,7 +101,7 @@ class RenderThread(object):
         # Render image with default Agg renderer
         im = mapnik.Image(render_size, render_size)
         mapnik.render(self.m, im)
-        im.save(tile_uri, 'png256')
+        im.save(tile_uri, 'png8')
 
     def loop(self):
         while True:
@@ -129,7 +129,6 @@ class RenderThread(object):
 
 
 def render_tiles(mapfile, tile_dir, minZoom=1,maxZoom=18, name="unknown", num_threads=DEFAULT_NUM_THREADS, tms_scheme=False):
-    print "render_tiles(", mapfile, tile_dir, minZoom,maxZoom, name,")"
     mmap = mapnik.Map(256, 256)
     mapnik.load_map(mmap, mapfile, True)
     # Launch rendering threads
@@ -140,7 +139,6 @@ def render_tiles(mapfile, tile_dir, minZoom=1,maxZoom=18, name="unknown", num_th
         renderer = RenderThread(tile_dir, mmap, queue, printLock, maxZoom)
         render_thread = threading.Thread(target=renderer.loop)
         render_thread.start()
-        #print "Started render thread %s" % render_thread.getName()
         renderers[i] = render_thread
 
     if not os.path.isdir(tile_dir):

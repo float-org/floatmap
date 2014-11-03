@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+ {% block extra_css %}
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
+  <link rel="stylesheet" href="static/css/map.css">
+ {% endblock %}
+ {% block content %}
+  <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <header class="clearfix">
+            <div class="row">
+                <div class="logo col-md-3">
+                    <!--TODO: Get Logo from PSD??-->
+                </div>
+
+            <form action="#" method="POST" id="search" class="col-md-7">
+                <input type="text" class="search-input">
+                <button>Search</button>
+            </form>
+
+            <nav class="col-md-2">
+                <a href="#about" data-toggle="modal" data-target="#aboutModal">About</a>
+                <a href="#contact" data-toggle="modal" data-target="#contactModal">Contact</a>
+            </nav>
+        </header>
+
+        <!-- Add your site or application content here -->
+        <div id="map-container">
+            <div id="map"></div>
+            <nav id='menu-ui' class='menu-ui'></nav>
+        </div>
+
+  
+        <div id="share" class="hidden">
+          <h2>Share this!</h2>
+          <ul>
+            <li class="fb">Facebook</li>
+            <li class="twitter">Twitter</li>
+            <li class="email">
+              <a href="mailto:?subject=This%20is%20a%20test%20message.%20%20Good%20times&body=Test%20body.">
+                Email
+              </a>
+            </li>
+          </ul>
+        </div>
+
+
+       <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">About Float</h4>
+              </div>
+              <div class="modal-body">
+                <p>Our team is creating a web-based map platform to visualize projected climate change impacts for a general audience. We aim to make climate change personally relevant to a broad population across the United States, by showing how impacts like flooding, drought, and wildfire are projected to worsen where they work and live.</p>
+
+                <p>We are bringing together datasets from multiple US federal agencies, including FEMA and NOAA, and presenting these data in a straightforward map platform where users can browse or search for addresses of personal interest within the United States. The Midwest is the region of focus for our prototype, and the first impact we will show is inland flooding. Intensified flooding in the interior of the US has the potential to impact a huge swath of communities, including many that are currently disengaged from the climate issue and which may largely view it as a coastal problem. Future updates may include visualization of drought, coastal flooding, wildfire, and extreme heat.</p>
+
+                <p>Through field trials and user testing, we will hone in on the most effective method of visualizing climate impacts and risk exposure for our target audiences. Our team intends to test two basic approaches to impact visualization; one approach that directly shows a mixture of climate projections, and a second approach that synthesizes multiple climate projections into a single risk score of our own design.</p>
+
+                <p>In addition to the climate impact visualization, our team is developing engagement tools that will allow users to easily share their findings on social media, and to reach out quickly to officials at the local and state level. For future updates, we are interested in developing the platform to allow general users to post photos of extreme climate events, and potentially provide other sorts of meaningful crowd-sourced data.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+        <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Contact Float</h4>
+              </div>
+              <div class="modal-body">
+                <p>Inquiries Donations and such I don't know. </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+  {%endblock%}
+
+  
+  {% block extra_js %} 
+   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  <script src="static/js/Google.js"></script>
+  <script src="static/js/map.js"></script>
+  <script>
+  $(document).ready(function() {
+    Data = {};
+    Map = new L.map('map').setView([42.58645536081647, -82.84635543823242], 13);
+    window.Layers = document.getElementById('menu-ui');
+
+
+    // var googleLayer = new L.Google('ROADMAP', {maxZoom: 14, minZoom: 5
+    // });
+    // Map.addLayer(googleLayer);
+    L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5}).addTo(Map);
+
+
+
+    L.tileLayer('/static/floods/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5}).addTo(Map);
+
+    getExtremePrecipitationJson('http://localhost:8000/static/ep/noaa_ex_precip.geojson')
+    buildEPLegend() 
+    updateMapContainer();
+    setEventListeners();
+  });
+
+  </script>
+  {% endblock %}

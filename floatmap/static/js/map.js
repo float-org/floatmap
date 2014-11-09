@@ -8,8 +8,11 @@ var getColor = function(type ,d) {
 
 /* Builds toggleable tile layer */
 var addLayer = function(layer, name, zIndex, url) {
-  layer.setZIndex(zIndex).addTo(Map);      
+  layer.setZIndex(zIndex).addTo(Map); 
+  addLayerToggleToLegend(layer,name)       
+}
 
+var addLayerToggleToLegend = function(layer, name) {
   // Create a simple layer switcher that
   // toggles layers on and off.
   var link = document.createElement('a');
@@ -29,21 +32,22 @@ var addLayer = function(layer, name, zIndex, url) {
           this.className = 'active';
       }
   };
+
   var appendIt = true;
+  console.log(Layers);
   $(Layers.childNodes).each(function() { 
     if (name === this.innerHTML) {
-      appendIt = false;
+      appendIt = false  ;
     }
   });
 
-  console.log(!appendIt);
   if (appendIt) {
     Layers.appendChild(link);
   }
-  
 }
 
-var buildEPLegend = function() {
+var buildLegend = function() {
+
   var legend = L.control({position: 'topleft'});
 
   legend.onAdd = function (map) {
@@ -60,7 +64,10 @@ var buildEPLegend = function() {
               grades[i] + '%<br>';
       }
 
-      div.innerHTML += '<button id="epToggle">Toggle EP Data</button>'
+      window.Layers = document.createElement('nav');
+      Layers.id = 'menu-ui';
+      Layers.className = 'menu-ui';
+      div.appendChild(Layers)
 
     return div;
   };
@@ -108,15 +115,8 @@ var buildEPLayer = function() {
     }
   });
 
-  console.log(epLayer);
-  console.log(epLayer2);
-
   addLayer(epLayer, 'epLayer', 2)
   addLayer(epLayer2, 'epLayer2', 3);
-
-  if ($('.legend').length === 0) {
-    buildEPLegend();
-  }
 
 }
 
@@ -202,10 +202,13 @@ var setEventListeners = function() {
 function initMap() { 
   window.Map = new L.map('map').setView([43.05358653605547, -89.2815113067627], 7);
   
-
   var base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5}),
       floods = L.tileLayer('/static/gen_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
-  
+
+  if ($('.legend').length === 0) {
+    buildLegend()  
+  }
+
   addLayer(base, 'base', 1);
   addLayer(floods, 'floods', 4);
   getEPData('http://localhost:8000/static/ep/noaa_ex_precip.geojson');
@@ -215,6 +218,5 @@ function initMap() {
 
 $(document).ready(function() {
   window.Cache = {},
-  window.Layers = document.getElementById('menu-ui');
   initMap()
 });

@@ -92,29 +92,6 @@
   {% block extra_js %} 
    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-  <script src="static/js/Google.js"></script>
+  <script src="static/js/leaflet-dvf.js"></script>
   <script src="static/js/map.js"></script>
-  <script>
-  $(document).ready(function() {
-    Data = {};
-    Map = new L.map('map').setView([42.58645536081647, -82.84635543823242], 13);
-    window.Layers = document.getElementById('menu-ui');
-
-
-    // var googleLayer = new L.Google('ROADMAP', {maxZoom: 14, minZoom: 5
-    // });
-    // Map.addLayer(googleLayer);
-    L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5}).addTo(Map);
-
-
-
-    L.tileLayer('/static/floods/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5}).addTo(Map);
-
-    getExtremePrecipitationJson('http://localhost:8000/static/ep/noaa_ex_precip.geojson')
-    buildEPLegend() 
-    updateMapContainer();
-    setEventListeners();
-  });
-
-  </script>
   {% endblock %}

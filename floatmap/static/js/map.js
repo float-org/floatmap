@@ -227,7 +227,7 @@ function initMap() {
   window.Map = new L.map('map').setView([43.05358653605547, -89.2815113067627], 7);
   
   var base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5}),
-      floods = L.tileLayer('/static/gen_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
+      floods = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
 
   if ($('.legend').length === 0) {
     buildLegend()  
@@ -235,8 +235,8 @@ function initMap() {
 
   addLayer(base, 'base', 1);
   addLayer(floods, 'floods', 4);
-  getEPData('http://localhost:8000/static/ep/noaa_ex_precip.geojson');
-  getAPData('http://localhost:8000/static/ap/noaa_avg_precip.geojson');
+  getEPData('{{STATIC_URL|escapejs}}ep/noaa_ex_precip.geojson');
+  getAPData('{{STATIC_URL|escapejs}}ap/noaa_avg_precip.geojson');
   setEventListeners();
 }
 

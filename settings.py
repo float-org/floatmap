@@ -34,6 +34,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'compressor',
     'django.contrib.staticfiles',
     'djgeojson',
     'leaflet',
@@ -78,6 +79,10 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, "templates")
 )
 
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.template.TemplateFilter',
+]
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
@@ -106,7 +111,7 @@ USE_TZ = True
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # Static files (CSS, JavaScript, Images)
@@ -127,3 +132,10 @@ MEDIA_URL = '/media/'
 SERIALIZATION_MODULES = {'geojson' :'djgeojson.serializers', }
 
 POSTGIS_VERSION = ( 2, 1, 3 )
+COMPRESS_ENABLED = True
+try:
+    from settings_server import *
+except ImportError:
+    pass
+
+

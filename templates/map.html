@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load compress %}
 {% load static from staticfiles %}
  {% block extra_css %}
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
@@ -93,5 +94,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
   <script src="static/js/leaflet-dvf.js"></script>
   <script src="static/js/rainbowvis.js"></script>
-  <script src="static/js/map.js"></script>
+  {% compress js %}
+  <script src="{{STATIC_URL}}js/map.js"></script>
+  {% endcompress %}
   {% endblock %}

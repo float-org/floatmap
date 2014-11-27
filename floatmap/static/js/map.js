@@ -1,9 +1,9 @@
 var getColor = function(type ,d) {
-  if (type === 'ep') { 
-    //dn represents percentage increase over time
-    return d >= 40 ? '#2989d8' :
-    d >= 20  ? '#64a7dc' : //lightblue
-    'transparent';
+  if (type === 'ap') { 
+    rainbow = new Rainbow();
+    rainbow.setSpectrum('#FF0000','#0000FF')
+    rainbow.setNumberRange(0,12);
+    return '#' + rainbow.colourAt(d)
   }}
 
 /* Builds toggleable tile layer */
@@ -72,7 +72,8 @@ var buildLegend = function() {
     return div;
   };
 
-  legend.addTo(Map);}
+  legend.addTo(Map);
+}
 
 var showAddress = function(address) {
 	var g = new google.maps.Geocoder();	
@@ -92,33 +93,42 @@ var isCached = function(field) {
 
 var buildEPLayer = function() {
   window.epLayer = L.geoJson(Cache.epData, {
-    style: function(feature) {
-     return { color: getColor('ep', feature.properties.dn) }
-    }
-  });
-  window.epLayer2 = L.geoJson(Cache.epData, {
     fillPattern: {
-      url: 'static/img/corrugation.png',
+      url: 'static/img/hixs-evolution.png',
       pattern: {
-              width: '8px',
-              height: '5px',
+        width: '35px',
+        height: '34px',
         patternUnits: 'userSpaceOnUse',
       },
       image: {
-        width: '8px',
-        height: '5px',
+        width: '35px',
+        height: '34px',
       }
     },
-    style: { 
-      "opacity": 0.3,
-      "fillOpacity": 0.3
+    style: function(feature) { 
+      return {
+        fillOpacity:0.5
+      }
     }
   });
 
-  addLayer(epLayer, 'epLayer', 2)
-  addLayer(epLayer2, 'epLayer2', 3);
+  addLayer(epLayer, 'epLayer', 3);
 
 }
+
+
+var buildAPLayer = function() {
+  window.apLayer = L.geoJson(Cache.apData, {
+    style: function(feature) {
+     console.log(feature)
+     return { color: getColor('ap', feature.properties.DN),
+              fillOpacity: 0.4, }
+    }
+  });
+
+  addLayer(apLayer, 'apLayer', 2)
+}
+
 
 var getEPData = function(url) {
   console.log(url);
@@ -131,18 +141,31 @@ var getEPData = function(url) {
     buildEPLayer()
   }
 }
+
+var getAPData = function(url) {
+  console.log(url);
+  if (isCached('apData') === false) {
+    $.getJSON(url, function(data) {
+        Cache.apData = data
+        buildAPLayer()
+    });
+  } else {
+    buildAPLayer()
+  }
+}
      
 var setEventListeners = function() {
   $("#epToggle").on('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
-    if (Map.hasLayer(epLayer) || Map.hasLayer(epLayer2)) {
-      epLayer.clearLayers()
-      epLayer2.clearLayers()
-      Map.removeLayer(epLayer)
-      Map.removeLayer(epLayer2)
+    if (Map.hasLayer(epLayer) || Map.hasLayer(apLayer)) {
+      epLayer.clearLayers();
+      apLayer.clearLayers();
+      Map.removeLayer(epLayer);
+      Map.removeLayer(apLayer);
     } else {
      buildEPLayer()
+     buildAPLayer()
     }
   })
 
@@ -151,14 +174,15 @@ var setEventListeners = function() {
       if (Map.hasLayer(epLayer)) {
         Map.removeLayer(epLayer)
       }
-      if (Map.hasLayer(epLayer2)) {
-        Map.removeLayer(epLayer2)
+      if (Map.hasLayer(apLayer)) {
+        Map.removeLayer(apLayer)
       }
     } 
 
     if (Map.getZoom() <= 8) {
-      if (!Map.hasLayer(epLayer) && (!Map.hasLayer(epLayer2))) {
+      if (!Map.hasLayer(epLayer) && (!Map.hasLayer(apLayer))) {
         buildEPLayer()
+        buildAPLayer()
       }
     } 
   }) 
@@ -212,6 +236,7 @@ function initMap() {
   addLayer(base, 'base', 1);
   addLayer(floods, 'floods', 4);
   getEPData('http://localhost:8000/static/ep/noaa_ex_precip.geojson');
+  getAPData('http://localhost:8000/static/ap/noaa_avg_precip.geojson');
   setEventListeners();
 }
 

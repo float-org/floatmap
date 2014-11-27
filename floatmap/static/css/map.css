@@ -106,6 +106,19 @@ textarea {
     height:100%;
 }
 
+img[src*="http://a.tiles.mapbox.com/v3/floatmap.jkggd5ph"],
+img[src*="http://b.tiles.mapbox.com/v3/floatmap.jkggd5ph"],
+img[src*="http://c.tiles.mapbox.com/v3/floatmap.jkggd5ph"],
+img[src*="http://d.tiles.mapbox.com/v3/floatmap.jkggd5ph"]    {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  filter: grayscale(100%);
+  filter: url(grayscale.svg); /* Firefox 4+ */
+  filter: gray; /* IE 6-9 */
+}
+
 header {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
     background: #56a8ca; /* Old browsers */

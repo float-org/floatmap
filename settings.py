@@ -36,10 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'compressor',
     'django.contrib.staticfiles',
-    'djgeojson',
     'floatmap',
-    'south',
-    'django.contrib.gis',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -113,25 +110,14 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/
-
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 MEDIA_URL = '/media/'
 
-SERIALIZATION_MODULES = {'geojson' :'djgeojson.serializers', }
-
-POSTGIS_VERSION = ( 2, 1, 3 )
 COMPRESS_ENABLED = True
+
 try:
     from settings_server import *
 except ImportError:

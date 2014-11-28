@@ -37,7 +37,6 @@ INSTALLED_APPS = (
     'compressor',
     'django.contrib.staticfiles',
     'djgeojson',
-    'leaflet',
     'floatmap',
     'south',
     'django.contrib.gis',

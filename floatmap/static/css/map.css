@@ -255,9 +255,35 @@ input[type="text"] {
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
 }
+
 .info h4 {
     margin: 0 0 5px;
     color: #777;
+}
+
+.floodRange { 
+    margin:0;
+    padding:0;
+}
+
+.floodRange li > div {
+    width:30px;
+    height:20px;
+    margin:0;
+    padding:0;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
+    display:inline-block;
+    opacity:0.5;
+}
+
+.year-100 > div {
+    background-color:#CF9294;
+}
+
+.year-500 > div { 
+    background-color:#ba3a3a;
 }
 
 .legend i {
@@ -282,35 +308,25 @@ input[type="text"] {
     stroke-width:0;
 }
 
-.biggest-dots {
+.biggest.dots {
     fill:url(#biggest-dots);
 }
 
-.bigger-dots {
+.bigger.dots {
     fill:url(#bigger-dots);
 }
 
-.big-dots {
+.big.dots {
     fill:url(#big-dots);
 }
 
 .dots {
     fill:url(#dots);
-    fill-opacity:0.2;
     stroke:0;
 }
 
-.legend .biggest-dots {
-    fill:url(#biggest-dots-legend );
-}
-.legend .bigger-dots {
-    fill:url(#bigger-dots-legend);
-}
-.legend .big-dots {
-    fill:url(#big-dots-legend);
-}
-.legend .dots {
-    fill:url(#dots-legend);
+.legend {
+    fill: black;
 }
 
 circle {
@@ -322,15 +338,15 @@ circle.legend {
     fill: black;
  }
 
-.big-dots {
+.big.dots {
     fill-opacity: 0.4;
 }
 
-.bigger-dots {
+.bigger.dots {
     fill-opacity: 0.7;
 }
 
-.biggest-dots {
+.biggest.dots {
     fill-opacity: 1;
 }
 
@@ -340,6 +356,11 @@ circle.legend {
   border-radius:3px;
   border:1px solid rgba(0,0,0,0.4);
 }
+
+.behind { 
+  fill-opacity:1 !important;
+}
+
 .menu-ui a {
     font-size:13px;
     color:#404040;

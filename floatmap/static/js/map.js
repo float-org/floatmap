@@ -9,9 +9,9 @@ var getColor = function(type, d) {
 
 var getPattern = function(type ,d) {
   if (type === 'ep') {
-    return d >= 48 ? 'biggest-dots' :
-           d >= 41 ? 'bigger-dots'  :
-           d >= 34 ? 'big-dots'     :
+    return d >= 48 ? 'biggest dots' :
+           d >= 41 ? 'bigger dots'  :
+           d >= 34 ? 'big dots'     :
            'dots';
   }
 };
@@ -19,14 +19,15 @@ var getPattern = function(type ,d) {
 /* Builds toggleable tile layer */
 var addLayer = function(layer, name, zIndex, url) {
   layer.setZIndex(zIndex).addTo(Map);
-  if (name !== "base")
-  addLayerToggleToLegend(layer,name);
+  if (name !== "base") {
+    addLayerToggleToLegend(layer,name);
+  }
 };
 
 var addLayerToggleToLegend = function(layer, name) {
   // Create a simple layer switcher that
   // toggles layers on and off.
-  template = $('<div class="onoffswitch"><input type="checkbox" name='+ name +'-switch" class="onoffswitch-checkbox" data-layer='+ name +' id="' + name + '-switch" checked><label class="onoffswitch-label" for="' + name + '-switch"><span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span></label></div>')
+  var template = $('<div class="onoffswitch"><input type="checkbox" name='+ name +'-switch" class="onoffswitch-checkbox" data-layer='+ name +' id="' + name + '-switch" checked><label class="onoffswitch-label" for="' + name + '-switch"><span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span></label></div>');
   var appendIt = true;
 
   $(Layers.childNodes).each(function() {
@@ -39,20 +40,18 @@ var addLayerToggleToLegend = function(layer, name) {
     $(Layers).append(template);
   }
   
-  var layerToggle = $(template).find('input')
+  var layerToggle = $(template).find('input');
 
   layerToggle.on('click', function(e) {
       if ($(this).is(':checked')) {
         if (!Map.hasLayer(layer)) {
-          console.log('add the layer');
-          Map.addLayer(layer);
+          layer.addTo(Map);
         }
       } else {
         if (Map.hasLayer(layer)) {
-          console.log('remove the layer');
           Map.removeLayer(layer);
         }
-      }  
+      }
   });
 };
 
@@ -63,7 +62,7 @@ var buildLegend = function() {
     'floods': 'Locations that have a higher risk of flood due to climate change.',
     'ep': 'Bad storms.',
     'ap': 'The average amount of annual precipitation.'
-  }
+  };
 
   legend.onAdd = function (map) {
       var div = L.DomUtil.create('div', 'info legend'),
@@ -81,7 +80,7 @@ var buildLegend = function() {
 
       // loop through our extreme precip. intervals and generate a set of rectangle w/ the appropriate pattern
       // then fill w/ pattern
-      var epGrades = ['dots', 'big-dots', 'bigger-dots', 'biggest-dots'];
+      var epGrades = ['dots', 'big dots', 'bigger dots', 'biggest dots'];
       var svg = d3.select(div).append("svg").attr("width", 100).attr("height", 25);
       svg.selectAll('rect').data(epGrades)
                            .enter()
@@ -92,48 +91,59 @@ var buildLegend = function() {
                             return 25 * i;
                            })
                            .attr('y',0 )
-                           .attr('class', function(d) { return d });
+                           .attr('class', function(d) { return d; });
 
       div.innerHTML += '<h3 class="tt" data-toggle="tooltip" title="'+ tooltipText['ep'] +'">Storms</h3>';
 
       div.innerHTML += '<h3 class="tt" data-toggle="tooltip" title="'+ tooltipText['floods'] +'">Extreme Floods</h3>';
       
+      //build simple list for flood colors
 
+      floodRange = $('<ul class="floodRange"><li class="year-500"><div></div><span>Moderate</span></li><li class="year-100"><div></div><span>High</span></li></ul>');
 
+      $(div).append(floodRange);
       
       window.Layers = document.createElement('nav');
       Layers.id = 'menu-ui';
       Layers.className = '<menu-></menu->ui';
-      div.appendChild(Layers)
+      div.appendChild(Layers);
 
     return div;
   };
 
   legend.addTo(Map);
-}
+};
 
 var showAddress = function(address) {
-	var g = new google.maps.Geocoder();	
+	var g = new google.maps.Geocoder();
 	g.geocode({ 'address': address }, function(results, status) {
 		latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-		Map.setView(latLng, 18)
+		Map.setView(latLng, 18);
 		L.marker(latLng).addTo(Map);
 		$('#share').removeClass('hidden');
-	})}
+	});
+};
 
 var isCached = function(field) {
   if (Cache[field] === undefined) {
     return false;
   }
   return true;
-}
+};
 
 var buildEPLayer = function() {
   window.epLayer = L.geoJson(Cache.epData, {
     style: function(feature, layer) {
-      return { 
+      return {
         className: getPattern('ep',feature.properties.DN)
-      }
+      };
+    },
+    onEachFeature: function(feature,layer) {
+      layer.on({
+        dblclick: function(e) {
+          Map.zoomIn();
+        }
+      });
     }
   });
   addLayer(epLayer, 'epLayer', 3);
@@ -144,11 +154,18 @@ var buildAPLayer = function() {
   window.apLayer = L.geoJson(Cache.apData, {
     style: function(feature) {
      return { color: getColor('ap', feature.properties.DN),
-              fillOpacity: 0.6, }
+              fillOpacity: 0.6, };
+    },
+    onEachFeature: function(feature,layer) {
+      layer.on({
+        dblclick: function(e) {
+          Map.zoomIn();
+        }
+      });
     }
   });
-  addLayer(apLayer, 'apLayer', 2)
-}
+  addLayer(apLayer, 'apLayer', 2);
+};
 
 var getEPData = function(url) {
   if (isCached('epData') === false) {
@@ -159,7 +176,7 @@ var getEPData = function(url) {
   } else {
     buildEPLayer();
   }
-}
+};
 
 var getAPData = function(url) {
   if (isCached('apData') === false) {
@@ -169,30 +186,32 @@ var getAPData = function(url) {
     });
   } else {
     buildAPLayer();
-  };
+  }
 };
      
 var setEventListeners = function() {
-  $("#epToggle").on('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (Map.hasLayer(epLayer) || Map.hasLayer(apLayer)) {
-      epLayer.clearLayers();
-      apLayer.clearLayers();
-      Map.removeLayer(epLayer);
-      Map.removeLayer(apLayer);
-    } else {
-     buildEPLayer();
-     buildAPLayer();
-    }
+
+  Map.on('zoomstart', function(e) {
+    window.previousZoom = Map.getZoom();
   });
 
   Map.on('zoomend', function(e) {
-    
-      if (!Map.hasLayer(epLayer) && (!Map.hasLayer(apLayer))) {
-        buildEPLayer();
-        buildAPLayer();
-      }
+    if (Map.getZoom() === 11 && previousZoom < Map.getZoom()) {
+      Map.removeLayer(apLayer);
+      $('.dots').attr('class', function(index, classNames) {
+        return classNames + ' behind';
+      });
+      apLayer.addTo(Map);
+    } else if (Map.getZoom() === 10 && previousZoom > Map.getZoom()) {
+      Map.removeLayer(epLayer);
+      epLayer.addTo(Map);
+      $('.dots').attr('class', function(index, classNames) {
+        var classArray = classNames.split(" ");
+        classArray.pop();
+        origClassNames = classArray.join(" ");
+        return origClassNames;
+      });
+    }
   });
  
 	$("#search").on('submit', function(e) {
@@ -202,29 +221,27 @@ var setEventListeners = function() {
 	});
 };
 
-function initMap() { 
+function initMap() {
   window.Map = new L.map('map').setView([43.05358653605547, -89.2815113067627], 7);
+  window.base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
+  window.floods = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
   
-  var base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5}),
-      floods = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
-
-  
-  buildLegend()  
+  buildLegend();
 
   addLayer(base, 'base', 1);
-  addLayer(floods, 'floods', 4);
-  getEPData('{{STATIC_URL|escapejs}}ep/noaa_ex_precip.geojson');
+  addLayer(floods, 'floods', 2);
   getAPData('{{STATIC_URL|escapejs}}ap/noaa_avg_precip.geojson');
-  setEventListeners();
+  getEPData('{{STATIC_URL|escapejs}}ep/noaa_ex_precip.geojson');
   options = {
     'placement': 'auto',
-  }
-  $('.tt').tooltip(options)
+  };
+  $('.tt').tooltip(options);
 
 }
 
 
 $(document).ready(function() {
-  window.Cache = {},
-  initMap()
+  window.Cache = {};
+  initMap();
+  setEventListeners();
 });

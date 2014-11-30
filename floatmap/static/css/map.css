@@ -289,6 +289,41 @@ input[type="text"] {
     stroke-width:0;
 }
 
+.biggest-dots {
+    fill:url(#biggest-dots);
+}
+
+.bigger-dots {
+    fill:url(#bigger-dots);
+}
+
+.big-dots {
+    fill:url(#big-dots);
+}
+
+.dots {
+    fill:url(#dots);
+    fill-opacity:0.2;
+    stroke:0;
+}
+
+circle {
+    fill:whitesmoke;
+    width:auto;
+}
+
+.big-dots {
+    fill-opacity: 0.4;
+}
+
+.bigger-dots {
+    fill-opacity: 0.7;
+}
+
+.biggest-dots {
+    fill-opacity: 1;
+}
+
 .menu-ui {
   background:#fff;
   z-index:1;

@@ -1,10 +1,21 @@
 var getColor = function(type ,d) {
   if (type === 'ap') { 
+    console.log(d);
     rainbow = new Rainbow();
-    rainbow.setSpectrum('#FF0000','#0000FF')
+    rainbow.setSpectrum('#94FFDB','#1900FF')
     rainbow.setNumberRange(0,12);
     return '#' + rainbow.colourAt(d)
-  }}
+  }
+}
+
+var getPattern = function(type ,d) {
+  if (type === 'ep') { 
+    return d >= 48 ? 'biggest-dots' :
+           d >= 41 ? 'bigger-dots'  :
+           d >= 34 ? 'big-dots'     :
+           'dots'; 
+  }
+}
 
 /* Builds toggleable tile layer */
 var addLayer = function(layer, name, zIndex, url) {
@@ -93,36 +104,23 @@ var isCached = function(field) {
 
 var buildEPLayer = function() {
   window.epLayer = L.geoJson(Cache.epData, {
-    fillPattern: {
-      url: 'static/img/hixs-evolution.png',
-      pattern: {
-        width: '35px',
-        height: '34px',
-        patternUnits: 'userSpaceOnUse',
-      },
-      image: {
-        width: '35px',
-        height: '34px',
-      }
-    },
-    style: function(feature) { 
-      return {
-        fillOpacity:0.5
+    style: function(feature, layer) {
+      return { 
+        className: getPattern('ep',feature.properties.DN)
       }
     }
   });
 
   addLayer(epLayer, 'epLayer', 3);
 
-}
+};
 
 
 var buildAPLayer = function() {
   window.apLayer = L.geoJson(Cache.apData, {
     style: function(feature) {
-     console.log(feature)
      return { color: getColor('ap', feature.properties.DN),
-              fillOpacity: 0.4, }
+              fillOpacity: 0.6, }
     }
   });
 
@@ -170,21 +168,11 @@ var setEventListeners = function() {
   })
 
   Map.on('zoomend', function(e) {
-    if (Map.getZoom() > 8) {
-      if (Map.hasLayer(epLayer)) {
-        Map.removeLayer(epLayer)
-      }
-      if (Map.hasLayer(apLayer)) {
-        Map.removeLayer(apLayer)
-      }
-    } 
-
-    if (Map.getZoom() <= 8) {
+    
       if (!Map.hasLayer(epLayer) && (!Map.hasLayer(apLayer))) {
         buildEPLayer()
         buildAPLayer()
       }
-    } 
   }) 
  
 	$("#search").on('submit', function(e) {

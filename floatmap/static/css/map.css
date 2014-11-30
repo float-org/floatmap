@@ -173,30 +173,27 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', end
 
 header nav {
     color:#FFF;
-}
-
-nav a,
-button,
-input[type="text"] { 
-    font-size:17px;
-}
-
-nav {
     text-align:right;
     padding-right:20px;
     box-sizing:border-box;
     -moz-box-sizing:border-box;
 }
 
-nav a {
+header nav a {
     color:#FFF;
     font-size:22px;
     font-weight:bold;
     margin-left:20px;
 }
 
-nav a:first-child {
+header nav a:first-child {
     margin-left:0;
+}
+
+nav a,
+button,
+input[type="text"] { 
+    font-size:17px;
 }
 
 button,
@@ -250,7 +247,7 @@ input[type="text"] {
 
 /* Map Legend */
 
-.info {
+.legend {
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
     background: white;
@@ -263,21 +260,17 @@ input[type="text"] {
     color: #777;
 }
 
-.legend {
-    line-height: 18px;
-    color: #555;
-}
 .legend i {
     width: 18px;
     height: 18px;
-    float: left;
-    margin-right: 8px;
+    display:inline-block;
     opacity: 0.7;
 }
 
 .legend h3 {
     margin-top:0;
     margin-bottom:5px;
+    display:inline-block;
 }
 
 .legend button {
@@ -307,10 +300,27 @@ input[type="text"] {
     stroke:0;
 }
 
+.legend .biggest-dots {
+    fill:url(#biggest-dots-legend );
+}
+.legend .bigger-dots {
+    fill:url(#bigger-dots-legend);
+}
+.legend .big-dots {
+    fill:url(#big-dots-legend);
+}
+.legend .dots {
+    fill:url(#dots-legend);
+}
+
 circle {
     fill:whitesmoke;
     width:auto;
 }
+
+circle.legend {
+    fill: black;
+ }
 
 .big-dots {
     fill-opacity: 0.4;
@@ -359,6 +369,55 @@ circle {
     background:#3074a4;
 }
 
+
+/* COOL TOGGLE */
+
+.onoffswitch {
+    position: relative; width: 74px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 22px; padding: 0; line-height: 22px;
+    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 10px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 13px; margin: 4.5px;
+    background: #FFFFFF;
+    border: 2px solid #999999; border-radius: 20px;
+    position: absolute; top: 0; bottom: 0; right: 48px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
 
 
 /* ==========================================================================

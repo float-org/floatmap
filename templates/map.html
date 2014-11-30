@@ -22,7 +22,6 @@
 
             <nav class="col-md-2">
                 <a href="#about" data-toggle="modal" data-target="#aboutModal">About</a>
-                <a href="#contact" data-toggle="modal" data-target="#contactModal">Contact</a>
             </nav>
         </header>
 
@@ -31,21 +30,27 @@
             <div id="map"></div>
         </div>
 
-       <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+       <div class="modal fade" id="aboutModal" tabindex="-    " role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">About Float</h4>
+                <h3 class="modal-title">About Float</h4>
               </div>
               <div class="modal-body">
-                <p>Our team is creating a web-based map platform to visualize projected climate change impacts for a general audience. We aim to make climate change personally relevant to a broad population across the United States, by showing how impacts like flooding, drought, and wildfire are projected to worsen where they work and live.</p>
+                <p>Float Map shows the projected impacts of unrestrained climate change on where you live and work.</p>
+                <p>Float Map shows projections of the 2040-2070 time period.</p>
+                <p>The Map projects what happens if the current path continues with no serious reductions in climate pollution.</p>
+                <p>We use only statistically strong data from the most recent available NOAA, FEMA, and university research, and we always share our sources.</p>
+                <p>Float Map currently shows projections related to worsening flooding in the Midwest US, and plans to expand to other impacts and other regions of the United States.</p>
 
-                <p>We are bringing together datasets from multiple US federal agencies, including FEMA and NOAA, and presenting these data in a straightforward map platform where users can browse or search for addresses of personal interest within the United States. The Midwest is the region of focus for our prototype, and the first impact we will show is inland flooding. Intensified flooding in the interior of the US has the potential to impact a huge swath of communities, including many that are currently disengaged from the climate issue and which may largely view it as a coastal problem. Future updates may include visualization of drought, coastal flooding, wildfire, and extreme heat.</p>
-
-                <p>Through field trials and user testing, we will hone in on the most effective method of visualizing climate impacts and risk exposure for our target audiences. Our team intends to test two basic approaches to impact visualization; one approach that directly shows a mixture of climate projections, and a second approach that synthesizes multiple climate projections into a single risk score of our own design.</p>
-
-                <p>In addition to the climate impact visualization, our team is developing engagement tools that will allow users to easily share their findings on social media, and to reach out quickly to officials at the local and state level. For future updates, we are interested in developing the platform to allow general users to post photos of extreme climate events, and potentially provide other sorts of meaningful crowd-sourced data.</p>
+                <h4>Our Team:</h4>
+                <p>Float is an independent, not-for-profit organization.</p>
+                <li>Keith Brower Brown</li>
+                <li>Mike Vattuone</li>
+                <li>Matteo Bannerjee</li>
+                <li>Max Gardner</li>
+                <li>Daniel Goldfarb</li>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -54,50 +59,20 @@
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-
-        <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Contact Float</h4>
-              </div>
-              <div class="modal-body">
-                <p>Inquiries Donations and such I don't know. </p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div><!-- /.modal-content -->
-          </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
           <defs>
           
             <pattern id="dots" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="12">
-              <circle cx="5" cy="7" r="2" fillOpacity="0.3" fill="transparent"  />
+              <circle cx="5" cy="7" r="2" fill-opacity="0.6" fill="transparent"  />
             </pattern>
             <pattern id="big-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="12">
-              <circle cx="5" cy="7" r="3" fillOpacity="0.5" fill="transparent"   />
+              <circle cx="5" cy="7" r="3" fill-opacity="0.7" fill="transparent"   />
             </pattern>
             <pattern id="bigger-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="12" height="12">
-              <circle cx="8" cy="7" r="4" fillOpacity="0.8" fill="transparent"  />
+              <circle cx="8" cy="7" r="4" fill-opacity="0.8" fill="transparent"  />
             </pattern>
             <pattern id="biggest-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="12">
-              <circle cx="5" cy="7" r="5" fillOpacity="1" fill="transparent"  />
-            </pattern>
-        
-            <pattern id="dots-legend" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="12">
-              <circle class="legend" cx="5" cy="7" r="2" fillOpacity="0.3" fill="transparent"  />
-            </pattern>
-            <pattern id="big-dots-legend" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="12">
-              <circle class="legend" cx="5" cy="7" r="3" fillOpacity="0.5" fill="transparent"   />
-            </pattern>
-            <pattern id="bigger-dots-legend" patternUnits="userSpaceOnUse" x="0" y="0" width="12" height="12">
-              <circle class="legend" cx="8" cy="7" r="4" fillOpacity="0.8" fill="transparent"  />
-            </pattern>
-            <pattern id="biggest-dots-legend" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="12">
-              <circle class="legend" cx="5" cy="7" r="5" fillOpacity="1" fill="transparent"  />
+              <circle cx="5" cy="7" r="5" fill-opacity="1" fill="transparent"  />
             </pattern>
           </defs>
         </svg>​

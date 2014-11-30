@@ -1,3 +1,6 @@
+venv
+nfhl_tiles
+/static
 *.db
 *.gz
 *.pyc

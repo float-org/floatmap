@@ -88,9 +88,9 @@ var buildLegend = function() {
   var legend = L.control({position: 'bottomright'});
 
   var tooltipText = {
-    'floods': 'Locations that have a higher risk of flood due to climate change.',
-    'epLayer': 'Percentage change in extreme precipitation.',
-    'apLayer': 'The average amount of annual precipitation.'
+    'floods': 'Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)',
+    'epLayer': 'Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)',
+    'apLayer': 'Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)'
   };
 
   legend.onAdd = function (map) {
@@ -99,28 +99,28 @@ var buildLegend = function() {
           labels = [];
 
       $(div).append("<div data-layer='apLayer'>\
-                        <div class='legend-panel col-md-3'>\
+                        <div class='legend-panel col-md-4'>\
                           <h3 data-toggle='tooltip' title='" + tooltipText['apLayer'] +"'>Annual Precipitation</h3>\
                         </div>\
-                        <div class='legend-data col-md-9'>\
+                        <div class='legend-data col-md-8'>\
                           <div data-layer='apLayer' class='legend-data'><div class='apRange'></div></div>\
                         </div>\
                      </div>\
                      <div data-layer='epLayer'>\
-                        <div class='legend-panel col-md-3'>\
+                        <div class='legend-panel col-md-4'>\
                           <h3 data-toggle='tooltip' title='" + tooltipText['epLayer'] +"'>Storm Frequency</h3>\
                         </div>\
-                        <div class='legend-data col-md-9 '>\
+                        <div class='legend-data col-md-8'>\
                           <div data-layer='epLayer'>\
                             <div class='epRange'></div>\
                           </div>\
                         </div>\
                       </div>\
                       <div data-layer='floods'>\
-                        <div class='legend-panel col-md-3'>\
+                        <div class='legend-panel col-md-4'>\
                           <h3 data-toggle='tooltip' title='" + tooltipText['floods'] +"'>Flood Zones</h3>\
                         </div>\
-                        <div class='legend-data col-md-9'>\
+                        <div class='legend-data col-md-8'>\
                           <ul class='floodRange'></ul>\
                         </div>\
                       </div>");

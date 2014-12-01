@@ -135,7 +135,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', end
     box-sizing: border-box;
     position:fixed;
     width:100%;
-    z-index:100000;
+    z-index:1049; /* one less than bootstrap modal */
 }
 
 .logo {
@@ -318,6 +318,7 @@ input[type="text"] {
 
 .floodRange li > span { 
     vertical-align:top;
+    margin-left:3px;
 }
 
 .tooltip { 

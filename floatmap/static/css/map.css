@@ -97,6 +97,10 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+.logo, header {
+    font-family: 'Montserrat', sans-serif;
+}
+
 #map-container { 
     height:100vh;
 }
@@ -104,6 +108,14 @@ textarea {
 #map {
     width:100%;
     height:100%;
+}
+
+.logo a {
+    color:#FFF;
+}
+
+.logo a:hover {
+    text-decoration: none;
 }
 
 img[src*="http://a.tiles.mapbox.com/v3/floatmap.jkggd5ph"],
@@ -137,7 +149,7 @@ header {
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', endColorstr='#64a7dc',GradientType=0 ); /* IE6-9 */
     display:block;
     height:90px;
-    padding: 20px 25px;
+    padding: 20px;
     box-sizing: border-box;
     position:fixed;
     width:100%;
@@ -165,10 +177,15 @@ header nav a:first-child {
 
 .logo {
     color: white;
+    font-weight:bold;
 }
 
 .logo h1 {
     margin:0;
+}
+
+.logo span {
+    font-size:18px;
 }
 
 #search input[type="text"],
@@ -232,7 +249,7 @@ input[type="text"] {
 
 .legend-panel {
   display: block;
-  padding: 10px 25px;
+  padding: 10px 17px;
   font-size: 12px;
   line-height: 1.4;
   box-shadow: none;
@@ -247,7 +264,7 @@ input[type="text"] {
 
 .legend-data { 
   background-color:#6496c8;
-  padding-top:13px;
+  padding:13px 6px;
 }
 
 .legend-data .dots { 
@@ -317,13 +334,13 @@ input[type="text"] {
     display:inline-block;
     vertical-align: top;
     background:white;
-    height:25px;
-    width:25px;
+    height:24px;
+    width:24px;
 }
 
 .apRange i {
-    width: 25px;
-    height: 25px;
+    width: 24px;
+    height: 24px;
     display:inline-block;
     opacity: 0.4;
 }
@@ -341,7 +358,7 @@ input[type="text"] {
     border-top: 1px solid #222;
     font-size: 11px;
     text-align: center;
-    width: 325px;
+    width: 318px;
     background: #6496c8;
     display: block;
     position: relative;

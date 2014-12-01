@@ -3,6 +3,7 @@
 {% load static from staticfiles %}
  {% block extra_css %}
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
+  <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css' />
   <link rel="stylesheet" href="static/css/map.css">
  {% endblock %}
  {% block content %}
@@ -12,7 +13,7 @@
         <header class="clearfix">
             <div class="row">
                 <div class="logo col-md-3">
-                    <!--TODO: Get Logo from PSD??-->
+                    <h1><a href="/">FLOAT</a></h1>
                 </div>
 
             <form action="#" method="POST" id="search" class="col-md-7">

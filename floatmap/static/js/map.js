@@ -37,36 +37,43 @@ var addLayerToggleToLegend = function(layer, name) {
   layerToggle.on('click', function(e) {
     if ($(this).is(':checked')) {
       if (!Map.hasLayer(layer)) {
+        // If we're zoomed in to higher levels, make sure we 
+        // build the layers the appropriate way.  Only matters
+        // when redrawing epLayer since it's supposed to be
+        // on bottom. 
         if (Map.getZoom() >= 11 && name === "epLayer") {
           Map.removeLayer(apLayer);
           $('.dots').attr('class', function(index, classNames) {
             return classNames + ' behind';
           });
-          $('.apRange > div i').css({'opacity': 0.3})
+          $('.apRange > div i').css({'opacity': 0.3});
           apLayer.setStyle({
             fillOpacity:0.3
           });
           epLayer.addTo(Map);
           apLayer.addTo(Map);
         } else if (Map.getZoom() <= 10 && name === "apLayer") {
+          // Make sure we draw layers appropriately
+          // AP on bottom, ep on top
           Map.removeLayer(epLayer);
           layer.addTo(Map);
           epLayer.addTo(Map);
         } else {
           layer.addTo(Map);
         }
-      } else {  
-        return 
+      } else {
+        return;
       }
     } else {
       if (Map.hasLayer(layer)) {
         Map.removeLayer(layer);
-      }  
+      }
     }
   });
 };
 
-// Thank you mysterious JSFiddle, for providing a basis.
+// Thanks to satomacoto for providing this Gist
+// https://gist.github.com/satomacoto/3384995
 function buildArrows(svg, links, nodes) {
   // define marker
   svg.append("svg:defs").selectAll("marker")
@@ -102,7 +109,7 @@ function buildArrows(svg, links, nodes) {
 
 var buildLegend = function() {
   var legend = L.control({position: 'bottomright'});
-
+  // TODO: Consider building out better context object for legend
   var tooltipText = {
     'floods': 'Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)',
     'epLayer': 'Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)',
@@ -114,6 +121,7 @@ var buildLegend = function() {
           apGrades = $([0,1,2,3,4,5,6,7,8,9,10,11,12]),
           labels = [];
 
+      // TODO: Use real templates...
       $(div).append("<div data-layer='apLayer'>\
                         <div class='legend-panel col-md-4'>\
                           <h3 data-toggle='tooltip' title='" + tooltipText['apLayer'] +"'>Annual Precipitation</h3>\
@@ -168,7 +176,8 @@ var buildLegend = function() {
                            })
                            .attr('y',0 )
                            .attr('class', function(d) { return d; })
-      
+
+      //TODO: Make data object and loop w/ d3...
       svg.append('text')
                .attr("x", 3)
                .attr("y", 45)
@@ -295,13 +304,16 @@ var getAPData = function(url) {
 var setEventListeners = function() {
 
   Map.on('zoomstart', function(e) {
+    // Need this to know zoom state.
     window.previousZoom = Map.getZoom();
   });
 
   Map.on('zoomend', function(e) {
+    // Zooming in
     if (Map.getZoom() === 11 && previousZoom < Map.getZoom()) {
+      //Draw apLayer on top of epLayer, change some styles
       if ($('input[data-layer=apLayer]').is('checked')) {
-        
+          
         Map.removeLayer(apLayer);
 
         $('.dots').attr('class', function(index, classNames) {
@@ -316,7 +328,9 @@ var setEventListeners = function() {
 
         apLayer.addTo(Map);
       }
+    //Zooming Out
     } else if (Map.getZoom() === 10 && previousZoom > Map.getZoom()) {
+      //Draw epLayer on top of apLayer, revert styles
       if ($('input[data-layer=epLayer]').is('checked')) {
         Map.removeLayer(epLayer);
         $('.apRange > div i').css({'opacity': 0.4});

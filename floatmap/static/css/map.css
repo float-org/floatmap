@@ -338,11 +338,11 @@ input[type="text"] {
 }
 
 .year-100 > div {
-    background-color:#CF9294;
+    background-color:#ba3a3a;
 }
 
 .year-500 > div { 
-    background-color:#ba3a3a;
+    background-color:#CF9294;
 }
 
 .apRange > div {

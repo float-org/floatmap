@@ -248,22 +248,57 @@ input[type="text"] {
 /* Map Legend */
 
 .legend {
-    padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
-    background: white;
-    background: rgba(255,255,255,0.8);
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    border-radius: 5px;
+    background:#FFF;
+    border-radius:5px;
+    min-width:480px;
 }
 
-.info h4 {
+.legend > div { 
+    padding:0;
+    margin:0;
+    height:101px;
+}
+
+.legend-panel, .legend-data {
+    height:100%;
+}
+
+.legend-panel {
+  display: block;
+  padding: 10px 25px;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: none;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  color: #fff;
+  background-color:#c2dbf3; 
+  text-shadow: -1px 1px #417cb8;
+  border: none;
+}
+
+.legend-data { 
+  background-color:#6496c8;
+  padding-top:18px;
+}
+
+.legend-data .dots { 
+    fill-opacity:1 !important;
+}
+
+.legend h4 {
     margin: 0 0 5px;
     color: #777;
 }
 
-.floodRange { 
+.floodRange, .apRange, .epRange { 
     margin:0;
     padding:0;
+    height:100%;
+    list-style-type:none;
 }
 
 .floodRange li > div {
@@ -278,6 +313,26 @@ input[type="text"] {
     opacity:0.5;
 }
 
+.floodRange li > span { 
+    vertical-align:top;
+}
+
+.tooltip { 
+    opacity:1;
+}
+
+.tooltip.top .tooltip-arrow,
+.tooltip.top .tooltip-inner {
+    border-top-color:#FFF;
+    color:#222;
+}
+
+.tooltip-inner { 
+    border-radius:0;
+    background:#FFF;
+    text-shadow:none;
+}
+
 .year-100 > div {
     background-color:#CF9294;
 }
@@ -286,17 +341,25 @@ input[type="text"] {
     background-color:#ba3a3a;
 }
 
-.legend i {
-    width: 18px;
-    height: 18px;
+.apRange > div {
+    display:inline-block;
+    vertical-align: top;
+}
+
+.apRange i {
+    width: 25px;
+    height: 25px;
     display:inline-block;
     opacity: 0.7;
 }
 
-.legend h3 {
-    margin-top:0;
-    margin-bottom:5px;
-    display:inline-block;
+.apRange span { 
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    color: #222;
+    position: relative;
+    right: 1px;
 }
 
 .legend button {

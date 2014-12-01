@@ -28,17 +28,9 @@ var addLayerToggleToLegend = function(layer, name) {
   // Create a simple layer switcher that
   // toggles layers on and off.
   var template = $('<div class="onoffswitch"><input type="checkbox" name='+ name +'-switch" class="onoffswitch-checkbox" data-layer='+ name +' id="' + name + '-switch" checked><label class="onoffswitch-label" for="' + name + '-switch"><span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span></label></div>');
-  var appendIt = true;
 
-  $(Layers.childNodes).each(function() {
-    if (name === this.innerHTML) {
-      appendIt = false;
-    }
-  });
-
-  if (appendIt) {
-    $(Layers).append(template);
-  }
+  $('.legend div[data-layer='+name+'] .legend-panel').append(template);
+  
   
   var layerToggle = $(template).find('input');
 
@@ -60,8 +52,8 @@ var buildLegend = function() {
 
   var tooltipText = {
     'floods': 'Locations that have a higher risk of flood due to climate change.',
-    'ep': 'Bad storms.',
-    'ap': 'The average amount of annual precipitation.'
+    'epLayer': 'Bad storms.',
+    'apLayer': 'The average amount of annual precipitation.'
   };
 
   legend.onAdd = function (map) {
@@ -70,45 +62,77 @@ var buildLegend = function() {
           labels = [];
 
       // loop through our average precip. intervals and generate a label with a colored square for each interval
-      div.innerHTML += '<h3 class="tt" data-toggle="tooltip" title="'+ tooltipText['ap'] +'">AP Risk</h3>';
-      $(div).append("<div class='apRange'></div>");
+      $(div).append("<div data-layer='apLayer'>\
+                        <div class='legend-panel col-md-3'>\
+                          <h3 data-toggle='tooltip' title='" + tooltipText['ap'] +"'>Annual Precipitation</h3>\
+                        </div>\
+                        <div class='legend-data col-md-9'>\
+                          <div data-layer='apLayer' class='legend-data'><div class='apRange'></div></div>\
+                        </div>\
+                     </div>\
+                     <div data-layer='epLayer'>\
+                        <div class='legend-panel col-md-3'>\
+                          <h3 data-toggle='tooltip' title='" + tooltipText['ep'] +"'>Storm Frequency</h3>\
+                        </div>\
+                        <div class='legend-data col-md-9 '>\
+                          <div data-layer='epLayer'>\
+                            <div class='epRange'></div>\
+                          </div>\
+                        </div>\
+                      </div>\
+                      <div data-layer='floods'>\
+                        <div class='legend-panel col-md-3'>\
+                          <h3 data-toggle='tooltip' title='" + tooltipText['floods'] +"'>Flood Zones</h3>\
+                        </div>\
+                        <div class='legend-data col-md-9'>\
+                          <ul class='floodRange'></ul>\
+                        </div>\
+                      </div>");
+      
 
-      apGrades.each(function() {
-          var apValue = '<i style="background:' + getColor('ap', this) + ';"></i>';
+      apGrades.each(function(index) {
+          var apValue = $('<div><i style="background:' + getColor('ap', this) + ';"></i></div>');
+          if (index % 4 === 0) {
+            var textNode = '<span>+'+this+'%</span>';
+            apValue.append(textNode);
+          }
           $(div).find('.apRange').append(apValue);
+
       });
 
       // loop through our extreme precip. intervals and generate a set of rectangle w/ the appropriate pattern
       // then fill w/ pattern
       var epGrades = ['dots', 'big dots', 'bigger dots', 'biggest dots'];
-      var svg = d3.select(div).append("svg").attr("width", 100).attr("height", 25);
-      svg.selectAll('rect').data(epGrades)
-                           .enter()
+      var svg = d3.select($(div).find('.epRange')[0]).append("svg").attr("width", 150).attr("height", 50);
+      svg.selectAll('rect').data(epGrades)   
+                           .enter()                        
                            .append('rect')
                            .attr('width',25)
                            .attr('height',25)
                            .attr('x', function(d,i) {
-                            return 25 * i;
+                            return 30 * (i);
                            })
                            .attr('y',0 )
-                           .attr('class', function(d) { return d; });
+                           .attr('class', function(d) { return d; })
+      svg.append('text')
+         .attr("x", 85)
+         .attr("y", 45)
+         .text('50%')
+      svg.append('text')
+         .attr("x", 3)
+         .attr("y", 45)
+         .text('0%')
+                           
 
-      div.innerHTML += '<h3 class="tt" data-toggle="tooltip" title="'+ tooltipText['ep'] +'">Storms</h3>';
-
-      div.innerHTML += '<h3 class="tt" data-toggle="tooltip" title="'+ tooltipText['floods'] +'">Extreme Floods</h3>';
       
       //build simple list for flood colors
 
-      floodRange = $('<ul class="floodRange"><li class="year-500"><div></div><span>Moderate</span></li><li class="year-100"><div></div><span>High</span></li></ul>');
+      floodRange = $('<li class="year-500"><div></div><span>High</span></li><li class="year-100"><div></div><span>Extreme</span></li>');
 
-      $(div).append(floodRange);
+      $(div).find('.floodRange').append(floodRange);
       
-      window.Layers = document.createElement('nav');
-      Layers.id = 'menu-ui';
-      Layers.className = '<menu-></menu->ui';
-      div.appendChild(Layers);
+      return div;
 
-    return div;
   };
 
   legend.addTo(Map);
@@ -119,8 +143,17 @@ var showAddress = function(address) {
 	g.geocode({ 'address': address }, function(results, status) {
 		latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
 		Map.setView(latLng, 18);
-		L.marker(latLng).addTo(Map);
-		$('#share').removeClass('hidden');
+		var marker = L.marker(latLng).addTo(Map);
+    var popupContent = $('#popup')[0],
+        popup = new L.Popup();
+    popup.onAdd = function() {
+      console.log(this._latlng);
+
+    };
+    popup.setLatLng(latLng);
+    popup.setContent(popupContent);
+    marker.bindPopup(popup).openPopup(popup);
+
 	});
 };
 
@@ -235,7 +268,7 @@ function initMap() {
   options = {
     'placement': 'auto',
   };
-  $('.tt').tooltip(options);
+  $('.legend h3').tooltip(options);
 
 }
 

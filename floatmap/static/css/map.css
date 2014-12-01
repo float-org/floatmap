@@ -334,6 +334,29 @@ input[type="text"] {
     right: 1px;
 }
 
+.bottom-line{
+    margin-top:4px;
+    border-top:1px solid #222;
+    font-size:11px;
+    text-align:center;
+    width:325px;
+}
+
+.bottom-line:after{
+    content: "";
+    display: block;
+    border-top: 5px solid transparent;
+    border-left: 11px solid #222;
+    border-bottom: 5px solid transparent;
+    width: 0;
+    height: 0;
+    z-index: 200px;
+    float: right;
+    position: relative;
+    bottom: 5px;
+    left: 1px;
+}
+
 /* Extreme Precipitation */
 
 .biggest.dots {

@@ -78,7 +78,7 @@ function buildArrows(svg, links, nodes) {
       .attr("marker-end", "url(#arrow)");
 
   svg.append('text')
-     .attr("x", 100)
+     .attr("x", 94)
      .attr("y", 67)
      .text('increasing storm frequency')
      .style('font-size','11px')
@@ -133,8 +133,9 @@ var buildLegend = function() {
             apValue.append(textNode);
           }
           $(div).find('.apRange').append(apValue);
-
       });
+
+      $(div).find('.apRange').append("<div class='bottom-line'>increasing annual precipitation</div>")
 
       // loop through our extreme precip. intervals and generate a set of rectangle w/ the appropriate pattern
       // then fill w/ pattern

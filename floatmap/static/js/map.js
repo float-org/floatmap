@@ -241,7 +241,7 @@ var buildAPLayer = function() {
   window.apLayer = L.geoJson(Cache.apData, {
     style: function(feature) {
      return { color: getColor('ap', feature.properties.DN),
-              fillOpacity: 0.6, };
+              fillOpacity: 0.4, };
     },
     onEachFeature: function(feature,layer) {
       layer.on({
@@ -288,13 +288,25 @@ var setEventListeners = function() {
       $('.dots').attr('class', function(index, classNames) {
         return classNames + ' behind';
       });
+
+      $('.apRange > div i').css({'opacity': 0.3})
+      apLayer.setStyle({
+        fillOpacity:0.3
+      });
+
       apLayer.addTo(Map);
     } else if (Map.getZoom() === 10 && previousZoom > Map.getZoom()) {
       Map.removeLayer(epLayer);
+      $('.apRange > div i').css({'opacity': 0.4})
+      apLayer.setStyle({
+        fillOpacity:0.4
+      });
       epLayer.addTo(Map);
       $('.dots').attr('class', function(index, classNames) {
         var classArray = classNames.split(" ");
-        classArray.pop();
+        if ($.inArray('behind', classNames) !== -1) {
+          classArray.pop()
+        }
         origClassNames = classArray.join(" ");
         return origClassNames;
       });

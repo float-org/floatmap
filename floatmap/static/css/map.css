@@ -247,7 +247,7 @@ input[type="text"] {
 
 .legend-data { 
   background-color:#6496c8;
-  padding-top:18px;
+  padding-top:13px;
 }
 
 .legend-data .dots { 
@@ -316,13 +316,16 @@ input[type="text"] {
 .apRange > div {
     display:inline-block;
     vertical-align: top;
+    background:white;
+    height:25px;
+    width:25px;
 }
 
 .apRange i {
     width: 25px;
     height: 25px;
     display:inline-block;
-    opacity: 0.7;
+    opacity: 0.4;
 }
 
 .apRange span { 
@@ -330,16 +333,19 @@ input[type="text"] {
     text-align: center;
     font-size: 11px;
     color: #222;
-    position: relative;
-    right: 1px;
+    background-color:#6496c8;
 }
 
-.bottom-line{
-    margin-top:4px;
-    border-top:1px solid #222;
-    font-size:11px;
-    text-align:center;
-    width:325px;
+.apRange > div.bottom-line{
+    margin-top: 4px;
+    border-top: 1px solid #222;
+    font-size: 11px;
+    text-align: center;
+    width: 325px;
+    background: #6496c8;
+    display: block;
+    position: relative;
+    top: 19px;
 }
 
 .bottom-line:after{
@@ -349,6 +355,7 @@ input[type="text"] {
     border-left: 11px solid #222;
     border-bottom: 5px solid transparent;
     width: 0;
+    background-color:#6496c8
     height: 0;
     z-index: 200px;
     float: right;

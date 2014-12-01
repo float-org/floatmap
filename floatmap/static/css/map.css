@@ -219,8 +219,7 @@ input[type="text"] {
     font-size:17px;
 }
 
-button,
-input[type="text"] {
+button {
     font-style:italic;
 }
 

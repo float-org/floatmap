@@ -8,7 +8,6 @@ var getColor = function(type, d) {
 };
 
 var getPattern = function(type ,d) {
-  console.log(d);
   if (type === 'ep') {
     return d >= 42 ? 'biggest dots' :
            d >= 32 ? 'bigger dots'  :
@@ -36,17 +35,34 @@ var addLayerToggleToLegend = function(layer, name) {
   var layerToggle = $(template).find('input');
 
   layerToggle.on('click', function(e) {
-      if ($(this).is(':checked')) {
-        if (!Map.hasLayer(layer)) {
-          if (name === "epData") {
-            layer.addTo(Map);
-          }
+    if ($(this).is(':checked')) {
+      if (!Map.hasLayer(layer)) {
+        if (Map.getZoom() >= 11 && name === "epLayer") {
+          Map.removeLayer(apLayer);
+          $('.dots').attr('class', function(index, classNames) {
+            return classNames + ' behind';
+          });
+          $('.apRange > div i').css({'opacity': 0.3})
+          apLayer.setStyle({
+            fillOpacity:0.3
+          });
+          epLayer.addTo(Map);
+          apLayer.addTo(Map);
+        } else if (Map.getZoom() <= 10 && name === "apLayer") {
+          Map.removeLayer(epLayer);
+          layer.addTo(Map);
+          epLayer.addTo(Map);
+        } else {
+          layer.addTo(Map);
         }
-      } else {
-        if (Map.hasLayer(layer)) {
-          Map.removeLayer(layer);
-        }
+      } else {  
+        return 
       }
+    } else {
+      if (Map.hasLayer(layer)) {
+        Map.removeLayer(layer);
+      }  
+    }
   });
 };
 
@@ -284,32 +300,39 @@ var setEventListeners = function() {
 
   Map.on('zoomend', function(e) {
     if (Map.getZoom() === 11 && previousZoom < Map.getZoom()) {
-      Map.removeLayer(apLayer);
-      $('.dots').attr('class', function(index, classNames) {
-        return classNames + ' behind';
-      });
+      if ($('input[data-layer=apLayer]').is('checked')) {
+        
+        Map.removeLayer(apLayer);
 
-      $('.apRange > div i').css({'opacity': 0.3})
-      apLayer.setStyle({
-        fillOpacity:0.3
-      });
+        $('.dots').attr('class', function(index, classNames) {
+          return classNames + ' behind';
+        });
 
-      apLayer.addTo(Map);
+        $('.apRange > div i').css({'opacity': 0.3});
+
+        apLayer.setStyle({
+          fillOpacity:0.3
+        });
+
+        apLayer.addTo(Map);
+      }
     } else if (Map.getZoom() === 10 && previousZoom > Map.getZoom()) {
-      Map.removeLayer(epLayer);
-      $('.apRange > div i').css({'opacity': 0.4})
-      apLayer.setStyle({
-        fillOpacity:0.4
-      });
-      epLayer.addTo(Map);
-      $('.dots').attr('class', function(index, classNames) {
-        var classArray = classNames.split(" ");
-        if ($.inArray('behind', classNames) !== -1) {
-          classArray.pop()
-        }
-        origClassNames = classArray.join(" ");
-        return origClassNames;
-      });
+      if ($('input[data-layer=epLayer]').is('checked')) {
+        Map.removeLayer(epLayer);
+        $('.apRange > div i').css({'opacity': 0.4});
+        apLayer.setStyle({
+          fillOpacity:0.4
+        });
+        epLayer.addTo(Map);
+        $('.dots').attr('class', function(index, classNames) {
+          var classArray = classNames.split(" ");
+          if ($.inArray('behind', classNames) !== -1) {
+            classArray.pop();
+          }
+          origClassNames = classArray.join(" ");
+          return origClassNames;
+        });
+      }
     }
   });
  
@@ -321,7 +344,7 @@ var setEventListeners = function() {
 };
 
 function initMap() {
-  window.Map = new L.map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 7);
+  window.Map = new L.map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 12);
   window.base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
   window.floods = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
   

@@ -119,6 +119,12 @@ img[src*="http://d.tiles.mapbox.com/v3/floatmap.jkggd5ph"]    {
   filter: gray; /* IE 6-9 */
 }
 
+/* override leaflet default styles for data */
+.leaflet-clickable {
+    stroke-width:0;
+}
+
+
 header {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
     background: #56a8ca; /* Old browsers */
@@ -136,42 +142,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', end
     position:fixed;
     width:100%;
     z-index:1049; /* one less than bootstrap modal */
-}
-
-.logo {
-    color: white;
-}
-
-.logo h1 {
-    margin:0;
-}
-
-#search input[type="text"],
-#search button {
-    float:left;
-    height:37px;
-}
-
-#search input[type="text"] {
-    width:478px;
-    box-sizing:border-box;
-}
-
-#search input::-webkit-input-placeholder {
-#search input::-moz-placeholder,
-#search input::-ms-input-placeholder;
-    color: #A5A7A9;
-}
-
-#search button {
-    width:137px;
-    background-color:#404247;
-    color:#FAEBE2;
-    border:0;
-}
-
-#search button {
-    font-size:17px;
 }
 
 header nav {
@@ -193,6 +163,42 @@ header nav a:first-child {
     margin-left:0;
 }
 
+.logo {
+    color: white;
+}
+
+.logo h1 {
+    margin:0;
+}
+
+#search input[type="text"],
+#search button {
+    float:left;
+    height:37px;
+}
+
+#search input[type="text"] {
+    width:478px;
+    box-sizing:border-box;
+}
+
+#search input::-webkit-input-placeholder,
+#search input::-moz-placeholder,
+#search input::-ms-input-placeholder {
+    color: #A5A7A9;
+}
+
+#search button {
+    width:137px;
+    background-color:#404247;
+    color:#FAEBE2;
+    border:0;
+}
+
+#search button {
+    font-size:17px;
+}
+
 nav a,
 button,
 input[type="text"] { 
@@ -202,50 +208,6 @@ input[type="text"] {
 button,
 input[type="text"] {
     font-style:italic;
-}
-
-#share {
-   width:300px;
-   height:300px;
-   background-color:rgba(0,0,0,0.5);
-   color:#FFF; 
-   position:fixed;
-   bottom:20px;
-   right:20px;
-}
-
-#share h2 { text-align:center; margin-bottom:25px; }
-
-#share ul {
- list-style:none;   
- margin:0 auto;
- display:block;
- width:190px;
- padding:0;
-}
-
-.fb, .twitter, .email {
-    width:100%;
-    height:40px;
-    text-align:center;
-    font-size:24px;
-    margin-bottom:10px;
-}
-
-.fb { background: #4c66a4; } 
-.twitter { background: deepskyblue; }
-.email { background: mediumaquamarine; margin-bottom:0; }
-
-.email a {
-    width:100%;
-    height:100%;
-    display:inline-block;
-    color:#FFF;
-    text-decoration:none;
-}
-
-.hidden {
-    display:none;
 }
 
 /* Map Legend */
@@ -321,6 +283,8 @@ input[type="text"] {
     margin-left:3px;
 }
 
+/* Overwrite bootstrap */
+
 .tooltip { 
     opacity:1;
 }
@@ -337,6 +301,8 @@ input[type="text"] {
     text-shadow:none;
 }
 
+/* Floods */
+
 .year-100 > div {
     background-color:#ba3a3a;
 }
@@ -344,6 +310,8 @@ input[type="text"] {
 .year-500 > div { 
     background-color:#CF9294;
 }
+
+/* Average Precipitation */
 
 .apRange > div {
     display:inline-block;
@@ -366,14 +334,7 @@ input[type="text"] {
     right: 1px;
 }
 
-.legend button {
-    margin-top:10px;
-}
-
-/* override leaflet default styles for data */
-.leaflet-clickable {
-    stroke-width:0;
-}
+/* Extreme Precipitation */
 
 .biggest.dots {
     fill:url(#biggest-dots);
@@ -417,44 +378,8 @@ circle.legend {
     fill-opacity: 1;
 }
 
-.menu-ui {
-  background:#fff;
-  z-index:1;
-  border-radius:3px;
-  border:1px solid rgba(0,0,0,0.4);
-}
-
 .behind { 
   fill-opacity:1 !important;
-}
-
-.menu-ui a {
-    font-size:13px;
-    color:#404040;
-    display:block;
-    margin:0;padding:0;
-    padding:10px;
-    text-decoration:none;
-    border-bottom:1px solid rgba(0,0,0,0.25);
-    text-align:center;
-}
-.menu-ui a:first-child {
-    border-radius:3px 3px 0 0;
-}
-.menu-ui a:last-child {
-    border:none;
-    border-radius:0 0 3px 3px;
-}
-.menu-ui a:hover {
-    background:#f8f8f8;
-    color:#404040;
-}
-.menu-ui a.active {
-    background:#3887BE;
-    color:#FFF;
-}
-.menu-ui a.active:hover {
-    background:#3074a4;
 }
 
 

@@ -51,13 +51,17 @@ var addLayerToggleToLegend = function(layer, name) {
             fillOpacity:0.3
           });
           epLayer.addTo(Map);
-          apLayer.addTo(Map);
+          if ($('input[data-layer=apLayer]').prop('checked')) {
+            apLayer.addTo(Map);
+          }
         } else if (Map.getZoom() <= 10 && name === "apLayer") {
           // Make sure we draw layers appropriately
           // AP on bottom, ep on top
           Map.removeLayer(epLayer);
           layer.addTo(Map);
-          epLayer.addTo(Map);
+          if ($('input[data-layer=epLayer]').prop('checked')) {
+            epLayer.addTo(Map);
+          }
         } else {
           layer.addTo(Map);
         }
@@ -312,7 +316,7 @@ var setEventListeners = function() {
     // Zooming in
     if (Map.getZoom() === 11 && previousZoom < Map.getZoom()) {
       //Draw apLayer on top of epLayer, change some styles
-      if ($('input[data-layer=apLayer]').is('checked')) {
+      if ($('input[data-layer=apLayer]').prop('checked')) {
           
         Map.removeLayer(apLayer);
 
@@ -325,13 +329,13 @@ var setEventListeners = function() {
         apLayer.setStyle({
           fillOpacity:0.3
         });
-
+  
         apLayer.addTo(Map);
       }
     //Zooming Out
     } else if (Map.getZoom() === 10 && previousZoom > Map.getZoom()) {
       //Draw epLayer on top of apLayer, revert styles
-      if ($('input[data-layer=epLayer]').is('checked')) {
+      if ($('input[data-layer=epLayer]').prop('checked')) {
         Map.removeLayer(epLayer);
         $('.apRange > div i').css({'opacity': 0.4});
         apLayer.setStyle({

@@ -8,10 +8,11 @@ var getColor = function(type, d) {
 };
 
 var getPattern = function(type ,d) {
+  console.log(d);
   if (type === 'ep') {
-    return d >= 48 ? 'biggest dots' :
-           d >= 41 ? 'bigger dots'  :
-           d >= 34 ? 'big dots'     :
+    return d >= 42 ? 'biggest dots' :
+           d >= 32 ? 'bigger dots'  :
+           d >= 22 ? 'big dots'     :
            'dots';
   }
 };
@@ -37,7 +38,9 @@ var addLayerToggleToLegend = function(layer, name) {
   layerToggle.on('click', function(e) {
       if ($(this).is(':checked')) {
         if (!Map.hasLayer(layer)) {
-          layer.addTo(Map);
+          if (name === "epData") {
+            layer.addTo(Map);
+          }
         }
       } else {
         if (Map.hasLayer(layer)) {
@@ -102,25 +105,43 @@ var buildLegend = function() {
       // loop through our extreme precip. intervals and generate a set of rectangle w/ the appropriate pattern
       // then fill w/ pattern
       var epGrades = ['dots', 'big dots', 'bigger dots', 'biggest dots'];
-      var svg = d3.select($(div).find('.epRange')[0]).append("svg").attr("width", 150).attr("height", 50);
+      var svg = d3.select($(div).find('.epRange')[0]).append("svg").attr("width", 325).attr("height", 50);
       svg.selectAll('rect').data(epGrades)
                            .enter()    
                            .append('rect')
-                           .attr('width',25)
+                           .attr('width',81)
                            .attr('height',25)
                            .attr('x', function(d,i) {
-                            return 30 * (i);
+                            return 81 * (i);
                            })
                            .attr('y',0 )
                            .attr('class', function(d) { return d; })
+      
       svg.append('text')
-         .attr("x", 85)
-         .attr("y", 45)
-         .text('50%')
+               .attr("x", 3)
+               .attr("y", 45)
+               .text('+13%')
+               .style('font-size','11px')
+
+
       svg.append('text')
-         .attr("x", 3)
-         .attr("y", 45)
-         .text('0%')
+               .attr("x", 95)
+               .attr("y", 45)
+               .text('+26%')
+               .style('font-size','11px')
+
+      svg.append('text')
+               .attr("x", 196)
+               .attr("y", 45)
+               .text('+39%')
+               .style('font-size','11px')
+
+       svg.append('text')
+             .attr("x", 297)
+             .attr("y", 45)
+             .text('+52%')
+             .style('font-size','11px')
+      
                            
 
       
@@ -143,15 +164,12 @@ var showAddress = function(address) {
 		latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
 		Map.setView(latLng, 18);
 		var marker = L.marker(latLng).addTo(Map);
-    var popupContent = $('#popup')[0],
-        popup = new L.Popup();
-    popup.onAdd = function() {
-      console.log(this._latlng);
-
-    };
-    popup.setLatLng(latLng);
-    popup.setContent(popupContent);
-    marker.bindPopup(popup).openPopup(popup);
+    // var popupContent = $('#popup')[0],
+    //     popup = new L.Popup();
+    
+    // popup.setLatLng(latLng);
+    // popup.setContent(popupContent);
+    // marker.bindPopup(popup).openPopup(popup);
 
 	});
 };

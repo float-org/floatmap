@@ -48,7 +48,7 @@ var addLayerToggleToLegend = function(layer, name) {
 };
 
 var buildLegend = function() {
-  var legend = L.control({position: 'topleft'});
+  var legend = L.control({position: 'bottomright'});
 
   var tooltipText = {
     'floods': 'Locations that have a higher risk of flood due to climate change.',

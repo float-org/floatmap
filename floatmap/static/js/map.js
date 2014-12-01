@@ -50,6 +50,40 @@ var addLayerToggleToLegend = function(layer, name) {
   });
 };
 
+// Thank you mysterious JSFiddle, for providing a basis.
+function buildArrows(svg, links, nodes) {
+  // define marker
+  svg.append("svg:defs").selectAll("marker")
+      .data(["arrow"])
+      .enter().append("svg:marker")
+      .attr("id", String)
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 10)
+      .attr("refY", 0)
+      .attr("markerWidth", 10)
+      .attr("markerHeight", 10)
+      .attr("orient", "auto")
+      .append("svg:path")
+      .attr("d", "M0,-5L10,0L0,5");
+
+  svg.selectAll("line")
+      .data(links)
+      .enter()
+      .append("svg:line")
+      .attr("x1", function(d) { return nodes[d.s].x; })
+      .attr("y1", function(d) { return nodes[d.s].y; })
+      .attr("x2", function(d) { return nodes[d.t].x; })
+      .attr("y2", function(d) { return nodes[d.t].y; })
+      .attr("class", "link arrow")
+      .attr("marker-end", "url(#arrow)");
+
+  svg.append('text')
+     .attr("x", 100)
+     .attr("y", 67)
+     .text('increasing storm frequency')
+     .style('font-size','11px')
+  }
+
 var buildLegend = function() {
   var legend = L.control({position: 'bottomright'});
 
@@ -105,7 +139,8 @@ var buildLegend = function() {
       // loop through our extreme precip. intervals and generate a set of rectangle w/ the appropriate pattern
       // then fill w/ pattern
       var epGrades = ['dots', 'big dots', 'bigger dots', 'biggest dots'];
-      var svg = d3.select($(div).find('.epRange')[0]).append("svg").attr("width", 325).attr("height", 50);
+      var svg = d3.select($(div).find('.epRange')[0]).append("svg").attr("width", 325).attr("height", 70);
+
       svg.selectAll('rect').data(epGrades)
                            .enter()    
                            .append('rect')
@@ -142,11 +177,12 @@ var buildLegend = function() {
              .text('+52%')
              .style('font-size','11px')
       
-                           
+      var nodes = [{x:40,y:50}, {x:0,y:55}, {x:325,y:55}, {x:170, y:60}];
+      var links = [{s:1,t:2,u:3,label:"increasing annual precipitation"}];
 
-      
+      buildArrows(svg, links, nodes)             
+
       //build simple list for flood colors
-
       floodRange = $('<li class="year-500"><div></div><span>High</span></li><li class="year-100"><div></div><span>Extreme</span></li>');
 
       $(div).find('.floodRange').append(floodRange);

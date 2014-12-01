@@ -378,10 +378,21 @@ circle.legend {
     fill-opacity: 1;
 }
 
+line.arrow {
+    stroke: #222;
+    stroke-width: 1px;
+}
+marker#arrow {
+    fill: #222;
+}
+.link-label {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
 .behind { 
   fill-opacity:1 !important;
 }
-
 
 /* COOL TOGGLE */
 

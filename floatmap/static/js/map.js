@@ -248,14 +248,14 @@ var setEventListeners = function() {
   });
  
 	$("#search").on('submit', function(e) {
-		e.preventDefault(e);
+		e.preventDefault();
 		address = $(this).find('.search-input').val();
 		showAddress(address);
 	});
 };
 
 function initMap() {
-  window.Map = new L.map('map').setView([43.05358653605547, -89.2815113067627], 7);
+  window.Map = new L.map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 7);
   window.base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
   window.floods = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
   
@@ -265,6 +265,7 @@ function initMap() {
   addLayer(floods, 'floods', 2);
   getAPData('{{STATIC_URL|escapejs}}ap/noaa_avg_precip.geojson');
   getEPData('{{STATIC_URL|escapejs}}ep/noaa_ex_precip.geojson');
+  Map.addControl(L.control.zoom({ position: 'bottomleft' }));
   options = {
     'placement': 'auto',
   };

@@ -133,6 +133,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', end
     height:90px;
     padding: 20px 25px;
     box-sizing: border-box;
+    position:fixed;
+    width:100%;
+    z-index:100000;
 }
 
 .logo {

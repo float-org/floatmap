@@ -52,7 +52,7 @@ var buildLegend = function() {
 
   var tooltipText = {
     'floods': 'Locations that have a higher risk of flood due to climate change.',
-    'epLayer': 'Bad storms.',
+    'epLayer': 'Percentage change in extreme precipitation.',
     'apLayer': 'The average amount of annual precipitation.'
   };
 
@@ -61,10 +61,9 @@ var buildLegend = function() {
           apGrades = $([0,1,2,3,4,5,6,7,8,9,10,11,12]),
           labels = [];
 
-      // loop through our average precip. intervals and generate a label with a colored square for each interval
       $(div).append("<div data-layer='apLayer'>\
                         <div class='legend-panel col-md-3'>\
-                          <h3 data-toggle='tooltip' title='" + tooltipText['ap'] +"'>Annual Precipitation</h3>\
+                          <h3 data-toggle='tooltip' title='" + tooltipText['apLayer'] +"'>Annual Precipitation</h3>\
                         </div>\
                         <div class='legend-data col-md-9'>\
                           <div data-layer='apLayer' class='legend-data'><div class='apRange'></div></div>\
@@ -72,7 +71,7 @@ var buildLegend = function() {
                      </div>\
                      <div data-layer='epLayer'>\
                         <div class='legend-panel col-md-3'>\
-                          <h3 data-toggle='tooltip' title='" + tooltipText['ep'] +"'>Storm Frequency</h3>\
+                          <h3 data-toggle='tooltip' title='" + tooltipText['epLayer'] +"'>Storm Frequency</h3>\
                         </div>\
                         <div class='legend-data col-md-9 '>\
                           <div data-layer='epLayer'>\
@@ -104,8 +103,8 @@ var buildLegend = function() {
       // then fill w/ pattern
       var epGrades = ['dots', 'big dots', 'bigger dots', 'biggest dots'];
       var svg = d3.select($(div).find('.epRange')[0]).append("svg").attr("width", 150).attr("height", 50);
-      svg.selectAll('rect').data(epGrades)   
-                           .enter()                        
+      svg.selectAll('rect').data(epGrades)
+                           .enter()    
                            .append('rect')
                            .attr('width',25)
                            .attr('height',25)

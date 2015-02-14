@@ -34,7 +34,11 @@ var addLayerToggleToLegend = function(layer, name) {
   
   var layerToggle = $(template).find('input');
 
-  layerToggle.on('click', function(e) {
+  layerToggle.on('click', function(event) {
+
+    event.stopPropagation();
+
+
     if ($(this).is(':checked')) {
       if (!Map.hasLayer(layer)) {
         // If we're zoomed in to higher levels, make sure we 
@@ -224,20 +228,26 @@ var buildLegend = function() {
   legend.addTo(Map);
 };
 
-var showAddress = function(address) {
-	var g = new google.maps.Geocoder();
-	g.geocode({ 'address': address }, function(results, status) {
-		latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-		Map.setView(latLng, 18);
-		var marker = L.marker(latLng).addTo(Map);
-    // var popupContent = $('#popup')[0],
-    //     popup = new L.Popup();
+var buildPopup = function(coordinates) {
+    Map.removeLayer(marker);
+    marker = L.marker(coordinates).addTo(Map);
     
-    // popup.setLatLng(latLng);
-    // popup.setContent(popupContent);
-    // marker.bindPopup(popup).openPopup(popup);
+    var popupContent = $('#popup')[0],
+        popup = new L.Popup();
+    
+    popup.setLatLng(coordinates);
+    popup.setContent(popupContent);
+    marker.bindPopup(popup).openPopup(popup);
+}
 
-	});
+
+var showAddress = function(address) {
+  var g = new google.maps.Geocoder();
+  g.geocode({ 'address': address }, function(results, status) {
+    latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
+    Map.setView(latLng, 18);
+
+  });
 };
 
 var isCached = function(field) {
@@ -257,6 +267,9 @@ var buildEPLayer = function() {
     onEachFeature: function(feature,layer) {
       layer.on({
         dblclick: function(e) {
+          if (Map.getZoom() === 15) {
+            buildPopup(e.latlng);
+          }
           Map.zoomIn();
         }
       });
@@ -273,8 +286,11 @@ var buildAPLayer = function() {
               fillOpacity: 0.4, };
     },
     onEachFeature: function(feature,layer) {
-      layer.on({
+      layer.on({        
         dblclick: function(e) {
+          if (Map.getZoom() === 15) {
+            buildPopup(e.latlng);
+          }
           Map.zoomIn();
         }
       });
@@ -312,7 +328,20 @@ var setEventListeners = function() {
     window.previousZoom = Map.getZoom();
   });
 
+  Map.on('dblclick', function(e) {
+    L.DomEvent.stopPropagation(e);
+    if (Map.getZoom() === 15) {
+      buildPopup(e.latlng);
+    }
+  });
+  
+
+
   Map.on('zoomend', function(e) {
+    if (Map.getZoom() < 15 && previousZoom > Map.getZoom()) {
+      alert('ok');
+      Map.removeLayer(marker);
+    }
     // Zooming in
     if (Map.getZoom() === 11 && previousZoom < Map.getZoom()) {
       //Draw apLayer on top of epLayer, change some styles
@@ -353,12 +382,14 @@ var setEventListeners = function() {
       }
     }
   });
+
+
  
-	$("#search").on('submit', function(e) {
-		e.preventDefault();
-		address = $(this).find('.search-input').val();
-		showAddress(address);
-	});
+  $("#search").on('submit', function(e) {
+    e.preventDefault();
+    address = $(this).find('.search-input').val();
+    showAddress(address);
+  });
 };
 
 function initMap() {
@@ -382,6 +413,7 @@ function initMap() {
 
 
 $(document).ready(function() {
+  window.marker = '';
   window.Cache = {};
   initMap();
   setEventListeners();

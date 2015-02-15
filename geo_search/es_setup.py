@@ -7,7 +7,6 @@ Example:
   python es_setup.py --elasticsearch http://localhost:9200
 """
 import argparse
-import json
 import os
 import requests
 
@@ -50,7 +49,8 @@ def make_noaa_avg_precip_index(es_url):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--elasticsearch', dest='es_url', required=True, help="elasticsearch url")
+    parser.add_argument('--elasticsearch', dest='es_url', required=True,
+                        help="elasticsearch url")
     args = parser.parse_args()
     make_fema_floods_index(args.es_url)
     make_noaa_avg_precip_index(args.es_url)

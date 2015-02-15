@@ -37,7 +37,7 @@ def test_noaa_avg_precip(es_url):
         try:
             return r.json()["hits"]["hits"][0]["fields"]["DN"][0] == 9
         except Exception as e:
-            print "malformed response: ", r.json()
+            print "Bad response: ", r.json()
             return False
     else:
         return False

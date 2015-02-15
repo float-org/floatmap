@@ -401,7 +401,7 @@ var setEventListeners = function() {
 };
 
 function initMap() {
-  window.Map = new L.map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 7);
+  window.Map = new L.map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 6);
   window.base = L.tileLayer('http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
   window.floods = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
   

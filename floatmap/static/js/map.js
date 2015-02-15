@@ -232,8 +232,16 @@ var buildPopup = function(coordinates) {
     Map.removeLayer(marker);
     marker = L.marker(coordinates).addTo(Map);
     
-    var popupContent = $('#popup')[0],
-        popup = new L.Popup();
+    var popupContent = "<p>This address has a high risk of of more floods due to climate change</p>\
+                        <ul>\
+                          <li><label>Annual Precipitation:</label><span>8% Increase</span><a href='#''>source</a></li>\
+                          <li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>\
+                          <li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>\
+                        </ul>"
+        popup = new L.Popup({
+          minWidth: 350,
+          className: "fart"
+        });
     
     popup.setLatLng(coordinates);
     popup.setContent(popupContent);

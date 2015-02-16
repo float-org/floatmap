@@ -8,7 +8,7 @@ Usage:
 
 Example:
   python index_noaa.py --elasticsearch http://localhost:9200 \
-      --noaa_file ~/noaa_avg_precip.geojson
+      --noaa_file data/noaa_avg_precip.geojson
 """
 import argparse
 import json
@@ -17,7 +17,7 @@ import requests
 import uuid
 
 def index_noaa_avg_precip(noaa_geojson_file_path, es_url):
-    # Note: ogr2ogr seems to put all the data on one line.
+    # Note: ogr2ogr puts all the data in one object
     # This method of loading only works for small files like noaa
     with open(noaa_geojson_file_path, "r") as f:
         geo = json.load(f)

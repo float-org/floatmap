@@ -110,6 +110,8 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
+ES_URL = "http://localhost:9200"
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 

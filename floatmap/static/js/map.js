@@ -228,24 +228,54 @@ var buildLegend = function() {
   legend.addTo(Map);
 };
 
+var createSpinner = function(element) {
+  var opts = {
+  lines: 11, // The number of lines to draw
+  length: 4, // The length of each line
+  width: 2, // The line thickness
+  radius: 7, // The radius of the inner circle
+  corners: 0.9, // Corner roundness (0..1)
+  rotate: 0, // The rotation offset
+  direction: 1, // 1: clockwise, -1: counterclockwise
+  color: '#000', // #rgb or #rrggbb or array of colors
+  speed: 1, // Rounds per second
+  trail: 60, // Afterglow percentage
+  shadow: false, // Whether to render a shadow
+  hwaccel: false, // Whether to use hardware acceleration
+  className: 'spinner', // The CSS class to assign to the spinner
+  zIndex: 2e9, // The z-index (defaults to 2000000000)
+  top: '50%', // Top position relative to parent
+  left: '50%' // Left position relative to parent
+  };
+  var target = document.getElementById(element);
+  var spinner = new Spinner(opts).spin(target);
+}
+
 var buildPopup = function(coordinates) {
     Map.removeLayer(marker);
     marker = L.marker(coordinates).addTo(Map);
-    
-    var popupContent = "<p>This address has a high risk of of more floods due to climate change</p>\
+    createSpinner('.leaflet-popup-content');
+    var noaaApScore;
+
+    // Since we are making three separate queries, this is probably going to be a great place to 
+    // use promises.
+
+    $.post( "get_score/ap/", { lng: coordinates.lng, lat: coordinates.lat }).done(function( data ) {
+      noaaApScore = data;
+      var popupContent = "<p>This address has a high risk of of more floods due to climate change</p>\
                         <ul>\
-                          <li><label>Annual Precipitation:</label><span>8% Increase</span><a href='#''>source</a></li>\
+                          <li><label>Annual Precipitation:</label><span>" + noaaApScore + "% Increase</span><a href='#''>source</a></li>\
                           <li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>\
                           <li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>\
                         </ul>"
         popup = new L.Popup({
           minWidth: 350,
-          className: "fart"
         });
-    
-    popup.setLatLng(coordinates);
-    popup.setContent(popupContent);
-    marker.bindPopup(popup).openPopup(popup);
+      
+      popup.setLatLng(coordinates);
+      popup.setContent(popupContent);
+      marker.bindPopup(popup).openPopup(popup);
+    });
 }
 
 
@@ -347,7 +377,6 @@ var setEventListeners = function() {
 
   Map.on('zoomend', function(e) {
     if (Map.getZoom() < 15 && previousZoom > Map.getZoom()) {
-      alert('ok');
       Map.removeLayer(marker);
     }
     // Zooming in

@@ -7,3 +7,4 @@ django-geojson==2.5.0
 psycopg2==2.5.3
 six==1.7.0
 wsgiref==0.1.2
+requests==2.5.1

@@ -283,7 +283,7 @@ button {
 
 .leaflet-popup-content ul li {
     display:inline-block;
-    width:30%;
+    width:33%;
 }
 
 .leaflet-popup-content ul li label {
@@ -297,6 +297,10 @@ button {
 
 .leaflet-popup-content ul li a {
     display:block;
+}
+
+.metrics {
+    text-align:center;
 }
 
 .legend-data { 

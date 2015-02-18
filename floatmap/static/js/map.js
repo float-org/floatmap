@@ -260,21 +260,31 @@ var buildPopup = function(coordinates) {
     // Since we are making three separate queries, this is probably going to be a great place to 
     // use promises.
 
+    popup = new L.Popup({
+              minWidth: 350,
+            });
+    popup.setLatLng(coordinates);
+    marker.bindPopup(popup).openPopup(popup);
+
     $.post( "get_score/ap/", { lng: coordinates.lng, lat: coordinates.lat }).done(function( data ) {
       noaaApScore = data;
-      var popupContent = "<p>This address has a high risk of of more floods due to climate change</p>\
-                        <ul>\
-                          <li><label>Annual Precipitation:</label><span>" + noaaApScore + "% Increase</span><a href='#''>source</a></li>\
-                          <li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>\
-                          <li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>\
-                        </ul>"
-        popup = new L.Popup({
-          minWidth: 350,
-        });
+      var popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>";
+      popup.setContent(popupContent);  
+      if (noaaApScore > 0) {
+       var apData = "<li><label>Annual Precipitation:</label><span>" + noaaApScore + "% Increase</span><a href='#''>source</a></li>";
+      } else {
+        var apData = "<li><label>Annual Precipitation:</label><span>No Data Yet</span><a href='#''>source</a></li>";  
+      }
       
-      popup.setLatLng(coordinates);
-      popup.setContent(popupContent);
-      marker.bindPopup(popup).openPopup(popup);
+      var epData = "<li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>";
+      var fhData = "<li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>";                          
+                      
+      $('.metrics').append(apData)
+                   .append(epData)
+                   .append(fhData);
+      
+        spinner.stop();
+      
     });
 }
 

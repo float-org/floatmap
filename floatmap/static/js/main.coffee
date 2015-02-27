@@ -230,8 +230,8 @@ createSpinner = (element) ->
   spinner = new Spinner(opts).spin(target)
 
 buildPopup = (coordinates) ->
-  Map.removeLayer marker
-  marker = L.marker(coordinates).addTo(Map)
+  Map.removeLayer(window.marker) if window.marker?
+  window.marker = L.marker(coordinates).addTo(Map)
   createSpinner ".leaflet-popup-content"
   noaaApScore = undefined
   popup = new L.Popup(minWidth: 350)
@@ -321,7 +321,7 @@ setEventListeners = ->
     buildPopup e.latlng  if Map.getZoom() is 15
 
   Map.on "zoomend", (e) ->
-    Map.removeLayer marker  if Map.getZoom() < 15 and previousZoom > Map.getZoom()
+    Map.removeLayer marker if Map.getZoom() < 15 and previousZoom > Map.getZoom()
     if Map.getZoom() is 11 and previousZoom < Map.getZoom()
       if $("input[data-layer=apLayer]").prop("checked")
         Map.removeLayer apLayer
@@ -343,15 +343,13 @@ setEventListeners = ->
           origClassNames = classArray.join(" ")
           origClassNames
 
-
   $("#search").on "submit", (e) ->
     e.preventDefault()
     address = $(this).find(".search-input").val()
     showAddress address
 
-
 $(document).ready ->
-  window.marker = ""
+  window.marker;
   window.Cache = {}
   initMap()
   setEventListeners()

@@ -230,9 +230,11 @@
   };
 
   buildPopup = function(coordinates) {
-    var marker, noaaApScore, popup;
-    Map.removeLayer(marker);
-    marker = L.marker(coordinates).addTo(Map);
+    var noaaApScore, popup;
+    if (window.marker != null) {
+      Map.removeLayer(window.marker);
+    }
+    window.marker = L.marker(coordinates).addTo(Map);
     createSpinner(".leaflet-popup-content");
     noaaApScore = void 0;
     popup = new L.Popup({
@@ -403,7 +405,7 @@
   };
 
   $(document).ready(function() {
-    window.marker = "";
+    window.marker;
     window.Cache = {};
     initMap();
     return setEventListeners();

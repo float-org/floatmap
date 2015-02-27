@@ -9,10 +9,10 @@ var getColor = function(type, d) {
 
 var getPattern = function(type ,d) {
   if (type === 'ep') {
-    return d >= 42 ? 'biggest dots' :
-           d >= 32 ? 'bigger dots'  :
-           d >= 22 ? 'big dots'     :
-           'dots';
+    return d >= 42 ? 'orangest dots' :
+           d >= 32 ? 'orangerer dots'  :
+           d >= 22 ? 'oranger dots'     :
+           'orange dots';
   }
 };
 
@@ -171,7 +171,7 @@ var buildLegend = function() {
 
       // loop through our extreme precip. intervals and generate a set of rectangle w/ the appropriate pattern
       // then fill w/ pattern
-      var epGrades = ['dots', 'big dots', 'bigger dots', 'biggest dots'];
+      var epGrades = ['orange dots', 'oranger dots', 'orangerer dots', 'orangest dots'];
       var svg = d3.select($(div).find('.epRange')[0]).append("svg").attr("width", 325).attr("height", 70);
 
       svg.selectAll('rect').data(epGrades)
@@ -287,7 +287,6 @@ var buildPopup = function(coordinates) {
       
     });
 }
-
 
 var showAddress = function(address) {
   var g = new google.maps.Geocoder();

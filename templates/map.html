@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% load compress %}
 {% load static from staticfiles %}
  {% block extra_css %}
-  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css' rel='stylesheet' />
+ <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
   <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css' />
-  <link rel="stylesheet" href="static/css/map.css">
+  <link rel="stylesheet" href="{{STATIC_URL}}css/floatmap.min.css">
  {% endblock %}
  {% block content %}
   <!--[if lt IE 7]>
@@ -67,17 +67,17 @@
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
           <defs>
           
-            <pattern id="dots" patternUnits="userSpaceOnUse" x="0" y="0" width="12" height="12">
-              <circle cx="5" cy="7" r="2" fill-opacity="0.6" fill="transparent"  />
+            <pattern id="dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#F4CFA1" stroke-opacity="1" fill="#F4CFA1"  />
             </pattern>
-            <pattern id="big-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="12" height="12">
-              <circle cx="3" cy="7" r="3" fill-opacity="0.7" fill="transparent"   />
+            <pattern id="big-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#FFD600" stroke-opacity="1" fill="#FFD600"   />
             </pattern>
-            <pattern id="bigger-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="15" height="12">
-              <circle cx="6" cy="7" r="4" fill-opacity="0.8" fill="transparent"  />
+            <pattern id="bigger-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#FE4F00" stroke-opacity="1" fill="#FE4F00"  />
             </pattern>
-            <pattern id="biggest-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="17" height="12">
-              <circle cx="9" cy="7" r="5" fill-opacity="1" fill="transparent"  />
+            <pattern id="biggest-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#CF2B00" stroke-opacity="1" fill="#CF2B00"  />
             </pattern>
           </defs>
         </svg>​
@@ -88,10 +88,5 @@
    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-  <script src="static/js/leaflet-dvf.js"></script>
-  <script src="static/js/rainbowvis.js"></script>
-  <script src="static/js/spin.min.js"></script>
-  {% compress js %}
-  <script src="{{STATIC_URL}}js/map.js"></script>
-  {% endcompress %}
+  <script src="{{STATIC_URL}}js/floatmap.min.js"></script>
   {% endblock %}

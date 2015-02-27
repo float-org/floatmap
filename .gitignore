@@ -1,3 +1,4 @@
+*.tm2
 .DS_Store
 venv
 nfhl_tiles

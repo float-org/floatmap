@@ -26,11 +26,11 @@ module.exports = function(grunt) {
     watch: {
       coffee: {
         files: ['floatmap/static/js/*.coffee'],
-        tasks: ['coffee', 'default']
+        tasks: ['coffee', 'watch-dev']
       },
       less: {
         files: ['floatmap/static/css/*.less'],
-        tasks: ['less', 'default'],
+        tasks: ['less', 'watch-dev'],
       },
       livereload: {
         // Here we watch the files the sass task will compile to
@@ -77,5 +77,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.registerTask('watch-dev', ['concat']);
   grunt.registerTask('default', ['concat', 'uglify', 'cssmin']);
 }

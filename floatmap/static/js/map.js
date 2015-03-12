@@ -80,50 +80,12 @@ var addLayerToggleToLegend = function(layer, name) {
   });
 };
 
-// Thanks to satomacoto for providing this Gist
-// https://gist.github.com/satomacoto/3384995
-function buildArrows(svg, links, nodes) {
-  // define marker
-  svg.append("svg:defs").selectAll("marker")
-      .data(["arrow"])
-      .enter().append("svg:marker")
-      .attr("id", String)
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 10)
-      .attr("refY", 0)
-      .attr("markerWidth", 10)
-      .attr("markerHeight", 10)
-      .attr("orient", "auto")
-      .append("svg:path")
-      .attr("d", "M0,-5L10,0L0,5");
-
-  svg.selectAll("line")
-      .data(links)
-      .enter()
-      .append("svg:line")
-      .attr("x1", function(d) { return nodes[d.s].x; })
-      .attr("y1", function(d) { return nodes[d.s].y; })
-      .attr("x2", function(d) { return nodes[d.t].x; })
-      .attr("y2", function(d) { return nodes[d.t].y; })
-      .attr("class", "link arrow")
-      .attr("marker-end", "url(#arrow)");
-
-  svg.append('text')
-     .attr("x", 94)
-     .attr("y", 67)
-     .text('increasing storm frequency')
-     .style('font-size','11px')
-  }
 
 var buildLegend = function() {
+  
   var legend = L.control({position: 'bottomright'});
   // TODO: Consider building out better context object for legend
-  var tooltipText = {
-    'floods': 'Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)',
-    'epLayer': 'Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)',
-    'apLayer': 'Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)'
-  };
-
+  
   legend.onAdd = function (map) {
       var div = L.DomUtil.create('div', 'info legend'),
           apGrades = $([0,1,2,3,4,5,6,7,8,9,10,11,12]),

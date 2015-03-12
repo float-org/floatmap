@@ -19,9 +19,14 @@
   <meta property="fb:app_id" content="665496423525876" />
   <meta property="og:image" content="http://placehold.it/250x250" />
   {%endblock%}
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
   {% block extra_css %}{%endblock%}
-  <!-- TODO: Add Modernizr -->
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet-src.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.layoutmanager/0.9.6/backbone.layoutmanager.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js"></script>
 </head>
 <body>
   <script>
@@ -42,9 +47,31 @@
    fjs.parentNode.insertBefore(js, fjs);
  }(document, 'script', 'facebook-jssdk'));
   </script>
+
+  <main id="main">
   {% block content%}{%endblock%}
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js"></script>
+  </main>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
+    <defs>
+    
+      <pattern id="tiny-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+        <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#F4CFA1" stroke-opacity="1" fill="#F4CFA1"  />
+      </pattern>
+      <pattern id="small-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+        <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#FFD600" stroke-opacity="1" fill="#FFD600"   />
+      </pattern>
+      <pattern id="big-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+        <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#FE4F00" stroke-opacity="1" fill="#FE4F00"  />
+      </pattern>
+      <pattern id="huge-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+        <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#CF2B00" stroke-opacity="1" fill="#CF2B00"  />
+      </pattern>
+    </defs>
+  </svg>​
+
+  <!-- Woo -->
+  
   {% block extra_js %}{%endblock%}
 </body>
 </html>

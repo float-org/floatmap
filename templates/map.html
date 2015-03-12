@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static from staticfiles %}
  {% block extra_css %}
- <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
+  <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
   <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css' />
   <link rel="stylesheet" href="{{STATIC_URL}}css/floatmap.css">
@@ -10,32 +10,113 @@
   <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <header class="clearfix">
-            <div class="row">
-                <div class="logo col-md-3">
-                    <h1><a href="/">FLOAT</a></h1>
+
+      <script id="headerTemplate" type="template">          
+        <div class="row clearfix">
+          <div class="logo col-md-3">
+              <h1><a href="/">FLOAT</a></h1>
+          </div>
+
+          <form action="#" method="POST" id="search" class="col-md-7">
+              <input type="text" class="search-input">
+              <button>Search</button>
+          </form>
+
+          <nav class="col-md-2">
+              <a href="#about" data-toggle="modal" data-target="#aboutModal">About</a>
+          </nav>
+        </div>
+      </script>
+
+      <script id="mapTemplate" type="template"></script>
+
+      <script id="legendTemplate" type="template">   
+
+      
+        <div data-layer='apLayer'>
+            <div class='legend-panel col-md-4'>
+              <h3 data-toggle='tooltip' title='Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)'>Annual Precipitation</h3>
+              <div class="onoffswitch">
+                <input type="checkbox" name="apLayer-switch" class="onoffswitch-checkbox" data-layer="apLayer" id="apLayer-switch" checked>
+                <label class="onoffswitch-label" for="apLayer-switch">
+                  <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
+                </label>
+              </div>    
+            </div>
+            <div class='legend-data col-md-8'>
+              <div data-layer='apLayer' class='legend-data'>
+                <div class='apRange'></div>
+              </div>
+            </div>   
+         </div>
+         <div data-layer='epLayer'>
+            <div class='legend-panel col-md-4'>
+              <h3 data-toggle='tooltip' title='Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)'>Storm Frequency</h3>
+              <div class="onoffswitch">
+                <input type="checkbox" name="epLayer-switch" class="onoffswitch-checkbox" data-layer="epLayer" id="epLayer-switch" checked>
+                <label class="onoffswitch-label" for="epLayer-switch">
+                  <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
+                </label>
+              </div>       
+            </div>
+            <div class='legend-data col-md-8'>
+              <div data-layer='epLayer'>
+                <div class='epRange'>
+                  <svg width="325" height"70">
+                    <rect x="0" y="0" width="81" height="25" class="tiny dots"></rect>
+                    <rect x="81" y="0" width="81" height="25" class="small dots"></rect>
+                    <rect x="162" y="0" width="81" height="25" class="big dots"></rect>
+                    <rect x="243" y="0" width="81" height="25" class="huge dots"></rect>
+                    <defs>
+                    <marker id="arrow" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,-5L10,0L0,5"></path></marker>
+                    </defs>
+                    <line x1="0" y1="55" x2="325" y2="55" class="link arrow" marker-end="url(#arrow)"></line>
+                    <text x="94" y="67">Increasing storm frequency</text>
+                    <text x="3" y="45">+13%</text>
+                    <text x="95" y="45">+26%</text>
+                    <text x="196" y="45">+39%</text>
+                    <text x="297" y="45">+52%</text>
+                  </svg>
                 </div>
+              </div>
+            </div>
+          </div>
 
-            <form action="#" method="POST" id="search" class="col-md-7">
-                <input type="text" class="search-input">
-                <button>Search</button>
-            </form>
-
-            <nav class="col-md-2">
-                <a href="#about" data-toggle="modal" data-target="#aboutModal">About</a>
-            </nav>
-        </header>
-
-        <!-- Add your site or application content here -->
-        <div id="map-container">
-            <div id="map"></div>
+          <div data-layer='floods'>
+            <div class='legend-panel col-md-4'>
+              <h3 data-toggle='tooltip' title='Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)'>Flood Zones</h3>
+              <div class="onoffswitch">
+                <input type="checkbox" name="floods-switch" class="onoffswitch-checkbox" data-layer="floods" id="floods-switch" checked>
+                <label class="onoffswitch-label" for="floods-switch">
+                  <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
+                </label>
+              </div>       
+            </div>
+            <div class='legend-data col-md-8'>
+              <ul class='floodRange'>
+                <li class="year-500">
+                  <div></div>
+                  <span>High</span>
+                </li>
+                <li class="year-100">
+                  <div></div>
+                  <span>Extreme</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          </div>
         </div>
+      </script>
 
-        <div id="popup">
+      <script id="floatLayout" type="layout">
+          <header id="header"></header>
+          <div id="map">
+            <div id="legend"></div>
+          </div>
+      </script>
 
-        </div>
-
-       <div class="modal fade" id="aboutModal" tabindex="-    " role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+       <div class="modal fade" id="aboutModal" tabindex="-" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -63,30 +144,14 @@
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
-          <defs>
-          
-            <pattern id="dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
-              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#F4CFA1" stroke-opacity="1" fill="#F4CFA1"  />
-            </pattern>
-            <pattern id="big-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
-              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#FFD600" stroke-opacity="1" fill="#FFD600"   />
-            </pattern>
-            <pattern id="bigger-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
-              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#FE4F00" stroke-opacity="1" fill="#FE4F00"  />
-            </pattern>
-            <pattern id="biggest-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
-              <circle cx="4" cy="4" r="2" fill-opacity="1" stroke="#CF2B00" stroke-opacity="1" fill="#CF2B00"  />
-            </pattern>
-          </defs>
-        </svg>​
   {%endblock%}
 
   
   {% block extra_js %} 
-   <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.js"></script>
+  <script>
+    window.epData = $.parseJSON({{epData|safe}});
+    window.apData = $.parseJSON({{apData|safe}});
+  </script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
   <script src="{{STATIC_URL}}js/floatmap.js"></script>
   {% endblock %}

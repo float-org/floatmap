@@ -1,414 +1,449 @@
+
+/*
+
+ TO DO
+
+  - Move GeoModel code to separate file
+  - Incorporate GeoModel w/ EP + AP data
+  - Separate out code into better named methods
+  - Fix tooltips not rendering
+  - Test popup w/ Elasticsearch
+ */
+
 (function() {
-  var addLayer, addLayerToggleToLegend, buildAPLayer, buildArrows, buildEPLayer, buildLegend, buildPopup, createSpinner, getAPData, getColor, getEPData, getPattern, initMap, isCached, range, setEventListeners, showAddress;
+  var GeoCollection, GeoModel, Mediator;
 
-  range = function(start, stop, step) {
-    var idx, length;
-    if (arguments.length <= 1) {
-      stop = start || 0;
-      start = 0;
-    }
-    step = step || 1;
-    length = Math.max(Math.ceil((stop - start) / step), 0);
-    range = Array(length);
-    idx = 0;
-    while (idx < length) {
-      range[idx] = start;
-      idx++;
-      start += step;
-    }
-    return range;
-  };
-
-  getColor = function(type, d) {
-    var rainbow;
-    if (type === 'ap') {
-      rainbow = new Rainbow;
-      rainbow.setSpectrum('#94FFDB', '#1900FF');
-      rainbow.setNumberRange(0, 12);
-      return '#' + rainbow.colourAt(d);
-    }
-  };
-
-  getPattern = function(type, d) {
-    if (type === 'ep') {
-      if (d >= 42) {
-        return 'orangest dots';
-      } else if (d >= 32) {
-        return 'orangerer dots';
-      } else if (d >= 22) {
-        return 'oranger dots';
-      } else {
-        return 'orange dots';
+  GeoModel = L.GeoModel = Backbone.Model.extend({
+    keepId: false,
+    set: function(key, val, options) {
+      var _attrs, args, attrs, geometry;
+      args = void 0;
+      attrs = void 0;
+      _attrs = void 0;
+      geometry = void 0;
+      args = arguments;
+      if (typeof key === 'object') {
+        attrs = key;
+        options = val;
       }
+      if (attrs && attrs['type'] && attrs['type'] === 'Feature') {
+        _attrs = _.clone(attrs['properties']) || {};
+        geometry = _.clone(attrs['geometry']) || null;
+        if (geometry) {
+          geometry.coordinates = geometry['coordinates'].slice();
+        }
+        _attrs['geometry'] = geometry;
+        if (attrs[this.idAttribute]) {
+          _attrs[this.idAttribute] = attrs[this.idAttribute];
+        }
+        args = [_attrs, options];
+      }
+      return Backbone.Model.prototype.set.apply(this, args);
+    },
+    toJSON: function(options) {
+      var attrs, geometry, json, props;
+      attrs = void 0;
+      props = void 0;
+      geometry = void 0;
+      options = options || {};
+      attrs = _.clone(this.attributes);
+      props = _.omit(attrs, 'geometry');
+      if (options.cid) {
+        props.cid = this.cid;
+      }
+      geometry = _.clone(attrs['geometry']) || null;
+      if (geometry) {
+        geometry.coordinates = geometry['coordinates'].slice();
+      }
+      json = {
+        type: 'Feature',
+        geometry: geometry,
+        properties: props
+      };
+      if (this.keepId) {
+        json[this.idAttribute] = this.id;
+      }
+      return json;
     }
+  });
 
-    /* Builds toggleable tile layer */
+  GeoCollection = L.GeoCollection = Backbone.Collection.extend({
+    model: GeoModel,
+    reset: function(models, options) {
+      if (models && !_.isArray(models) && models.features) {
+        models = models.features;
+      }
+      return Backbone.Collection.prototype.reset.apply(this, [models, options]);
+    },
+    toJSON: function(options) {
+      var features;
+      features = Backbone.Collection.prototype.toJSON.apply(this, arguments);
+      return {
+        type: 'FeatureCollection',
+        features: features
+      };
+    }
+  });
+
+  Mediator = function() {
+    var publish, subscribe;
+    subscribe = function(channel, fn) {
+      if (!this.channels[channel]) {
+        this.channels[channel] = [];
+        this.channels[channel].push({
+          context: this,
+          callback: fn
+        });
+        return this;
+      }
+    };
+    publish = function(channel) {
+      var args, i, l, subscription;
+      if (!this.channels[channel]) {
+        return false;
+      }
+      args = Array.prototype.slice.call(arguments, 1);
+      i = 0;
+      l = this.channels[channel].length;
+      while (i < l) {
+        subscription = this.channels[channel][i];
+        subscription.callback.apply(subscription.context, args);
+        i++;
+      }
+      return this;
+    };
+    return {
+      channels: {},
+      publish: publish,
+      subscribe: subscribe,
+      installTo: function(obj) {
+        obj.subscribe = subscribe;
+        return obj.publish = publish;
+      }
+    };
   };
 
-  addLayer = function(layer, name, zIndex, url) {
-    layer.setZIndex(zIndex).addTo(Map);
-    if (name !== 'base') {
-      addLayerToggleToLegend(layer, name);
-    }
-  };
-
-  addLayerToggleToLegend = function(layer, name) {
-    var layerToggle, template;
-    template = $('<div class="onoffswitch"><input type="checkbox" name=' + name + '-switch" class="onoffswitch-checkbox" data-layer=' + name + ' id="' + name + '-switch" checked><label class="onoffswitch-label" for="' + name + '-switch"><span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span></label></div>');
-    $('.legend div[data-layer=' + name + '] .legend-panel').append(template);
-    layerToggle = $(template).find('input');
-    layerToggle.on('click', function(event) {
-      event.stopPropagation();
-      if ($(this).is(':checked')) {
-        if (!Map.hasLayer(layer)) {
-          if (Map.getZoom() >= 11 && name === 'epLayer') {
-            Map.removeLayer(apLayer);
-            $('.dots').attr('class', function(index, classNames) {
-              return classNames + ' behind';
-            });
-            $('.apRange > div i').css({
-              'opacity': 0.3
-            });
-            apLayer.setStyle({
-              fillOpacity: 0.3
-            });
-            epLayer.addTo(Map);
-            if ($('input[data-layer=apLayer]').prop('checked')) {
-              apLayer.addTo(Map);
+  $(function() {
+    var FloatLayout, HeaderView, LegendView, MapView, PopupView, app, layers, layout, mediator;
+    app = window.app = window.app || {};
+    layers = app.layers = [];
+    mediator = app.mediator = new Mediator();
+    app.getPattern = function(type, d) {
+      if (type === 'ep') {
+        if (d >= 42) {
+          return 'huge dots';
+        } else if (d >= 32) {
+          return 'big dots';
+        } else if (d >= 22) {
+          return 'small dots';
+        } else {
+          return 'tiny dots';
+        }
+      }
+    };
+    app.getColor = function(type, d) {
+      var rainbow;
+      if (type === 'ap') {
+        rainbow = new Rainbow;
+        rainbow.setSpectrum('#94FFDB', '#1900FF');
+        rainbow.setNumberRange(0, 12);
+        return '#' + rainbow.colourAt(d);
+      }
+    };
+    app.createSpinner = function(element) {
+      var opts;
+      opts = {
+        lines: 11,
+        length: 4,
+        width: 2,
+        radius: 7,
+        corners: 0.9,
+        rotate: 0,
+        direction: 1,
+        color: "#000",
+        speed: 1,
+        trail: 60,
+        shadow: false,
+        hwaccel: false,
+        className: "spinner",
+        zIndex: 2e9,
+        top: "50%",
+        left: "50%"
+      };
+      window.target = document.getElementById(element);
+      return window.spinner = new Spinner(opts).spin(target);
+    };
+    Backbone.Layout.configure({
+      manage: true
+    });
+    app.AvgPrecipCollection = GeoCollection.extend({
+      url: 'static/ap/noaa_avg_precip.geojson'
+    });
+    app.ExtPrecipCollection = GeoCollection.extend({
+      url: 'static/ep/noaa_ex_precip.geojson'
+    });
+    HeaderView = app.HeaderView = Backbone.View.extend({
+      template: "#headerTemplate",
+      getAddress: function(address) {
+        var g;
+        g = new google.maps.Geocoder();
+        return g.geocode({
+          address: address
+        }, function(results, status) {
+          var latLng;
+          latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
+          return mediator.publish('searched', latLng);
+        });
+      },
+      events: {
+        "submit #search": function(e) {
+          var address;
+          e.preventDefault();
+          address = $(e.target).find('.search-input').val();
+          return this.getAddress(address);
+        }
+      }
+    });
+    MapView = app.MapView = Backbone.View.extend({
+      template: "#mapTemplate",
+      el: false,
+      renderPopup: function(coordinates) {
+        this.popup = new PopupView({
+          coordinates: coordinates
+        });
+        return this.popup.render();
+      },
+      setEvents: function() {
+        app.map.on('zoomstart', function(e) {
+          return this.previousZoom = app.map.getZoom();
+        });
+        return app.map.on('zoomend', function(e) {
+          var apLayer, epLayer, map;
+          map = app.map;
+          if (map.getZoom() < this.previousZoom && this.previousZoom === 15) {
+            map.removeLayer(window.marker);
+          }
+          apLayer = app.layers['apLayer'];
+          epLayer = app.layers['epLayer'];
+          if (map.getZoom() === 11 && this.previousZoom < map.getZoom()) {
+            if ($("input[data-layer=apLayer]").prop("checked")) {
+              map.removeLayer(apLayer);
+              return map.addLayer(apLayer, 4);
             }
-          } else if (Map.getZoom() <= 10 && name === 'apLayer') {
-            Map.removeLayer(epLayer);
-            layer.addTo(Map);
-            if ($('input[data-layer=epLayer]').prop('checked')) {
-              epLayer.addTo(Map);
+          } else if (map.getZoom() === 10 && this.previousZoom > map.getZoom()) {
+            if ($("input[data-layer=epLayer]").prop("checked")) {
+              map.removeLayer(epLayer);
+              return map.addLayer(epLayer, 4);
+            }
+          }
+        });
+      },
+      addLayer: function(layer, zIndex, url) {
+        return layer.setZIndex(zIndex).addTo(app.map);
+      },
+      showAddress: function(latlng) {
+        app.map.setView(latlng, 18);
+        return app.layout.views['map'].renderPopup(latlng);
+      },
+      makeGeoJSONLayer: function(data, type, zIndex) {
+        var self;
+        self = this;
+        if (type === 'ap') {
+          app.layers['apLayer'] = L.geoJson(data, {
+            style: function(feature, layer) {
+              return {
+                color: app.getColor("ap", feature.properties.DN)
+              };
+            },
+            onEachFeature: function(feature, layer) {
+              return layer.on({
+                dblclick: function(e) {
+                  if (app.map.getZoom() === 15) {
+                    self.renderPopup(e.latlng);
+                  }
+                  return app.map.zoomIn();
+                }
+              });
+            }
+          });
+        } else if (type === 'ep') {
+          app.layers['epLayer'] = L.geoJson(data, {
+            style: function(feature, layer) {
+              return {
+                className: app.getPattern("ep", feature.properties.DN)
+              };
+            },
+            onEachFeature: function(feature, layer) {
+              return layer.on({
+                dblclick: function(e) {
+                  if (app.map.getZoom() === 15) {
+                    self.renderPopup(e.latlng);
+                  }
+                  return app.map.zoomIn();
+                }
+              });
+            }
+          });
+        }
+        return this.addLayer(app.layers[type + 'Layer'], zIndex);
+      },
+      initialize: function() {
+        var self;
+        self = this;
+        return mediator.subscribe('searched', self.showAddress);
+      },
+      renderTemplate: function() {
+        var base, baseURL, floods, map;
+        baseURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png';
+        if (!app.map) {
+          map = app.map = new L.Map('map', {
+            zoomControl: false
+          }).setView([43.05358653605547, -89.2815113067627], 6);
+        }
+        base = app.layers['base'] = L.tileLayer(baseURL, {
+          maxZoom: 15,
+          minZoom: 5
+        });
+        floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
+          maxZoom: 15,
+          minZoom: 5
+        });
+        this.addLayer(base, 1);
+        this.addLayer(floods, 2);
+        this.makeGeoJSONLayer(window.apData, 'ap', 3);
+        this.makeGeoJSONLayer(window.epData, 'ep', 4);
+        map.addControl(L.control.zoom({
+          position: "bottomleft"
+        }));
+        return this.setEvents();
+      }
+    });
+    PopupView = app.PopupView = Backbone.View.extend({
+      initialize: function() {
+        var coordinates, map, popup;
+        map = app.map;
+        coordinates = this.coordinates = this.options.coordinates;
+        if (window.marker != null) {
+          map.removeLayer(window.marker);
+        }
+        window.marker = L.marker(coordinates).addTo(map);
+        popup = this.popup = new L.Popup({
+          minWidth: 350
+        });
+        popup.setLatLng(coordinates);
+        window.marker.bindPopup(popup).openPopup(popup);
+        return this.serialize();
+      },
+      serialize: function() {
+        var lat, lng, self;
+        self = this;
+        lng = this.coordinates[0];
+        lat = this.coordinates[1];
+        app.createSpinner(".leaflet-popup-content");
+        return $.post("get_score/ap/", {
+          lng: lat,
+          lat: lng
+        }).done(function(data) {
+          var noaaApScore;
+          noaaApScore = data;
+          return self.renderTemplate(noaaApScore);
+        });
+      },
+      renderTemplate: function(score) {
+        var apData, epData, fhData, popupContent;
+        popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>";
+        this.popup.setContent(popupContent);
+        if (score > 0) {
+          apData = "<li><label>Annual Precipitation:</label><span>" + score + "% Increase</span><a href='#''>source</a></li>";
+        } else {
+          apData = "<li><label>Annual Precipitation:</label><span>No Data Yet</span><a href='#''>source</a></li>";
+        }
+        epData = "<li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>";
+        fhData = "<li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>";
+        $(".metrics").append(apData).append(epData).append(fhData);
+        return window.spinner.stop();
+      }
+    });
+    LegendView = app.LegendView = Backbone.View.extend({
+      template: "#legendTemplate",
+      events: {
+        "click .onoffswitch-checkbox": function(e) {
+          var apLayer, epLayer, layer, map, name, zIndex;
+          e.stopPropagation();
+          map = app.map;
+          name = $(e.currentTarget).data('layer');
+          layer = app.layers[name];
+          apLayer = app.layers['apLayer'];
+          epLayer = app.layers['epLayer'];
+          if ($(e.currentTarget).is(':checked')) {
+            if (!app.map.hasLayer(layer)) {
+              if (name === 'apLayer') {
+                zIndex = 3;
+              }
+              if (name === 'epLayer') {
+                zIndex = 4;
+              }
+              if (name === 'floods') {
+                zIndex = 2;
+              }
+              if (app.map.getZoom() >= 11 && name === 'epLayer') {
+                app.map.removeLayer(apLayer);
+                map.addLayer(epLayer, 3);
+                if ($('input[data-layer=apLayer]').prop('checked')) {
+                  return map.addLayer(apLayer(4));
+                }
+              } else if (app.map.getZoom() <= 10 && name === 'apLayer') {
+                if (map.hasLayer(epLayer)) {
+                  app.map.removeLayer(epLayer);
+                  map.addLayer(apLayer, zIndex);
+                  return map.addLayer(epLayer, zIndex);
+                } else {
+                  return map.addLayer(app.layers['apLayer'], zIndex);
+                }
+              } else {
+                return map.addLayer(layer, zIndex);
+              }
             }
           } else {
-            layer.addTo(Map);
+            if (map.hasLayer(layer)) {
+              return map.removeLayer(layer);
+            }
           }
-        } else {
-          return;
         }
-      } else {
-        if (Map.hasLayer(layer)) {
-          Map.removeLayer(layer);
-        }
-      }
-    });
-  };
-
-  buildArrows = function(svg, links, nodes) {
-    svg.append("svg:defs").selectAll("marker").data(["arrow"]).enter().append("svg:marker").attr("id", String).attr("viewBox", "0 -5 10 10").attr("refX", 10).attr("refY", 0).attr("markerWidth", 10).attr("markerHeight", 10).attr("orient", "auto").append("svg:path").attr("d", "M0,-5L10,0L0,5");
-    svg.selectAll("line").data(links).enter().append("svg:line").attr("x1", function(d) {
-      return nodes[d.s].x;
-    }).attr("y1", function(d) {
-      return nodes[d.s].y;
-    }).attr("x2", function(d) {
-      return nodes[d.t].x;
-    }).attr("y2", function(d) {
-      return nodes[d.t].y;
-    }).attr("class", "link arrow").attr("marker-end", "url(#arrow)");
-    return svg.append("text").attr("x", 94).attr("y", 67).text("increasing storm frequency").style("font-size", "11px");
-  };
-
-  initMap = function() {
-    var options;
-    window.Map = new L.map("map", {
-      zoomControl: false
-    }).setView([43.05358653605547, -89.2815113067627], 6);
-    window.base = L.tileLayer("http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png", {
-      maxZoom: 15,
-      minZoom: 5
-    });
-    window.floods = L.tileLayer("/static/nfhl_tiles/{z}/{x}/{y}.png", {
-      maxZoom: 15,
-      minZoom: 5
-    });
-    buildLegend();
-    addLayer(base, "base", 1);
-    addLayer(floods, "floods", 2);
-    getAPData("static/ap/noaa_avg_precip.geojson");
-    getEPData("static/ep/noaa_ex_precip.geojson");
-    Map.addControl(L.control.zoom({
-      position: "bottomleft"
-    }));
-    options = {
-      placement: "auto"
-    };
-    return $(".legend h3").tooltip(options);
-  };
-
-  buildLegend = function() {
-    var legend, tooltipText;
-    legend = L.control({
-      position: "bottomright"
-    });
-    tooltipText = {
-      floods: "Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)",
-      epLayer: "Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)",
-      apLayer: "Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)"
-    };
-    legend.onAdd = function(map) {
-      var apGrades, div, epGrades, floodRange, labels, links, nodes, svg;
-      div = L.DomUtil.create("div", "info legend");
-      apGrades = $(range(1, 11, 1));
-      labels = [];
-      $(div).append("<div data-layer='apLayer'>                        <div class='legend-panel col-md-4'>                          <h3 data-toggle='tooltip' title='" + tooltipText["apLayer"] + "'>Annual Precipitation</h3>                        </div>                        <div class='legend-data col-md-8'>                          <div data-layer='apLayer' class='legend-data'><div class='apRange'></div></div>                        </div>                     </div>                     <div data-layer='epLayer'>                        <div class='legend-panel col-md-4'>                          <h3 data-toggle='tooltip' title='" + tooltipText["epLayer"] + "'>Storm Frequency</h3>                        </div>                        <div class='legend-data col-md-8'>                          <div data-layer='epLayer'>                            <div class='epRange'></div>                          </div>                        </div>                      </div>                      <div data-layer='floods'>                        <div class='legend-panel col-md-4'>                          <h3 data-toggle='tooltip' title='" + tooltipText["floods"] + "'>Flood Zones</h3>                        </div>                        <div class='legend-data col-md-8'>                          <ul class='floodRange'></ul>                        </div>                      </div>");
-      apGrades.each(function(index) {
-        var apValue, textNode;
-        apValue = $("<div><i style=\"background:" + getColor("ap", this) + ";\"></i></div>");
-        if (index % 4 === 0) {
-          textNode = "<span>+" + this + "%</span>";
-          apValue.append(textNode);
-        }
-        return $(div).find(".apRange").append(apValue);
-      });
-      $(div).find(".apRange").append("<div class='bottom-line'>increasing annual precipitation</div>");
-      epGrades = ["orange dots", "oranger dots", "orangerer dots", "orangest dots"];
-      svg = d3.select($(div).find(".epRange")[0]).append("svg").attr("width", 325).attr("height", 70);
-      svg.selectAll("rect").data(epGrades).enter().append("rect").attr("width", 81).attr("height", 25).attr("x", function(d, i) {
-        return 81 * i;
-      }).attr("y", 0).attr("class", function(d) {
-        return d;
-      });
-      svg.append("text").attr("x", 3).attr("y", 45).text("+13%").style("font-size", "11px");
-      svg.append("text").attr("x", 95).attr("y", 45).text("+26%").style("font-size", "11px");
-      svg.append("text").attr("x", 196).attr("y", 45).text("+39%").style("font-size", "11px");
-      svg.append("text").attr("x", 297).attr("y", 45).text("+52%").style("font-size", "11px");
-      nodes = [
-        {
-          x: 40,
-          y: 50
-        }, {
-          x: 0,
-          y: 55
-        }, {
-          x: 325,
-          y: 55
-        }, {
-          x: 170,
-          y: 60
-        }
-      ];
-      links = [
-        {
-          s: 1,
-          t: 2,
-          u: 3,
-          label: "increasing annual precipitation"
-        }
-      ];
-      buildArrows(svg, links, nodes);
-      floodRange = $("<li class=\"year-500\"><div></div><span>High</span></li><li class=\"year-100\"><div></div><span>Extreme</span></li>");
-      $(div).find(".floodRange").append(floodRange);
-      return div;
-    };
-    return legend.addTo(Map);
-  };
-
-  createSpinner = function(element) {
-    var opts, spinner, target;
-    opts = {
-      lines: 11,
-      length: 4,
-      width: 2,
-      radius: 7,
-      corners: 0.9,
-      rotate: 0,
-      direction: 1,
-      color: "#000",
-      speed: 1,
-      trail: 60,
-      shadow: false,
-      hwaccel: false,
-      className: "spinner",
-      zIndex: 2e9,
-      top: "50%",
-      left: "50%"
-    };
-    target = document.getElementById(element);
-    return spinner = new Spinner(opts).spin(target);
-  };
-
-  buildPopup = function(coordinates) {
-    var noaaApScore, popup;
-    if (window.marker != null) {
-      Map.removeLayer(window.marker);
-    }
-    window.marker = L.marker(coordinates).addTo(Map);
-    createSpinner(".leaflet-popup-content");
-    noaaApScore = void 0;
-    popup = new L.Popup({
-      minWidth: 350
-    });
-    popup.setLatLng(coordinates);
-    marker.bindPopup(popup).openPopup(popup);
-    return $.post("get_score/ap/", {
-      lng: coordinates.lng,
-      lat: coordinates.lat
-    }).done(function(data) {
-      var apData, epData, fhData, popupContent;
-      noaaApScore = data;
-      popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>";
-      popup.setContent(popupContent);
-      if (noaaApScore > 0) {
-        apData = "<li><label>Annual Precipitation:</label><span>" + noaaApScore + "% Increase</span><a href='#''>source</a></li>";
-      } else {
-        apData = "<li><label>Annual Precipitation:</label><span>No Data Yet</span><a href='#''>source</a></li>";
-      }
-      epData = "<li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>";
-      fhData = "<li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>";
-      $(".metrics").append(apData).append(epData).append(fhData);
-      return spinner.stop();
-    });
-  };
-
-  showAddress = function(address) {
-    var g;
-    g = new google.maps.Geocoder();
-    return g.geocode({
-      address: address
-    }, function(results, status) {
-      var latLng;
-      latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-      return Map.setView(latLng, 18);
-    });
-  };
-
-  isCached = function(field) {
-    if (Cache[field] === undefined) {
-      return false;
-    }
-    return true;
-  };
-
-  buildEPLayer = function() {
-    window.epLayer = L.geoJson(Cache.epData, {
-      style: function(feature, layer) {
-        return {
-          className: getPattern("ep", feature.properties.DN)
-        };
       },
-      onEachFeature: function(feature, layer) {
-        return layer.on({
-          dblclick: function(e) {
-            if (Map.getZoom() === 15) {
-              buildPopup(e.latlng);
-            }
-            return Map.zoomIn();
-          }
-        });
-      }
-    });
-    return addLayer(epLayer, "epLayer", 3);
-  };
-
-  buildAPLayer = function() {
-    window.apLayer = L.geoJson(Cache.apData, {
-      style: function(feature) {
-        return {
-          color: getColor("ap", feature.properties.DN),
-          fillOpacity: 0.4
+      afterRender: function() {
+        var apGrades, labels, options, self;
+        self = this;
+        apGrades = _.range(1, 11, 1);
+        labels = [];
+        options = {
+          placement: "auto"
         };
-      },
-      onEachFeature: function(feature, layer) {
-        return layer.on({
-          dblclick: function(e) {
-            if (Map.getZoom() === 15) {
-              buildPopup(e.latlng);
-            }
-            return Map.zoomIn();
+        $("#legend h3").tooltip(options);
+        $(apGrades).each(function(index) {
+          var apValue, textNode;
+          apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + ";\"></i></div>");
+          if (index % 4 === 0) {
+            textNode = "<span>+" + this + "%</span>";
+            apValue.append(textNode);
           }
+          return self.$el.find(".apRange").append(apValue);
         });
+        self.$el.find(".apRange").append("<div class='bottom-line'>increasing annual precipitation</div>");
+        return self.$el.appendTo(layout.$el.find('#legend'));
       }
     });
-    return addLayer(apLayer, "apLayer", 2);
-  };
-
-  getEPData = function(url) {
-    if (isCached("epData") === false) {
-      return $.getJSON(url, function(data) {
-        Cache.epData = data;
-        return buildEPLayer();
-      });
-    } else {
-      return buildEPLayer();
-    }
-  };
-
-  getAPData = function(url) {
-    if (isCached("apData") === false) {
-      return $.getJSON(url, function(data) {
-        Cache.apData = data;
-        return buildAPLayer();
-      });
-    } else {
-      return buildAPLayer();
-    }
-  };
-
-  setEventListeners = function() {
-    Map.on("zoomstart", function(e) {
-      return window.previousZoom = Map.getZoom();
-    });
-    Map.on("dblclick", function(e) {
-      L.DomEvent.stopPropagation(e);
-      if (Map.getZoom() === 15) {
-        return buildPopup(e.latlng);
+    FloatLayout = app.FloatLayout = Backbone.Layout.extend({
+      template: "#floatLayout",
+      views: {
+        'header': new HeaderView(),
+        'map': new MapView(),
+        'legend': new LegendView()
       }
     });
-    Map.on("zoomend", function(e) {
-      if (Map.getZoom() < 15 && previousZoom > Map.getZoom()) {
-        Map.removeLayer(marker);
-      }
-      if (Map.getZoom() === 11 && previousZoom < Map.getZoom()) {
-        if ($("input[data-layer=apLayer]").prop("checked")) {
-          Map.removeLayer(apLayer);
-          $(".dots").attr("class", function(index, classNames) {
-            return classNames + " behind";
-          });
-          $(".apRange > div i").css({
-            opacity: 0.3
-          });
-          apLayer.setStyle({
-            fillOpacity: 0.3
-          });
-          return apLayer.addTo(Map);
-        }
-      } else if (Map.getZoom() === 10 && previousZoom > Map.getZoom()) {
-        if ($("input[data-layer=epLayer]").prop("checked")) {
-          Map.removeLayer(epLayer);
-          $(".apRange > div i").css({
-            opacity: 0.4
-          });
-          apLayer.setStyle({
-            fillOpacity: 0.4
-          });
-          epLayer.addTo(Map);
-          return $(".dots").attr("class", function(index, classNames) {
-            var classArray, origClassNames;
-            classArray = classNames.split(" ");
-            if ($.inArray("behind", classNames) !== -1) {
-              classArray.pop();
-            }
-            origClassNames = classArray.join(" ");
-            return origClassNames;
-          });
-        }
-      }
-    });
-    return $("#search").on("submit", function(e) {
-      var address;
-      e.preventDefault();
-      address = $(this).find(".search-input").val();
-      return showAddress(address);
-    });
-  };
-
-  $(document).ready(function() {
-    window.marker;
-    window.Cache = {};
-    initMap();
-    return setEventListeners();
+    layout = app.layout = new FloatLayout();
+    layout.$el.appendTo('#main');
+    return layout.render();
   });
 
 }).call(this);

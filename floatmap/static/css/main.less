@@ -103,10 +103,10 @@ textarea {
     text-decoration: none;
 }
 
-img[src*="http://a.tiles.mapbox.com/v3/floatmap.jkggd5ph"],
-img[src*="http://b.tiles.mapbox.com/v3/floatmap.jkggd5ph"],
-img[src*="http://c.tiles.mapbox.com/v3/floatmap.jkggd5ph"],
-img[src*="http://d.tiles.mapbox.com/v3/floatmap.jkggd5ph"]    {
+img[src*="http://a.tiles.mapbox.com/v3/floatmap.2ce887fe"],
+img[src*="http://b.tiles.mapbox.com/v3/floatmap.2ce887fe"],
+img[src*="http://c.tiles.mapbox.com/v3/floatmap.2ce887fe"],
+img[src*="http://d.tiles.mapbox.com/v3/floatmap.2ce887fe"]    {
   -webkit-filter: grayscale(100%);
   -moz-filter: grayscale(100%);
   -ms-filter: grayscale(100%);
@@ -115,12 +115,6 @@ img[src*="http://d.tiles.mapbox.com/v3/floatmap.jkggd5ph"]    {
   filter: url(grayscale.svg); /* Firefox 4+ */
   filter: gray; /* IE 6-9 */
 }
-
-/* override leaflet default styles for data */
-.leaflet-clickable {
-    stroke-width:0;
-}
-
 
 header {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
@@ -222,12 +216,16 @@ button {
   z-index: 1049;
 }
 
+.ap {
+    fill-opacity: 0.5;
+}
+
 #legend {
     font: 14px/16px Arial, Helvetica, sans-serif;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     background:#FFF;
     border-radius:5px;
-    min-width:480px;
+    min-width:531px;
     height:303px;
     position:absolute;
     bottom:50px;
@@ -243,6 +241,19 @@ button {
 
 .legend-panel, .legend-data {
     height:100%;
+}
+
+
+path.leaflet-interactive {
+}
+
+// Figure out a better way to get geoJSON over the tiles but under labels... shouldn't feel hacky.
+svg.leaflet-zoom-animated {
+    z-index: 4;
+    position: relative;
+    path {
+        stroke-width:0;
+    }
 }
 
 .legend-panel {
@@ -308,10 +319,6 @@ button {
 .legend-data { 
   background-color:#e1e1e1;
   padding:13px 6px;
-}
-
-.legend-data .dots { 
-    fill-opacity:1 !important;
 }
 
 .legend h4 {
@@ -426,12 +433,23 @@ button {
 
 /* Extreme Precipitation */
 
+.dots {
+    fill-opacity:1;
+    stroke-opacity:0;
+    fill: transparent;
+}
+
+// .leaflet-interactive {
+//     fill: transparent;
+// }
+
+
 .huge.dots {
     fill:url(#huge-dots);
 }
 
-.big.dots {
-    fill:url(#big-dots);
+.large.dots {
+    fill:url(#large-dots);
 }
 
 .small.dots {
@@ -442,16 +460,13 @@ button {
     fill:url(#tiny-dots);
 }
 
+
 .legend {
     fill: black;
 }
 
 rect text {
     font-size:11px;
-}
-
-circle {
-    width:auto;
 }
 
 line.arrow {

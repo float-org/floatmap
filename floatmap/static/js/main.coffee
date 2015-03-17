@@ -58,7 +58,6 @@ GeoModel = L.GeoModel = Backbone.Model.extend(
     if @keepId
       json[@idAttribute] = @id
     json)
-
 GeoCollection = L.GeoCollection = Backbone.Collection.extend(
   model: GeoModel
   reset: (models, options) ->
@@ -107,23 +106,43 @@ Mediator = () ->
   }
 
 $ ->
+
+  # App namespace
   app = window.app = ( window.app || {} );
 
+  # Our layers object, which will contain all of the data layers
   layers = app.layers = []
+
+  # Create an instance of the Mediator class so we can pass things around views
   mediator = app.mediator = new Mediator()
 
+  # Accepts a data type and a data value (e.g NOAA Ext. Precipitation DN value)
+  # Returns an ID which corresponds to one of four SVG patterns
   app.getPattern = (type, d) ->
     if type == 'ep'
-      return if d >= 42 then 'huge dots' else if d >= 32 then 'big dots' else if d >= 22 then 'small dots' else 'tiny dots'
-    return
+      if d is null
+        return false
+      if d <= 12
+        pattern = 'tiny dots' 
+      else if d >= 12 and d <= 24
+        pattern = 'small dots' 
+      else if d >= 25 and d <= 35
+        pattern = 'large dots' 
+      else if d >= 36 and d <= 100
+        pattern = 'huge dots' 
+      return pattern
 
-  # Utilities 
+  # Accepts a data type and a data value (e.g NOAA Ext. Precipitation DN value)
+  # Creates a gradient from the start color and end color in setSpectrum
+  # Returns a hex Value that corresponds to the color for that particular number/data value
   app.getColor = (type, d) ->
     if type == 'ap'
       rainbow = new Rainbow
       rainbow.setSpectrum '#94FFDB', '#1900FF'
       rainbow.setNumberRange 0, 12
       '#' + rainbow.colourAt(d)
+
+  # Simple config for spin.js spinner that loads when we query Elasticsearch
   app.createSpinner = (element) ->
     opts =
       lines: 11
@@ -147,7 +166,6 @@ $ ->
     window.spinner = new Spinner(opts).spin(target)
 
 
-  
   Backbone.Layout.configure
     manage: true
 
@@ -185,8 +203,17 @@ $ ->
       this.popup.render()
 
     setEvents: () ->
+      # For Debugging
+      # app.map.on 'click', (e) ->
+      #    alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+      self = this
       app.map.on 'zoomstart', (e) ->
-        this.previousZoom = app.map.getZoom()
+        self.previousZoom = app.map.getZoom()
+
+      # app.map.on 'mouseover', (e) ->
+      #   if app.map.getZoom() == 15
+      #     console.log e
+      #     self.renderPopup e.latlng
 
       app.map.on 'zoomend', (e) ->
         map = app.map
@@ -196,58 +223,84 @@ $ ->
         if map.getZoom() is 11 and this.previousZoom < map.getZoom()
           if $("input[data-layer=apLayer]").prop("checked")
             map.removeLayer apLayer
-            map.addLayer apLayer, 4
+            map.addLayer apLayer
         else if map.getZoom() is 10 and this.previousZoom > map.getZoom()
           if $("input[data-layer=epLayer]").prop("checked")
             map.removeLayer epLayer
-            map.addLayer epLayer, 4
+            map.addLayer epLayer
 
     
-    addLayer: (layer, zIndex, url) ->
+    addLayer: (layer, zIndex) ->
       layer.setZIndex(zIndex).addTo(app.map)
+
     showAddress: (latlng) ->
       app.map.setView(latlng, 18)
       app.layout.views['map'].renderPopup latlng
-    makeGeoJSONLayer: (data, type, zIndex) ->
+
+    makeGeoJSONLayer: (data, type) ->
       self = this
+
       if type == 'ap'
-        app.layers['apLayer'] = L.geoJson(data,
+        layer = app.layers['apLayer'] = L.geoJson data,
+          renderer: app.map.renderer,
           style: (feature, layer) ->
+            className: 'ap'
             color: app.getColor("ap", feature.properties.DN)
-
-          onEachFeature: (feature, layer) ->
-            layer.on dblclick: (e) ->
-              self.renderPopup e.latlng  if app.map.getZoom() is 15
-              app.map.zoomIn()
-
-        )
+              
+        
       else if type == 'ep'
-        app.layers['epLayer'] = L.geoJson(data,
-        style: (feature, layer) ->
-          className: app.getPattern("ep", feature.properties.DN)
+        layer = app.layers['epLayer'] = L.geoJson data,
+          renderer: app.map.renderer,
+          style: (feature, layer) ->
+            className: app.getPattern("ep", feature.properties.DN) + " ep"
+          filter: (feature, layer) ->
+            if feature.properties.DN is null
+              return false
+            else
+              return true
 
-        onEachFeature: (feature, layer) ->
-          layer.on dblclick: (e) ->
-            self.renderPopup e.latlng  if app.map.getZoom() is 15
-            app.map.zoomIn()
+      layer
 
-        )
-      this.addLayer app.layers[type + 'Layer'], zIndex
 
     initialize: () ->
       self = this
       mediator.subscribe('searched', self.showAddress)
 
     renderTemplate: () -> 
-      baseURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png'
+      # Path to Base layer (no labels)
+      baseURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png'
+
+      # Path to Base layer labels, overlaid last
+      labelsURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png'
+
+      # Instantiate map if we haven't
       if not app.map
         map = app.map = new L.Map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 6)
-      base = app.layers['base'] = L.tileLayer(baseURL, {maxZoom: 15, minZoom: 5});
-      floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {maxZoom: 15, minZoom: 5});
-      this.addLayer base, 1
-      this.addLayer floods, 2
-      this.makeGeoJSONLayer(window.apData, 'ap', 3)
-      this.makeGeoJSONLayer(window.epData, 'ep', 4)
+      
+      # Create new SVG renderer and add to Tile pane, so we can style GeoJSON like other layers
+      map.renderer = L.svg({pane:'tilePane'}).addTo(map);
+      
+
+      # Create our layers, in order
+      
+      base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5});
+
+      # Leaflet 0.8 shows broken images, so let's just set the bounds for where our tiles our and avoid errors.
+      southWest = L.latLng(37.92686760148135, -95.88867187500001)
+      northEast = L.latLng(48.60385760823255, -80.72753906250001)
+      floodBounds = L.latLngBounds(southWest, northEast)
+
+      floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {bounds: floodBounds, pane: 'tilePane', maxZoom: 15, minZoom: 5});
+      labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
+      ap = this.makeGeoJSONLayer(window.apData, 'ap')
+      ep = this.makeGeoJSONLayer(window.epData, 'ep')
+      this.addLayer base, 0
+      this.addLayer floods, 1
+      this.addLayer ap, 2
+      this.addLayer ep, 3
+      this.addLayer labels, 4
+
+      # Add zoom controls and set off event listeners
       map.addControl L.control.zoom(position: "bottomleft")
       this.setEvents()
 
@@ -264,16 +317,20 @@ $ ->
 
     serialize: () ->
       self = this
-      lng = this.coordinates[0]
-      lat = this.coordinates[1]
+      lng = this.coordinates[0] || this.coordinates['lng'] 
+      lat = this.coordinates[1] || this.coordinates['lat']
 
+      console.log lng
+      console.log lat
       app.createSpinner ".leaflet-popup-content"
-      $.post("get_score/ap/",
-        lng: lat
-        lat: lng
-      ).done (data) ->
-        noaaApScore = data
-        self.renderTemplate(noaaApScore)
+      setTimeout () ->
+        $.post("get_score/ap/",
+          lng: lat
+          lat: lng
+        ).done (data) ->
+          noaaApScore = data
+          self.renderTemplate(noaaApScore)
+      , 3000
 
     renderTemplate: (score) ->
       popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>"
@@ -301,12 +358,6 @@ $ ->
 
         if $(e.currentTarget).is(':checked')
           if not app.map.hasLayer(layer)
-            if name == 'apLayer'
-              zIndex = 3
-            if name == 'epLayer'
-              zIndex = 4
-            if name == 'floods'
-              zIndex = 2
             # If we're zoomed in to higher levels, make sure we 
             # build the layers the appropriate way.  Only matters
             # when redrawing epLayer since it's supposed to be
@@ -319,19 +370,19 @@ $ ->
             else if app.map.getZoom() <= 10 and name == 'apLayer'
               if map.hasLayer(epLayer)
                 app.map.removeLayer epLayer
-                map.addLayer apLayer, zIndex
-                map.addLayer epLayer, zIndex
+                map.addLayer apLayer
+                map.addLayer epLayer
               else
-                map.addLayer app.layers['apLayer'], zIndex
+                map.addLayer app.layers['apLayer']
             else
-              map.addLayer layer, zIndex
+              map.addLayer layer
         else 
           map.removeLayer layer if map.hasLayer(layer)
             
 
     afterRender: () ->
       self = this
-      apGrades = _.range(1,11,1)  
+      apGrades = _.range(0,13,1)  
       labels = []
       options = placement: "auto"
       $("#legend h3").tooltip options
@@ -358,5 +409,6 @@ $ ->
 
   layout = app.layout = new FloatLayout()
   layout.$el.appendTo('#main')
+
   layout.render()
   

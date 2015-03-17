@@ -129,16 +129,21 @@
     layers = app.layers = [];
     mediator = app.mediator = new Mediator();
     app.getPattern = function(type, d) {
+      var pattern;
       if (type === 'ep') {
-        if (d >= 42) {
-          return 'huge dots';
-        } else if (d >= 32) {
-          return 'big dots';
-        } else if (d >= 22) {
-          return 'small dots';
-        } else {
-          return 'tiny dots';
+        if (d === null) {
+          return false;
         }
+        if (d <= 12) {
+          pattern = 'tiny dots';
+        } else if (d >= 12 && d <= 24) {
+          pattern = 'small dots';
+        } else if (d >= 25 && d <= 35) {
+          pattern = 'large dots';
+        } else if (d >= 36 && d <= 100) {
+          pattern = 'huge dots';
+        }
+        return pattern;
       }
     };
     app.getColor = function(type, d) {
@@ -214,8 +219,10 @@
         return this.popup.render();
       },
       setEvents: function() {
+        var self;
+        self = this;
         app.map.on('zoomstart', function(e) {
-          return this.previousZoom = app.map.getZoom();
+          return self.previousZoom = app.map.getZoom();
         });
         return app.map.on('zoomend', function(e) {
           var apLayer, epLayer, map;
@@ -228,64 +235,54 @@
           if (map.getZoom() === 11 && this.previousZoom < map.getZoom()) {
             if ($("input[data-layer=apLayer]").prop("checked")) {
               map.removeLayer(apLayer);
-              return map.addLayer(apLayer, 4);
+              return map.addLayer(apLayer);
             }
           } else if (map.getZoom() === 10 && this.previousZoom > map.getZoom()) {
             if ($("input[data-layer=epLayer]").prop("checked")) {
               map.removeLayer(epLayer);
-              return map.addLayer(epLayer, 4);
+              return map.addLayer(epLayer);
             }
           }
         });
       },
-      addLayer: function(layer, zIndex, url) {
+      addLayer: function(layer, zIndex) {
         return layer.setZIndex(zIndex).addTo(app.map);
       },
       showAddress: function(latlng) {
         app.map.setView(latlng, 18);
         return app.layout.views['map'].renderPopup(latlng);
       },
-      makeGeoJSONLayer: function(data, type, zIndex) {
-        var self;
+      makeGeoJSONLayer: function(data, type) {
+        var layer, self;
         self = this;
         if (type === 'ap') {
-          app.layers['apLayer'] = L.geoJson(data, {
+          layer = app.layers['apLayer'] = L.geoJson(data, {
+            renderer: app.map.renderer,
             style: function(feature, layer) {
               return {
+                className: 'ap',
                 color: app.getColor("ap", feature.properties.DN)
               };
-            },
-            onEachFeature: function(feature, layer) {
-              return layer.on({
-                dblclick: function(e) {
-                  if (app.map.getZoom() === 15) {
-                    self.renderPopup(e.latlng);
-                  }
-                  return app.map.zoomIn();
-                }
-              });
             }
           });
         } else if (type === 'ep') {
-          app.layers['epLayer'] = L.geoJson(data, {
+          layer = app.layers['epLayer'] = L.geoJson(data, {
+            renderer: app.map.renderer,
             style: function(feature, layer) {
               return {
-                className: app.getPattern("ep", feature.properties.DN)
+                className: app.getPattern("ep", feature.properties.DN) + " ep"
               };
             },
-            onEachFeature: function(feature, layer) {
-              return layer.on({
-                dblclick: function(e) {
-                  if (app.map.getZoom() === 15) {
-                    self.renderPopup(e.latlng);
-                  }
-                  return app.map.zoomIn();
-                }
-              });
+            filter: function(feature, layer) {
+              if (feature.properties.DN === null) {
+                return false;
+              } else {
+                return true;
+              }
             }
           });
         }
-        return this.addLayer(app.layers[type + 'Layer'], zIndex);
+        return layer;
       },
       initialize: function() {
         var self;
@@ -293,25 +290,43 @@
         return mediator.subscribe('searched', self.showAddress);
       },
       renderTemplate: function() {
-        var base, baseURL, floods, map;
-        baseURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.jkggd5ph/{z}/{x}/{y}.png';
+        var ap, base, baseURL, ep, floodBounds, floods, labels, labelsURL, map, northEast, southWest;
+        baseURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
+        labelsURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
           map = app.map = new L.Map('map', {
             zoomControl: false
           }).setView([43.05358653605547, -89.2815113067627], 6);
         }
+        map.renderer = L.svg({
+          pane: 'tilePane'
+        }).addTo(map);
         base = app.layers['base'] = L.tileLayer(baseURL, {
+          pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5
         });
+        southWest = L.latLng(37.92686760148135, -95.88867187500001);
+        northEast = L.latLng(48.60385760823255, -80.72753906250001);
+        floodBounds = L.latLngBounds(southWest, northEast);
         floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
+          bounds: floodBounds,
+          pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5
         });
-        this.addLayer(base, 1);
-        this.addLayer(floods, 2);
-        this.makeGeoJSONLayer(window.apData, 'ap', 3);
-        this.makeGeoJSONLayer(window.epData, 'ep', 4);
+        labels = app.layers['labels'] = L.tileLayer(labelsURL, {
+          pane: 'tilePane',
+          maxZoom: 15,
+          minZoom: 5
+        });
+        ap = this.makeGeoJSONLayer(window.apData, 'ap');
+        ep = this.makeGeoJSONLayer(window.epData, 'ep');
+        this.addLayer(base, 0);
+        this.addLayer(floods, 1);
+        this.addLayer(ap, 2);
+        this.addLayer(ep, 3);
+        this.addLayer(labels, 4);
         map.addControl(L.control.zoom({
           position: "bottomleft"
         }));
@@ -337,17 +352,21 @@
       serialize: function() {
         var lat, lng, self;
         self = this;
-        lng = this.coordinates[0];
-        lat = this.coordinates[1];
+        lng = this.coordinates[0] || this.coordinates['lng'];
+        lat = this.coordinates[1] || this.coordinates['lat'];
+        console.log(lng);
+        console.log(lat);
         app.createSpinner(".leaflet-popup-content");
-        return $.post("get_score/ap/", {
-          lng: lat,
-          lat: lng
-        }).done(function(data) {
-          var noaaApScore;
-          noaaApScore = data;
-          return self.renderTemplate(noaaApScore);
-        });
+        return setTimeout(function() {
+          return $.post("get_score/ap/", {
+            lng: lat,
+            lat: lng
+          }).done(function(data) {
+            var noaaApScore;
+            noaaApScore = data;
+            return self.renderTemplate(noaaApScore);
+          });
+        }, 3000);
       },
       renderTemplate: function(score) {
         var apData, epData, fhData, popupContent;
@@ -368,7 +387,7 @@
       template: "#legendTemplate",
       events: {
         "click .onoffswitch-checkbox": function(e) {
-          var apLayer, epLayer, layer, map, name, zIndex;
+          var apLayer, epLayer, layer, map, name;
           e.stopPropagation();
           map = app.map;
           name = $(e.currentTarget).data('layer');
@@ -377,15 +396,6 @@
           epLayer = app.layers['epLayer'];
           if ($(e.currentTarget).is(':checked')) {
             if (!app.map.hasLayer(layer)) {
-              if (name === 'apLayer') {
-                zIndex = 3;
-              }
-              if (name === 'epLayer') {
-                zIndex = 4;
-              }
-              if (name === 'floods') {
-                zIndex = 2;
-              }
               if (app.map.getZoom() >= 11 && name === 'epLayer') {
                 app.map.removeLayer(apLayer);
                 map.addLayer(epLayer, 3);
@@ -395,13 +405,13 @@
               } else if (app.map.getZoom() <= 10 && name === 'apLayer') {
                 if (map.hasLayer(epLayer)) {
                   app.map.removeLayer(epLayer);
-                  map.addLayer(apLayer, zIndex);
-                  return map.addLayer(epLayer, zIndex);
+                  map.addLayer(apLayer);
+                  return map.addLayer(epLayer);
                 } else {
-                  return map.addLayer(app.layers['apLayer'], zIndex);
+                  return map.addLayer(app.layers['apLayer']);
                 }
               } else {
-                return map.addLayer(layer, zIndex);
+                return map.addLayer(layer);
               }
             }
           } else {
@@ -414,7 +424,7 @@
       afterRender: function() {
         var apGrades, labels, options, self;
         self = this;
-        apGrades = _.range(1, 11, 1);
+        apGrades = _.range(0, 13, 1);
         labels = [];
         options = {
           placement: "auto"

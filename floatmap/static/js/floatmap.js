@@ -296,8 +296,8 @@
       },
       renderTemplate: function() {
         var ap, base, baseURL, ep, floodBounds, floods, labels, labelsURL, map, northEast, southWest;
-        baseURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
-        labelsURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
+        baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
+        labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
           map = app.map = new L.Map('map', {
             zoomControl: false

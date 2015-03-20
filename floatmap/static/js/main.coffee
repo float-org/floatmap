@@ -274,10 +274,10 @@ $ ->
 
     renderTemplate: () -> 
       # Path to Base layer (no labels)
-      baseURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png'
+      baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png'
 
       # Path to Base layer labels, overlaid last
-      labelsURL = 'http://{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png'
+      labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png'
 
       # Instantiate map if we haven't
       if not app.map

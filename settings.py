@@ -131,7 +131,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django.request': {
+        'floatmap': {
             'handlers': ['file'],
             'level': 'DEBUG',
             'propagate': True,

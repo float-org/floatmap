@@ -391,7 +391,6 @@ $ ->
       apGrades = _.range(0,13,1)  
       labels = []
       options = placement: "auto"
-      $("#legend h3").tooltip options
       
       # ToDo: Worth transferring this HTML to the template at some point?
       $(apGrades).each (index) ->
@@ -405,6 +404,7 @@ $ ->
 
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
+      $("[data-toggle=tooltip]").tooltip({ placement: 'right'});
 
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"

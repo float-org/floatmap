@@ -432,7 +432,6 @@
         options = {
           placement: "auto"
         };
-        $("#legend h3").tooltip(options);
         $(apGrades).each(function(index) {
           var apValue, textNode;
           apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + ";\"></i></div>");
@@ -443,7 +442,10 @@
           return self.$el.find(".apRange").append(apValue);
         });
         self.$el.find(".apRange").append("<div class='bottom-line'>increasing annual precipitation</div>");
-        return self.$el.appendTo(layout.$el.find('#legend'));
+        self.$el.appendTo(layout.$el.find('#legend'));
+        return $("[data-toggle=tooltip]").tooltip({
+          placement: 'right'
+        });
       }
     });
     FloatLayout = app.FloatLayout = Backbone.Layout.extend({

@@ -155,7 +155,7 @@
       }
     };
     app.createSpinner = function(element) {
-      var opts, spinner, target;
+      var opts, target;
       opts = {
         lines: 11,
         length: 4,
@@ -175,7 +175,7 @@
         left: "50%"
       };
       target = $(element)[0];
-      return spinner = new Spinner(opts).spin(target);
+      return window.spinner = new Spinner(opts).spin(target);
     };
     Backbone.Layout.configure({
       manage: true
@@ -336,21 +336,22 @@
         return this.serialize();
       },
       serialize: function() {
-        var lat, lng, self;
+        var lat, lng, self, spinner;
+        spinner = app.createSpinner(".leaflet-popup-content-wrapper");
         self = this;
         lng = this.coordinates['lng'] || this.coordinates[1];
         lat = this.coordinates['lat'] || this.coordinates[0];
-        setTimeout(function() {
+        return setTimeout(function() {
           return $.post("get_score/ap/", {
             lng: lat,
             lat: lng
           }).done(function(data) {
             var noaaApScore;
+            spinner.stop();
             noaaApScore = data;
             return self.renderTemplate(noaaApScore);
           });
         }, 200);
-        return app.createSpinner(".leaflet-popup-content-wrapper");
       },
       renderTemplate: function(score) {
         var apData, epData, fhData, popupContent;
@@ -363,13 +364,15 @@
         }
         epData = "<li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>";
         fhData = "<li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>";
-        $(".metrics").append(apData).append(epData).append(fhData);
-        return window.spinner.stop();
+        return $(".metrics").append(apData).append(epData).append(fhData);
       }
     });
     LegendView = app.LegendView = Backbone.View.extend({
       template: "#legendTemplate",
       events: {
+        "click #legend": function(e) {
+          return e.stopPropagation();
+        },
         "click .onoffswitch-checkbox": function(e) {
           var apLayer, epLayer, layer, map, name;
           e.stopPropagation();

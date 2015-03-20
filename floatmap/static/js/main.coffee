@@ -162,7 +162,7 @@ $ ->
       left: "50%"
 
     target = $(element)[0]
-    spinner = new Spinner(opts).spin(target)
+    window.spinner = new Spinner(opts).spin(target)
 
 
   Backbone.Layout.configure
@@ -315,6 +315,7 @@ $ ->
       this.serialize()
 
     serialize: () ->
+      spinner = app.createSpinner ".leaflet-popup-content-wrapper"
       self = this
 
       # TODO: Explain why it's complicated like this.
@@ -326,11 +327,12 @@ $ ->
           lng: lat
           lat: lng
         ).done (data) ->
+          spinner.stop()
           noaaApScore = data
           self.renderTemplate(noaaApScore)
       , 200
 
-      app.createSpinner ".leaflet-popup-content-wrapper"
+      
 
     renderTemplate: (score) ->
       popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>"
@@ -342,12 +344,12 @@ $ ->
       epData = "<li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>"
       fhData = "<li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>"
       $(".metrics").append(apData).append(epData).append(fhData)
-      window.spinner.stop()
 
   LegendView = app.LegendView = Backbone.View.extend
     template: "#legendTemplate"  
 
     events:
+      "click #legend": (e) -> e.stopPropagation()
       "click .onoffswitch-checkbox": (e) ->
         e.stopPropagation()
         map = app.map

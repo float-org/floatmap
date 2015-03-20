@@ -3,7 +3,6 @@
  TO DO
 
   - Move GeoModel code to separate file
-  - Incorporate GeoModel w/ EP + AP data
   - Separate out code into better named methods
   - Fix tooltips not rendering
   - Test popup w/ Elasticsearch
@@ -162,8 +161,8 @@ $ ->
       top: "50%"
       left: "50%"
 
-    window.target = document.getElementById(element)
-    window.spinner = new Spinner(opts).spin(target)
+    target = $(element)[0]
+    spinner = new Spinner(opts).spin(target)
 
 
   Backbone.Layout.configure
@@ -198,6 +197,10 @@ $ ->
 
     # Wish I could use the built in Backbone stuff... 
 
+    # When invoked, creates a new Popup w/ appropriate 
+    # Elasticsearch queried data and renders to the appropriate
+    # lat/lng
+
     renderPopup: (coordinates) ->
       this.popup = new PopupView({coordinates: coordinates})
       this.popup.render()
@@ -206,14 +209,15 @@ $ ->
       # For Debugging
       # app.map.on 'click', (e) ->
       #    alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+      
       self = this
       app.map.on 'zoomstart', (e) ->
         self.previousZoom = app.map.getZoom()
 
-      # app.map.on 'mouseover', (e) ->
-      #   if app.map.getZoom() == 15
-      #     console.log e
-      #     self.renderPopup e.latlng
+      app.map.on 'mousemove', (e) ->
+        if app.map.getZoom() == 15
+          console.log e
+          self.renderPopup e.latlng
 
       app.map.on 'zoomend', (e) ->
         map = app.map
@@ -263,6 +267,8 @@ $ ->
 
 
     initialize: () ->
+      # Subscribe showAddress method to the mediator so the nav
+      # can access this method when an address is searched.
       self = this
       mediator.subscribe('searched', self.showAddress)
 
@@ -280,27 +286,27 @@ $ ->
       # Create new SVG renderer and add to Tile pane, so we can style GeoJSON like other layers
       map.renderer = L.svg({pane:'tilePane'}).addTo(map);
       
-
-      # Create our layers, in order
-      
-      base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5});
-
-      # Leaflet 0.8 shows broken images, so let's just set the bounds for where our tiles our and avoid errors.
+      # We're only dealing with the Midwest for now, so lets bound our 
+      # tile layer queries.
       southWest = L.latLng(37.92686760148135, -95.88867187500001)
       northEast = L.latLng(48.60385760823255, -80.72753906250001)
       floodBounds = L.latLngBounds(southWest, northEast)
-
+      
+      # Create our layers
+      base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5});
       floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {bounds: floodBounds, pane: 'tilePane', maxZoom: 15, minZoom: 5});
       labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
       ap = this.makeGeoJSONLayer(window.apData, 'ap')
       ep = this.makeGeoJSONLayer(window.epData, 'ep')
+      
+      # ...and then append them to the map, in order!
       this.addLayer base, 0
       this.addLayer floods, 1
       this.addLayer ap, 2
       this.addLayer ep, 3
       this.addLayer labels, 4
 
-      # Add zoom controls and set off event listeners
+      # Then we add zoom controls and finally set off event listeners
       map.addControl L.control.zoom(position: "bottomleft")
       this.setEvents()
 
@@ -317,12 +323,11 @@ $ ->
 
     serialize: () ->
       self = this
-      lng = this.coordinates[0] || this.coordinates['lng'] 
-      lat = this.coordinates[1] || this.coordinates['lat']
 
-      console.log lng
-      console.log lat
-      app.createSpinner ".leaflet-popup-content"
+      # TODO: Explain why it's complicated like this.
+      lng = this.coordinates['lng'] || this.coordinates[1]
+      lat = this.coordinates['lat'] || this.coordinates[0]
+
       setTimeout () ->
         $.post("get_score/ap/",
           lng: lat
@@ -330,7 +335,9 @@ $ ->
         ).done (data) ->
           noaaApScore = data
           self.renderTemplate(noaaApScore)
-      , 3000
+      , 200
+
+      app.createSpinner ".leaflet-popup-content-wrapper"
 
     renderTemplate: (score) ->
       popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>"
@@ -379,7 +386,6 @@ $ ->
         else 
           map.removeLayer layer if map.hasLayer(layer)
             
-
     afterRender: () ->
       self = this
       apGrades = _.range(0,13,1)  

@@ -4,7 +4,6 @@
  TO DO
 
   - Move GeoModel code to separate file
-  - Incorporate GeoModel w/ EP + AP data
   - Separate out code into better named methods
   - Fix tooltips not rendering
   - Test popup w/ Elasticsearch
@@ -156,7 +155,7 @@
       }
     };
     app.createSpinner = function(element) {
-      var opts;
+      var opts, spinner, target;
       opts = {
         lines: 11,
         length: 4,
@@ -175,8 +174,8 @@
         top: "50%",
         left: "50%"
       };
-      window.target = document.getElementById(element);
-      return window.spinner = new Spinner(opts).spin(target);
+      target = $(element)[0];
+      return spinner = new Spinner(opts).spin(target);
     };
     Backbone.Layout.configure({
       manage: true
@@ -223,6 +222,12 @@
         self = this;
         app.map.on('zoomstart', function(e) {
           return self.previousZoom = app.map.getZoom();
+        });
+        app.map.on('mousemove', function(e) {
+          if (app.map.getZoom() === 15) {
+            console.log(e);
+            return self.renderPopup(e.latlng);
+          }
         });
         return app.map.on('zoomend', function(e) {
           var apLayer, epLayer, map;
@@ -301,14 +306,14 @@
         map.renderer = L.svg({
           pane: 'tilePane'
         }).addTo(map);
+        southWest = L.latLng(37.92686760148135, -95.88867187500001);
+        northEast = L.latLng(48.60385760823255, -80.72753906250001);
+        floodBounds = L.latLngBounds(southWest, northEast);
         base = app.layers['base'] = L.tileLayer(baseURL, {
           pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5
         });
-        southWest = L.latLng(37.92686760148135, -95.88867187500001);
-        northEast = L.latLng(48.60385760823255, -80.72753906250001);
-        floodBounds = L.latLngBounds(southWest, northEast);
         floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
           bounds: floodBounds,
           pane: 'tilePane',
@@ -352,12 +357,9 @@
       serialize: function() {
         var lat, lng, self;
         self = this;
-        lng = this.coordinates[0] || this.coordinates['lng'];
-        lat = this.coordinates[1] || this.coordinates['lat'];
-        console.log(lng);
-        console.log(lat);
-        app.createSpinner(".leaflet-popup-content");
-        return setTimeout(function() {
+        lng = this.coordinates['lng'] || this.coordinates[1];
+        lat = this.coordinates['lat'] || this.coordinates[0];
+        setTimeout(function() {
           return $.post("get_score/ap/", {
             lng: lat,
             lat: lng
@@ -366,7 +368,8 @@
             noaaApScore = data;
             return self.renderTemplate(noaaApScore);
           });
-        }, 3000);
+        }, 200);
+        return app.createSpinner(".leaflet-popup-content-wrapper");
       },
       renderTemplate: function(score) {
         var apData, epData, fhData, popupContent;

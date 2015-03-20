@@ -240,6 +240,8 @@ svg.leaflet-zoom-animated path {
 .leaflet-popup-content-wrapper {
   border: 5px solid #c2dbf3;
   background-color: #c2dbf3;
+  min-width: 100px;
+  min-height: 155px;
 }
 .leaflet-popup-tip {
   border-top: 10px solid #c2dbf3;

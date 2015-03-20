@@ -20,8 +20,8 @@ def map(request):
 def get_noaa_average_precip(request):
 
     print request.POST
-    lng = float(request.POST['lng'])
-    lat = float(request.POST['lat'])
+    lng = float(request.POST['lat'])
+    lat = float(request.POST['lng'])
     print lng
     print lat
 
@@ -45,15 +45,11 @@ def get_noaa_average_precip(request):
         }
     }
 
-    r = requests.get(url, params=params, data=json.dumps(data))
+    try:
+        r = requests.get(url, params=params, data=json.dumps(data))
+        dn = r.json()["hits"]["hits"][0]["fields"]["DN"][0]
+        return HttpResponse(dn)
+    except Exception as e:
+        print "Bad response: ", r.json()
+        return HttpResponse(0)
 
-    if r.status_code == requests.codes.ok:
-        try:
-            dn = r.json()["hits"]["hits"][0]["fields"]["DN"][0]
-            print dn
-            return HttpResponse(dn)
-        except Exception as e:
-            print "Bad response: ", r.json()
-            return HttpResponse(0)
-    else:
-        return False

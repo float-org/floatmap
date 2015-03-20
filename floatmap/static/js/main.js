@@ -223,37 +223,18 @@
         app.map.on('zoomstart', function(e) {
           return self.previousZoom = app.map.getZoom();
         });
-        app.map.on('mousemove', function(e) {
-          if (app.map.getZoom() === 15) {
-            console.log(e);
-            return self.renderPopup(e.latlng);
-          }
-        });
         return app.map.on('zoomend', function(e) {
-          var apLayer, epLayer, map;
+          var map;
           map = app.map;
           if (map.getZoom() < this.previousZoom && this.previousZoom === 15) {
-            map.removeLayer(window.marker);
-          }
-          apLayer = app.layers['apLayer'];
-          epLayer = app.layers['epLayer'];
-          if (map.getZoom() === 11 && this.previousZoom < map.getZoom()) {
-            if ($("input[data-layer=apLayer]").prop("checked")) {
-              map.removeLayer(apLayer);
-              return map.addLayer(apLayer);
-            }
-          } else if (map.getZoom() === 10 && this.previousZoom > map.getZoom()) {
-            if ($("input[data-layer=epLayer]").prop("checked")) {
-              map.removeLayer(epLayer);
-              return map.addLayer(epLayer);
-            }
+            return map.removeLayer(window.marker);
           }
         });
       },
       addLayer: function(layer, zIndex) {
         return layer.setZIndex(zIndex).addTo(app.map);
       },
-      showAddress: function(latlng) {
+      setAddress: function(latlng) {
         app.map.setView(latlng, 18);
         return app.layout.views['map'].renderPopup(latlng);
       },
@@ -292,7 +273,7 @@
       initialize: function() {
         var self;
         self = this;
-        return mediator.subscribe('searched', self.showAddress);
+        return mediator.subscribe('searched', self.setAddress);
       },
       renderTemplate: function() {
         var ap, base, baseURL, ep, floodBounds, floods, labels, labelsURL, map, northEast, southWest;
@@ -425,13 +406,10 @@
         }
       },
       afterRender: function() {
-        var apGrades, labels, options, self;
+        var apGrades, labels, self;
         self = this;
         apGrades = _.range(0, 13, 1);
         labels = [];
-        options = {
-          placement: "auto"
-        };
         $(apGrades).each(function(index) {
           var apValue, textNode;
           apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + ";\"></i></div>");

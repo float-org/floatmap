@@ -214,33 +214,26 @@ $ ->
       app.map.on 'zoomstart', (e) ->
         self.previousZoom = app.map.getZoom()
 
-      app.map.on 'mousemove', (e) ->
-        if app.map.getZoom() == 15
-          console.log e
-          self.renderPopup e.latlng
+      # app.map.on 'mousemove', (e) ->
+      #   if app.map.getZoom() == 15
+      #     console.log e
+      #     self.renderPopup e.latlng
 
       app.map.on 'zoomend', (e) ->
         map = app.map
         map.removeLayer window.marker if map.getZoom() < this.previousZoom and this.previousZoom == 15
-        apLayer = app.layers['apLayer']
-        epLayer = app.layers['epLayer']
-        if map.getZoom() is 11 and this.previousZoom < map.getZoom()
-          if $("input[data-layer=apLayer]").prop("checked")
-            map.removeLayer apLayer
-            map.addLayer apLayer
-        else if map.getZoom() is 10 and this.previousZoom > map.getZoom()
-          if $("input[data-layer=epLayer]").prop("checked")
-            map.removeLayer epLayer
-            map.addLayer epLayer
 
-    
+    # Fairly self-descriptive
     addLayer: (layer, zIndex) ->
       layer.setZIndex(zIndex).addTo(app.map)
 
-    showAddress: (latlng) ->
+    # Prepare popup to show elasticsearch queries
+    setAddress: (latlng) ->
       app.map.setView(latlng, 18)
       app.layout.views['map'].renderPopup latlng
 
+    # Based on data type, creates geoJSON layer
+    # and styles appropriately, based on features
     makeGeoJSONLayer: (data, type) ->
       self = this
 
@@ -267,10 +260,10 @@ $ ->
 
 
     initialize: () ->
-      # Subscribe showAddress method to the mediator so the nav
+      # Subscribe setAddress method to the mediator so the nav
       # can access this method when an address is searched.
       self = this
-      mediator.subscribe('searched', self.showAddress)
+      mediator.subscribe('searched', self.setAddress)
 
     renderTemplate: () -> 
       # Path to Base layer (no labels)
@@ -390,7 +383,6 @@ $ ->
       self = this
       apGrades = _.range(0,13,1)  
       labels = []
-      options = placement: "auto"
       
       # ToDo: Worth transferring this HTML to the template at some point?
       $(apGrades).each (index) ->

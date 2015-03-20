@@ -8,8 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 def map(request):
-    epFile = open(os.path.abspath('floatmap/static/ep/noaa_ex_precip.geojson'))
-    apFile = open(os.path.abspath('floatmap/static/ap/noaa_avg_precip.geojson'))
+    epFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/noaa_ex_precip.geojson'))
+    apFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/noaa_avg_precip.geojson'))
     context = {
         'epData': json.dumps(epFile.read()),
         'apData': json.dumps(apFile.read())
@@ -19,11 +19,8 @@ def map(request):
 @csrf_exempt
 def get_noaa_average_precip(request):
 
-    print request.POST
     lng = float(request.POST['lat'])
     lat = float(request.POST['lng'])
-    print lng
-    print lat
 
     url = os.path.join(settings.ES_URL, "noaa_avg_precip", "region", "_search")
     params = {

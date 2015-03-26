@@ -305,7 +305,8 @@ $ ->
       map.addControl L.control.zoom(position: "bottomleft")
       this.setEvents()
 
-  PopupView = app.PopupView = Backbone.View.extend
+  # View for the data that appears in the collapsable element above the legend.
+  QueryView = app.QueryView = Backbone.View.extend
     initialize: () ->
       map = app.map
       coordinates = this.coordinates = this.options.coordinates

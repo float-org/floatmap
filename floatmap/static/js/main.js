@@ -123,7 +123,7 @@
   };
 
   $(function() {
-    var FloatLayout, HeaderView, LegendView, MapView, PopupView, app, layers, layout, mediator;
+    var FloatLayout, HeaderView, LegendView, MapView, QueryView, app, layers, layout, mediator;
     app = window.app = window.app || {};
     layers = app.layers = [];
     mediator = app.mediator = new Mediator();
@@ -325,7 +325,7 @@
         return this.setEvents();
       }
     });
-    PopupView = app.PopupView = Backbone.View.extend({
+    QueryView = app.QueryView = Backbone.View.extend({
       initialize: function() {
         var coordinates, map, popup;
         map = app.map;

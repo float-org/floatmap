@@ -213,20 +213,18 @@ button {
   background: #FFF;
   border-radius: 5px;
   min-width: 531px;
-  height: 303px;
+  height: 300px;
   position: absolute;
   bottom: 50px;
   right: 50px;
   z-index: 1048;
 }
-#legend > div > div {
-  padding: 0;
-  margin: 0;
-  height: 101px;
-}
 .legend-panel,
 .legend-data {
   height: 100%;
+}
+.legend-panel > div {
+  padding: 10px 0;
 }
 #legend .legend-panel {
   display: block;
@@ -298,6 +296,15 @@ button {
   height: 100%;
   list-style-type: none;
   font-size: 11px;
+}
+.apRange {
+  padding: 22px 0;
+}
+.epRange {
+  padding: 18px 0;
+}
+.epRange svg {
+  height: 90px;
 }
 .floodRange li > div {
   width: 30px;

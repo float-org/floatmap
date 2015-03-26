@@ -220,6 +220,12 @@
       setEvents: function() {
         var self;
         self = this;
+        $('#map').on('mousestop', function(e) {
+          console.log(e);
+          if (app.map.getZoom() === 15) {
+            return self.renderPopup(e.latlng);
+          }
+        });
         app.map.on('zoomstart', function(e) {
           return self.previousZoom = app.map.getZoom();
         });
@@ -290,24 +296,24 @@
         southWest = L.latLng(37.92686760148135, -95.88867187500001);
         northEast = L.latLng(48.60385760823255, -80.72753906250001);
         floodBounds = L.latLngBounds(southWest, northEast);
-        base = app.layers['base'] = L.tileLayer(baseURL, {
+        base = window.base = app.layers['base'] = L.tileLayer(baseURL, {
           pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5
         });
-        floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
+        floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
           bounds: floodBounds,
           pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5
         });
-        labels = app.layers['labels'] = L.tileLayer(labelsURL, {
+        labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {
           pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5
         });
-        ap = this.makeGeoJSONLayer(window.apData, 'ap');
-        ep = this.makeGeoJSONLayer(window.epData, 'ep');
+        ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap');
+        ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep');
         this.addLayer(base, 0);
         this.addLayer(floods, 1);
         this.addLayer(ap, 2);
@@ -374,32 +380,27 @@
           return e.stopPropagation();
         },
         "click .onoffswitch-checkbox": function(e) {
-          var apLayer, epLayer, layer, map, name;
+          var current_ap, current_ep, layer, map, name;
           e.stopPropagation();
           map = app.map;
           name = $(e.currentTarget).data('layer');
           layer = app.layers[name];
-          apLayer = app.layers['apLayer'];
-          epLayer = app.layers['epLayer'];
+          current_ap = app.layers['apLayer'];
+          current_ep = app.layers['epLayer'];
           if ($(e.currentTarget).is(':checked')) {
-            if (!app.map.hasLayer(layer)) {
-              if (app.map.getZoom() >= 11 && name === 'epLayer') {
-                app.map.removeLayer(apLayer);
-                map.addLayer(epLayer, 3);
-                if ($('input[data-layer=apLayer]').prop('checked')) {
-                  return map.addLayer(apLayer(4));
-                }
-              } else if (app.map.getZoom() <= 10 && name === 'apLayer') {
-                if (map.hasLayer(epLayer)) {
-                  app.map.removeLayer(epLayer);
-                  map.addLayer(apLayer);
-                  return map.addLayer(epLayer);
-                } else {
-                  return map.addLayer(app.layers['apLayer']);
-                }
+            if (layer === current_ap) {
+              if (map.hasLayer(current_ep)) {
+                map.removeLayer(current_ap);
+                map.removeLayer(current_ep);
+                map.addLayer(window.ap, 2);
+                return map.addLayer(window.ep, 3);
               } else {
-                return map.addLayer(layer);
+                return map.addLayer(window.ap, 2);
               }
+            } else if (layer === current_ep) {
+              return map.addLayer(window.ep);
+            } else {
+              return map.addLayer(layer);
             }
           } else {
             if (map.hasLayer(layer)) {

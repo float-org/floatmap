@@ -211,13 +211,14 @@ $ ->
       #    alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
       
       self = this
+
+      $('#map').on 'mousestop', (e) ->
+        console.log e
+        if app.map.getZoom() == 15
+          self.renderPopup e.latlng
+
       app.map.on 'zoomstart', (e) ->
         self.previousZoom = app.map.getZoom()
-
-      # app.map.on 'mousemove', (e) ->
-      #   if app.map.getZoom() == 15
-      #     console.log e
-      #     self.renderPopup e.latlng
 
       app.map.on 'zoomend', (e) ->
         map = app.map
@@ -286,11 +287,12 @@ $ ->
       floodBounds = L.latLngBounds(southWest, northEast)
       
       # Create our layers
-      base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5});
-      floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {bounds: floodBounds, pane: 'tilePane', maxZoom: 15, minZoom: 5});
-      labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
-      ap = this.makeGeoJSONLayer(window.apData, 'ap')
-      ep = this.makeGeoJSONLayer(window.epData, 'ep')
+      base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5});
+      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {bounds: floodBounds, pane: 'tilePane', maxZoom: 15, minZoom: 5});
+      labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
+      
+      ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap')
+      ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep')
       
       # ...and then append them to the map, in order!
       this.addLayer base, 0
@@ -355,29 +357,22 @@ $ ->
         map = app.map
         name = $(e.currentTarget).data('layer')
         layer = app.layers[name]
-        apLayer = app.layers['apLayer']
-        epLayer = app.layers['epLayer']
+        current_ap = app.layers['apLayer']
+        current_ep = app.layers['epLayer']
 
         if $(e.currentTarget).is(':checked')
-          if not app.map.hasLayer(layer)
-            # If we're zoomed in to higher levels, make sure we 
-            # build the layers the appropriate way.  Only matters
-            # when redrawing epLayer since it's supposed to be
-            # on bottom. 
-            if app.map.getZoom() >= 11 and name == 'epLayer'
-              app.map.removeLayer apLayer
-              map.addLayer epLayer, 3
-              if $('input[data-layer=apLayer]').prop('checked')
-                map.addLayer apLayer 4
-            else if app.map.getZoom() <= 10 and name == 'apLayer'
-              if map.hasLayer(epLayer)
-                app.map.removeLayer epLayer
-                map.addLayer apLayer
-                map.addLayer epLayer
-              else
-                map.addLayer app.layers['apLayer']
+          if layer == current_ap
+            if map.hasLayer(current_ep)
+                map.removeLayer current_ap
+                map.removeLayer current_ep
+                map.addLayer window.ap, 2
+                map.addLayer window.ep, 3
             else
-              map.addLayer layer
+              map.addLayer window.ap, 2
+          else if layer == current_ep
+            map.addLayer(window.ep)
+          else
+            map.addLayer(layer)
         else 
           map.removeLayer layer if map.hasLayer(layer)
             

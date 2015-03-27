@@ -228,10 +228,6 @@
       addLayer: function(layer, zIndex) {
         return layer.setZIndex(zIndex).addTo(app.map);
       },
-      setAddress: function(latlng) {
-        app.map.setView(latlng, 18);
-        return app.layout.views['map'].renderPopup(latlng);
-      },
       makeGeoJSONLayer: function(data, type) {
         var layer, self;
         self = this;

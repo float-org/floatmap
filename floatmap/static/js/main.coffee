@@ -213,11 +213,6 @@ $ ->
     addLayer: (layer, zIndex) ->
       layer.setZIndex(zIndex).addTo(app.map)
 
-    # Prepare popup to show elasticsearch queries
-    setAddress: (latlng) ->
-      app.map.setView(latlng, 18)
-      app.layout.views['map'].renderPopup latlng
-
     # Based on data type, creates geoJSON layer
     # and styles appropriately, based on features
     makeGeoJSONLayer: (data, type) ->

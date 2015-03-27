@@ -211,9 +211,11 @@ button {
   position: absolute;
   bottom: 70px;
   -webkit-transition: bottom 1s ease-in;
+  width:100%;
+  width:100%;
 }
 #queryContent.active {
-  bottom: 180px;
+  bottom: 200px;
 }
 /* Legend Styles */
 #legend {

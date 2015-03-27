@@ -211,12 +211,6 @@
     MapView = app.MapView = Backbone.View.extend({
       template: "#mapTemplate",
       el: false,
-      renderPopup: function(coordinates) {
-        this.popup = new PopupView({
-          coordinates: coordinates
-        });
-        return this.popup.render();
-      },
       setEvents: function() {
         var self;
         self = this;
@@ -326,52 +320,7 @@
       }
     });
     QueryView = app.QueryView = Backbone.View.extend({
-      initialize: function() {
-        var coordinates, map, popup;
-        map = app.map;
-        coordinates = this.coordinates = this.options.coordinates;
-        if (window.marker != null) {
-          map.removeLayer(window.marker);
-        }
-        window.marker = L.marker(coordinates).addTo(map);
-        popup = this.popup = new L.Popup({
-          minWidth: 350
-        });
-        popup.setLatLng(coordinates);
-        window.marker.bindPopup(popup).openPopup(popup);
-        return this.serialize();
-      },
-      serialize: function() {
-        var lat, lng, self, spinner;
-        spinner = app.createSpinner(".leaflet-popup-content-wrapper");
-        self = this;
-        lng = this.coordinates['lng'] || this.coordinates[1];
-        lat = this.coordinates['lat'] || this.coordinates[0];
-        return setTimeout(function() {
-          return $.post("get_score/ap/", {
-            lng: lat,
-            lat: lng
-          }).done(function(data) {
-            var noaaApScore;
-            spinner.stop();
-            noaaApScore = data;
-            return self.renderTemplate(noaaApScore);
-          });
-        }, 200);
-      },
-      renderTemplate: function(score) {
-        var apData, epData, fhData, popupContent;
-        popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>";
-        this.popup.setContent(popupContent);
-        if (score > 0) {
-          apData = "<li><label>Annual Precipitation:</label><span>" + score + "% Increase</span><a href='#''>source</a></li>";
-        } else {
-          apData = "<li><label>Annual Precipitation:</label><span>No Data Yet</span><a href='#''>source</a></li>";
-        }
-        epData = "<li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>";
-        fhData = "<li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>";
-        return $(".metrics").append(apData).append(epData).append(fhData);
-      }
+      template: "#queryTemplate"
     });
     LegendView = app.LegendView = Backbone.View.extend({
       template: "#legendTemplate",
@@ -409,6 +358,9 @@
           }
         }
       },
+      views: {
+        '#query': new QueryView()
+      },
       afterRender: function() {
         var apGrades, labels, self;
         self = this;
@@ -433,9 +385,9 @@
     FloatLayout = app.FloatLayout = Backbone.Layout.extend({
       template: "#floatLayout",
       views: {
-        'header': new HeaderView(),
+        '#header': new HeaderView(),
         'map': new MapView(),
-        'legend': new LegendView()
+        '#legend': new LegendView()
       }
     });
     layout = app.layout = new FloatLayout();

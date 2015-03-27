@@ -195,16 +195,6 @@ $ ->
     template: "#mapTemplate"
     el: false
 
-    # Wish I could use the built in Backbone stuff... 
-
-    # When invoked, creates a new Popup w/ appropriate 
-    # Elasticsearch queried data and renders to the appropriate
-    # lat/lng
-
-    renderPopup: (coordinates) ->
-      this.popup = new PopupView({coordinates: coordinates})
-      this.popup.render()
-
     setEvents: () ->
       # For Debugging
       # app.map.on 'click', (e) ->
@@ -277,11 +267,12 @@ $ ->
       if not app.map
         map = app.map = new L.Map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 6)
       
-      # Create new SVG renderer and add to Tile pane, so we can style GeoJSON like other layers
+      # Create new SVG renderer and add to Tile pane, so we can work with GeoJSON like other layers
       map.renderer = L.svg({pane:'tilePane'}).addTo(map);
       
-      # We're only dealing with the Midwest for now, so lets bound our 
+      # We're only dealing with the Midwest for now, so bound our 
       # tile layer queries.
+      # TODO: Determine a better way to have a more precise set of bounds
       southWest = L.latLng(37.92686760148135, -95.88867187500001)
       northEast = L.latLng(48.60385760823255, -80.72753906250001)
       floodBounds = L.latLngBounds(southWest, northEast)
@@ -295,6 +286,7 @@ $ ->
       ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep')
       
       # ...and then append them to the map, in order!
+      # TODO: Why doesn't zindex work with GeoJSON layers?
       this.addLayer base, 0
       this.addLayer floods, 1
       this.addLayer ap, 2
@@ -307,46 +299,22 @@ $ ->
 
   # View for the data that appears in the collapsable element above the legend.
   QueryView = app.QueryView = Backbone.View.extend
-    initialize: () ->
-      map = app.map
-      coordinates = this.coordinates = this.options.coordinates
-      map.removeLayer(window.marker) if window.marker?   
-      window.marker = L.marker(coordinates).addTo(map)
-      popup = this.popup = new L.Popup(minWidth: 350)
-      popup.setLatLng coordinates
-      window.marker.bindPopup(popup).openPopup popup
-      this.serialize()
+    template: "#queryTemplate"
+    
+    # serialize: () ->
+    #   spinner = app.createSpinner "#queryContent"
+    #   self = this
 
-    serialize: () ->
-      spinner = app.createSpinner ".leaflet-popup-content-wrapper"
-      self = this
-
-      # TODO: Explain why it's complicated like this.
-      lng = this.coordinates['lng'] || this.coordinates[1]
-      lat = this.coordinates['lat'] || this.coordinates[0]
-
-      setTimeout () ->
-        $.post("get_score/ap/",
-          lng: lat
-          lat: lng
-        ).done (data) ->
-          spinner.stop()
-          noaaApScore = data
-          self.renderTemplate(noaaApScore)
-      , 200
-
+    #   lng = this.coordinates['lng'] || this.coordinates[1]
+    #   lat = this.coordinates['lat'] || this.coordinates[0]
       
+    #   $.post("get_score/ap/",
+    #     lng: lat
+    #     lat: lng
+    #   ).done (data) ->
+    #     spinner.stop()
+    #     this.ap_score = data
 
-    renderTemplate: (score) ->
-      popupContent = "<p>This address has a high risk of of more floods due to climate change</p><ul class='metrics'></ul>"
-      this.popup.setContent popupContent
-      if score > 0
-        apData = "<li><label>Annual Precipitation:</label><span>" + score + "% Increase</span><a href='#''>source</a></li>"
-      else
-        apData = "<li><label>Annual Precipitation:</label><span>No Data Yet</span><a href='#''>source</a></li>"
-      epData = "<li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>"
-      fhData = "<li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>"
-      $(".metrics").append(apData).append(epData).append(fhData)
 
   LegendView = app.LegendView = Backbone.View.extend
     template: "#legendTemplate"  
@@ -376,7 +344,10 @@ $ ->
             map.addLayer(layer)
         else 
           map.removeLayer layer if map.hasLayer(layer)
-            
+      
+    views: 
+      '#query': new QueryView()
+
     afterRender: () ->
       self = this
       apGrades = _.range(0,13,1)  
@@ -399,9 +370,9 @@ $ ->
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     views: 
-      'header': new HeaderView()
+      '#header': new HeaderView()
       'map': new MapView()
-      'legend': new LegendView()
+      '#legend': new LegendView()
 
   layout = app.layout = new FloatLayout()
   layout.$el.appendTo('#main')

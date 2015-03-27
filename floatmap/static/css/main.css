@@ -253,40 +253,6 @@ button {
 #legend .legend-panel h3 {
   display: inline-block;
 }
-.leaflet-popup-content-wrapper {
-  border: 5px solid #c2dbf3;
-  background-color: #c2dbf3;
-  min-width: 100px;
-  min-height: 155px;
-}
-.leaflet-popup-tip {
-  border-top: 10px solid #c2dbf3;
-}
-.leaflet-popup-content {
-  background-color: #6496c8;
-  min-height: 155px;
-}
-.leaflet-popup-content p {
-  font-size: 14px;
-}
-.leaflet-popup-content ul {
-  list-style: none;
-  padding: 0;
-}
-.leaflet-popup-content ul li {
-  display: inline-block;
-  width: 33%;
-}
-.leaflet-popup-content ul li label {
-  display: block;
-}
-.leaflet-popup-content ul li span {
-  font-size: 24px;
-  display: block;
-}
-.leaflet-popup-content ul li a {
-  display: block;
-}
 .metrics {
   text-align: center;
 }

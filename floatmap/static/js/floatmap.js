@@ -329,7 +329,6 @@
       template: "#queryTemplate",
       initialize: function() {
         this.model = new Query();
-        console.log(this.model);
         return this.listenTo(this.model, "change", this.render);
       },
       serialize: function() {
@@ -348,18 +347,18 @@
           },
           type: 'POST',
           success: function(model, response) {
+            setTimeout(function() {
+              return app.layout.views['#legend'].$el.addClass('active-query');
+            }, 10);
+            return spinner.stop();
+          },
+          error: function(model, response) {
+            return spinner.stop();
+          },
+          complete: function(model, response) {
             return spinner.stop();
           }
         });
-      },
-      afterRender: function(view) {
-        var self;
-        self = this;
-        if (JSON.stringify(view.model._previousAttributes) !== JSON.stringify(view.model.attributes) && Object.keys(view.model._previousAttributes).length > 0) {
-          return setTimeout(function() {
-            return self.$el.find('#queryContent').addClass('active');
-          }, 10);
-        }
       }
     });
     LegendView = app.LegendView = Backbone.View.extend({

@@ -212,7 +212,7 @@ button {
   bottom: 70px;
   -webkit-transition: bottom 1s ease-in;
 }
-#queryContent.active {
+.active-query #queryContent {
   bottom: 180px;
 }
 /* Legend Styles */

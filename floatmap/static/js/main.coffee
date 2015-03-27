@@ -308,7 +308,6 @@ $ ->
 
     initialize: () ->
       this.model = new Query()
-      console.log this.model
       this.listenTo(this.model, "change", this.render);
 
     serialize: () ->
@@ -325,15 +324,16 @@ $ ->
         },
         type: 'POST',
         success: (model, response) -> 
+          setTimeout () ->
+            app.layout.views['#legend'].$el.addClass('active-query')
+          , 10
           spinner.stop()
-      
-    afterRender: (view) ->
-      self = this
-      # If model attributes change and previousAttributes is not empty
-      if JSON.stringify(view.model._previousAttributes) != JSON.stringify(view.model.attributes) and Object.keys(view.model._previousAttributes).length > 0
-        setTimeout () ->
-          self.$el.find('#queryContent').addClass('active')
-        , 10
+        error: (model, response) -> 
+          spinner.stop()
+        complete: (model, response) -> 
+          spinner.stop()
+
+
 
   LegendView = app.LegendView = Backbone.View.extend
     template: "#legendTemplate"  
@@ -348,6 +348,9 @@ $ ->
         current_ap = app.layers['apLayer']
         current_ep = app.layers['epLayer']
 
+        # This is super gross and only has to be this complicated because GeoJSON layers
+        # do not seem to respect zIndex, even though you can set a zIndex on them when 
+        # adding them to the map.  Grrrrr.
         if $(e.currentTarget).is(':checked')
           if layer == current_ap
             if map.hasLayer(current_ep)

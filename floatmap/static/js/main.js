@@ -10,7 +10,7 @@
  */
 
 (function() {
-  var GeoCollection, GeoModel, Mediator;
+  var GeoCollection, GeoModel, Mediator, Query;
 
   GeoModel = L.GeoModel = Backbone.Model.extend({
     keepId: false,
@@ -82,6 +82,16 @@
         features: features
       };
     }
+  });
+
+  Query = Backbone.Model.extend({
+    defaults: {
+      ap: 0,
+      ep: 0,
+      flood: 0,
+      overall_risk: 'unknown'
+    },
+    url: '/get_queries/'
   });
 
   Mediator = function() {
@@ -228,6 +238,12 @@
       addLayer: function(layer, zIndex) {
         return layer.setZIndex(zIndex).addTo(app.map);
       },
+      setAddress: function(latlng) {
+        var lnglat;
+        app.map.setView(latlng, 18);
+        lnglat = [latlng[1], latlng[0]];
+        return app.layout.views['#legend'].views['#query'].getQuery(lnglat);
+      },
       makeGeoJSONLayer: function(data, type) {
         var layer, self;
         self = this;
@@ -310,7 +326,41 @@
       }
     });
     QueryView = app.QueryView = Backbone.View.extend({
-      template: "#queryTemplate"
+      template: "#queryTemplate",
+      initialize: function() {
+        this.model = new Query();
+        console.log(this.model);
+        return this.listenTo(this.model, "change", this.render);
+      },
+      serialize: function() {
+        return {
+          query: this.model.attributes
+        };
+      },
+      getQuery: function(lnglat) {
+        var self, spinner;
+        spinner = app.createSpinner("#queryContent");
+        self = this;
+        return this.model.fetch({
+          data: {
+            lng: lnglat[0],
+            lat: lnglat[1]
+          },
+          type: 'POST',
+          success: function(model, response) {
+            return spinner.stop();
+          }
+        });
+      },
+      afterRender: function(view) {
+        var self;
+        self = this;
+        if (JSON.stringify(view.model._previousAttributes) !== JSON.stringify(view.model.attributes) && Object.keys(view.model._previousAttributes).length > 0) {
+          return setTimeout(function() {
+            return self.$el.find('#queryContent').addClass('active');
+          }, 10);
+        }
+      }
     });
     LegendView = app.LegendView = Backbone.View.extend({
       template: "#legendTemplate",

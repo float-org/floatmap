@@ -19,16 +19,17 @@ def map(request):
     logger.debug("%s" % context)
     return render_to_response("map.html",context,context_instance=RequestContext(request))
 
-@csrf_exempt
-def get_noaa_average_precip(request):
 
-    lng = float(request.POST['lat'])
-    lat = float(request.POST['lng'])
+# Question: Is there a better term for "data_type" w/ regard to Elasticsearch lingo?
+# Query Elasticsearch for particular dataset - currently assumes datasets are structured the same.
 
-    url = os.path.join(settings.ES_URL, "noaa_avg_precip", "region", "_search")
+def get_query(data_type, lng, lat):
+    url = os.path.join(settings.ES_URL, data_type, "region", "_search")
+
     params = {
         "fields": "DN"
     }
+
     data = {
         "query":{
             "match_all": {}
@@ -48,8 +49,29 @@ def get_noaa_average_precip(request):
     try:
         r = requests.get(url, params=params, data=json.dumps(data))
         dn = r.json()["hits"]["hits"][0]["fields"]["DN"][0]
-        return HttpResponse(dn)
+        print dn
+        return dn
     except Exception as e:
         print "Bad response: ", r.json()
-        return HttpResponse(0)
+        return 0
+
+
+# TODO: Add Extreme Precipitation and Flood queries
+@csrf_exempt
+def get_queries(request):
+    lng = float(request.POST['lng'])
+    lat = float(request.POST['lat'])
+
+    ap_query = get_query('noaa_avg_precip', lng, lat)
+    print ap_query
+    #ep_query
+    #flood_query
+    
+    queries = {
+        "ap": ap_query
+    }
+
+    
+
+    return HttpResponse(json.dumps(queries))
 

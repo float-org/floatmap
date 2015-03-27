@@ -5,6 +5,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'floatmap.views.map', name='map'),
-    url(r'^get_score/ap/$', 'floatmap.views.get_noaa_average_precip', name='get_noaa_average_precip'),
+    url(r'^get_queries/$', 'floatmap.views.get_queries', name='get_queries'),
     url(r'^admin/', include(admin.site.urls)),
 )

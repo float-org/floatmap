@@ -74,6 +74,17 @@ GeoCollection = L.GeoCollection = Backbone.Collection.extend(
       features: features
     })
 
+Query = Backbone.Model.extend
+  defaults:
+    ap: 0
+    ep: 0
+    flood: 0
+    overall_risk: 'unknown'
+
+  url: '/get_queries/'
+
+
+
 # A mediator pattern allows our different Views to publish and subscribed to a shared, but independent, set of events.
 # Read more at http://addyosmani.com/largescalejavascript/#mediatorpattern
 Mediator = () ->
@@ -198,7 +209,7 @@ $ ->
     setEvents: () ->
       # For Debugging
       # app.map.on 'click', (e) ->
-      #    alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+      #    alert("Lat, Lng : " + e.latlng.lat + ", " + e.latlng.lng)
       
       self = this
 
@@ -213,18 +224,22 @@ $ ->
     addLayer: (layer, zIndex) ->
       layer.setZIndex(zIndex).addTo(app.map)
 
+    setAddress: (latlng) ->
+      app.map.setView(latlng, 18)
+      # Note that GeoJSON expects Longitude first (as x) and Latitude second (as y), so we have to switch the order
+      lnglat = [latlng[1], latlng[0]]
+      app.layout.views['#legend'].views['#query'].getQuery(lnglat)
+
     # Based on data type, creates geoJSON layer
     # and styles appropriately, based on features
     makeGeoJSONLayer: (data, type) ->
       self = this
-
       if type == 'ap'
         layer = app.layers['apLayer'] = L.geoJson data,
           renderer: app.map.renderer,
           style: (feature, layer) ->
             className: 'ap'
             color: app.getColor("ap", feature.properties.DN)
-              
         
       else if type == 'ep'
         layer = app.layers['epLayer'] = L.geoJson data,
@@ -290,21 +305,35 @@ $ ->
   # View for the data that appears in the collapsable element above the legend.
   QueryView = app.QueryView = Backbone.View.extend
     template: "#queryTemplate"
-    
-    # serialize: () ->
-    #   spinner = app.createSpinner "#queryContent"
-    #   self = this
 
-    #   lng = this.coordinates['lng'] || this.coordinates[1]
-    #   lat = this.coordinates['lat'] || this.coordinates[0]
+    initialize: () ->
+      this.model = new Query()
+      console.log this.model
+      this.listenTo(this.model, "change", this.render);
+
+    serialize: () ->
+      { query: this.model.attributes }
+
+    getQuery: (lnglat) ->
+      spinner = app.createSpinner "#queryContent"
+      self = this   
+
+      this.model.fetch
+        data: {
+          lng:lnglat[0],
+          lat:lnglat[1]
+        },
+        type: 'POST',
+        success: (model, response) -> 
+          spinner.stop()
       
-    #   $.post("get_score/ap/",
-    #     lng: lat
-    #     lat: lng
-    #   ).done (data) ->
-    #     spinner.stop()
-    #     this.ap_score = data
-
+    afterRender: (view) ->
+      self = this
+      # If model attributes change and previousAttributes is not empty
+      if JSON.stringify(view.model._previousAttributes) != JSON.stringify(view.model.attributes) and Object.keys(view.model._previousAttributes).length > 0
+        setTimeout () ->
+          self.$el.find('#queryContent').addClass('active')
+        , 10
 
   LegendView = app.LegendView = Backbone.View.extend
     template: "#legendTemplate"  

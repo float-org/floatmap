@@ -202,11 +202,6 @@ $ ->
       
       self = this
 
-      $('#map').on 'mousestop', (e) ->
-        console.log e
-        if app.map.getZoom() == 15
-          self.renderPopup e.latlng
-
       app.map.on 'zoomstart', (e) ->
         self.previousZoom = app.map.getZoom()
 

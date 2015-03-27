@@ -214,12 +214,6 @@
       setEvents: function() {
         var self;
         self = this;
-        $('#map').on('mousestop', function(e) {
-          console.log(e);
-          if (app.map.getZoom() === 15) {
-            return self.renderPopup(e.latlng);
-          }
-        });
         app.map.on('zoomstart', function(e) {
           return self.previousZoom = app.map.getZoom();
         });

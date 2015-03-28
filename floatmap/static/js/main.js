@@ -206,7 +206,7 @@
         }, function(results, status) {
           var latLng;
           latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-          return mediator.publish('searched', latLng);
+          return mediator.publish('searched', latLng, 18);
         });
       },
       events: {
@@ -224,6 +224,12 @@
       setEvents: function() {
         var self;
         self = this;
+        app.map.on('contextmenu', function(e) {
+          var latLng;
+          latLng = [e.latlng.lat, e.latlng.lng];
+          console.log(latLng);
+          return mediator.publish('searched', latLng, app.map.getZoom());
+        });
         app.map.on('zoomstart', function(e) {
           return self.previousZoom = app.map.getZoom();
         });
@@ -238,9 +244,9 @@
       addLayer: function(layer, zIndex) {
         return layer.setZIndex(zIndex).addTo(app.map);
       },
-      setAddress: function(latlng) {
+      setAddress: function(latlng, zoom) {
         var lnglat;
-        app.map.setView(latlng, 18);
+        app.map.setView(latlng, zoom);
         lnglat = [latlng[1], latlng[0]];
         return app.layout.views['#legend'].views['#query'].getQuery(lnglat);
       },

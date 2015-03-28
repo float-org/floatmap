@@ -193,7 +193,7 @@ $ ->
       g.geocode { address: address }, (results, status) ->
         latLng = [ results[0].geometry.location.lat(), results[0].geometry.location.lng() ]
         # Sends latLng to mediator, which will handle talking to the map.
-        mediator.publish('searched', latLng);
+        mediator.publish('searched', latLng, 18);
 
     events: 
       "submit #search": (e) ->
@@ -213,9 +213,17 @@ $ ->
       
       self = this
 
+      # When a user right clicks, publish the event to the mediator and trigger a query.
+      app.map.on 'contextmenu', (e) ->
+        latLng = [e.latlng.lat, e.latlng.lng]
+        console.log latLng
+        mediator.publish('searched', latLng, app.map.getZoom());
+
+      # When zoom begins, get the current zoom and cache for later.
       app.map.on 'zoomstart', (e) ->
         self.previousZoom = app.map.getZoom()
 
+      # When zoom is over, remove marker if we're leaving the max zoom layer.
       app.map.on 'zoomend', (e) ->
         map = app.map
         map.removeLayer window.marker if map.getZoom() < this.previousZoom and this.previousZoom == 15
@@ -224,8 +232,8 @@ $ ->
     addLayer: (layer, zIndex) ->
       layer.setZIndex(zIndex).addTo(app.map)
 
-    setAddress: (latlng) ->
-      app.map.setView(latlng, 18)
+    setAddress: (latlng, zoom) ->
+      app.map.setView(latlng, zoom)
       # Note that GeoJSON expects Longitude first (as x) and Latitude second (as y), so we have to switch the order
       lnglat = [latlng[1], latlng[0]]
       app.layout.views['#legend'].views['#query'].getQuery(lnglat)
@@ -332,9 +340,6 @@ $ ->
           spinner.stop()
         complete: (model, response) -> 
           spinner.stop()
-
-
-
   LegendView = app.LegendView = Backbone.View.extend
     template: "#legendTemplate"  
 
@@ -388,7 +393,6 @@ $ ->
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
       $("[data-toggle=tooltip]").tooltip({ placement: 'right'});
-
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     views: 

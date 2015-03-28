@@ -105,16 +105,16 @@
       </script>
 
       <script id="queryTemplate" type="template">
-        <div id="queryContent" class="well <% if (window.queryOpened) { %>active<% } %>">
-          <p>This address has a high risk of of more floods due to climate change</p>
+        <div id="queryContent" class="well">
+          <div id="queryToggle">
+            <span class="glyphicon glyphicon-eject"></span>
+          </div>
           <ul class="metrics">
             <li><label>Annual Precipitation:</label><span><%= query.ap %></span><a href='#'>source</a></li>
             <li><label>Storm Frequency:</label><span>25% Increase</span><a href='#'>source</a></li>
             <li><label>Flood Hazard Zone:</label> <span>Extreme</span> <a href='#'>source</a></li>
           </ul>
-        </div>
-        <div id="queryToggle">
-          <span class="glyphicon glyphicon-eject"></span>
+          <p>This address has a high risk of of more floods due to climate change</p>
         </div>
       </script>
 

@@ -326,7 +326,7 @@ $ ->
         success: (model, response) -> 
           setTimeout () ->
             app.layout.views['#legend'].$el.addClass('active-query')
-          , 10
+          , 100
           spinner.stop()
         error: (model, response) -> 
           spinner.stop()

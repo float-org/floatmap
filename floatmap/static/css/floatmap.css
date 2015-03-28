@@ -209,11 +209,26 @@ button {
 /* Query Styles */
 #queryContent {
   position: absolute;
-  bottom: 70px;
+  padding: 6px 19px;
+  bottom: 178px;
   -webkit-transition: bottom 1s ease-in;
+  width: 100%;
+}
+#queryContent .metrics {
+  text-align: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#queryContent .metrics li {
+  display: inline-block;
+}
+#queryContent .metrics li span,
+#queryContent .metrics li label {
+  display: block;
 }
 .active-query #queryContent {
-  bottom: 180px;
+  bottom: 270px;
 }
 /* Legend Styles */
 #legend {
@@ -251,9 +266,6 @@ button {
 }
 #legend .legend-panel h3 {
   display: inline-block;
-}
-.metrics {
-  text-align: center;
 }
 .legend-data {
   background-color: #e1e1e1;

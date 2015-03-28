@@ -349,7 +349,7 @@
           success: function(model, response) {
             setTimeout(function() {
               return app.layout.views['#legend'].$el.addClass('active-query');
-            }, 10);
+            }, 100);
             return spinner.stop();
           },
           error: function(model, response) {

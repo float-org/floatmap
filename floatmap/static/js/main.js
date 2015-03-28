@@ -133,7 +133,7 @@
   };
 
   $(function() {
-    var FloatLayout, HeaderView, LegendView, MapView, QueryView, app, layers, layout, mediator;
+    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, WelcomeView, app, layers, layout, mediator;
     app = window.app = window.app || {};
     layers = app.layers = [];
     mediator = app.mediator = new Mediator();
@@ -206,7 +206,7 @@
         }, function(results, status) {
           var latLng;
           latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-          return mediator.publish('searched', latLng, 18);
+          return mediator.publish('searched', latLng, 15);
         });
       },
       events: {
@@ -216,6 +216,153 @@
           address = $(e.target).find('.search-input').val();
           return this.getAddress(address);
         }
+      }
+    });
+    DataTourView = app.DataTourView = Backbone.View.extend({
+      initialize: function() {
+        return window.tour = this.tour = new Shepherd.Tour({
+          defaults: {
+            classes: 'shepherd-theme-arrows',
+            scrollTo: true
+          }
+        });
+      },
+      afterRender: function() {
+        $('#apLayer-switch').trigger('click');
+        this.tour.addStep('ap-step', {
+          title: 'Annual Precipitation',
+          text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow, between now and the 2040-2070 period. More annual precipitation means more overall water going into rivers, lakes and snowbanks, a key risk factor for bigger floods. These projections come from the National Oceanic and Atmospheric Administration (2014).',
+          attachTo: '#apLegendContainer',
+          buttons: [
+            {
+              text: 'Next',
+              action: function() {
+                $('#epLayer-switch').trigger('click');
+                return tour.next();
+              }
+            }
+          ]
+        });
+        this.tour.addStep('ep-step', {
+          title: 'Extreme Precipitation',
+          text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often, between now and the 2040-2070 period. More storm frequency means more rapid surges of water into rivers and lakes, a key risk factor for more frequent flooding. These projections also come from the National Oceanic and Atmospheric Administration (2014).',
+          attachTo: '#epLegendContainer',
+          buttons: [
+            {
+              text: 'Next',
+              action: function() {
+                $('#floods-switch').trigger('click');
+                return tour.next();
+              }
+            }
+          ]
+        });
+        this.tour.addStep('flood-step', {
+          title: 'Floods',
+          text: 'The Flood Zones show the areas that already are at major risk for flooding, based on where floods have historically reached. If floods become larger and more frequent, many neighboring areas to these historical flood zones are likely to start experience flooding. This information comes from the Federal Emergency Management Administration (2014).',
+          attachTo: '#floodsLegendContainer',
+          buttons: [
+            {
+              text: 'Next',
+              action: tour.next
+            }
+          ]
+        });
+        this.tour.addStep('query-step', {
+          title: 'Query',
+          text: 'Use the search bar or right-click anywhere on the map to see the risks for a specific location. Try using the search bar now to find a location you care about in the Midwest, or take a tour of some communities at high risk for worsened flooding.',
+          attachTo: '.search-input',
+          buttons: [
+            {
+              text: 'Take a Tour',
+              action: function() {
+                mediator.publish('searched', [44.5010, -88.0620], 15);
+                return tour.next();
+              }
+            }, {
+              text: 'Stop Tour',
+              action: tour.close
+            }
+          ]
+        });
+        this.tour.addStep('map-lambeau', {
+          title: 'Lambeau Field',
+          text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.',
+          buttons: [
+            {
+              text: 'Continue',
+              action: function() {
+                mediator.publish('searched', [43.1397, -89.3375], 15);
+                return tour.next();
+              }
+            }, {
+              text: 'Stop Tour',
+              action: tour.close
+            }
+          ]
+        });
+        this.tour.addStep('map-dane', {
+          title: 'Dane County Regional Airport',
+          text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.',
+          buttons: [
+            {
+              text: 'Continue',
+              action: function() {
+                mediator.publish('searched', [42.732072157891224, -84.50576305389404], 15);
+                return tour.next();
+              }
+            }, {
+              text: 'Stop Tour',
+              action: tour.close
+            }
+          ]
+        });
+        this.tour.addStep('map-lansing', {
+          title: 'East Lansing',
+          text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.',
+          buttons: [
+            {
+              text: 'Continue',
+              action: function() {
+                mediator.publish('searched', [41.726, -90.310], 15);
+                return tour.next();
+              }
+            }, {
+              text: 'Stop Tour',
+              action: tour.close
+            }
+          ]
+        });
+        this.tour.addStep('map-quadcities', {
+          title: 'Quad Cities Nuclear Generating Station',
+          text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.',
+          buttons: [
+            {
+              text: 'Stop Tour',
+              action: tour.complete
+            }
+          ]
+        });
+        return this.tour.start();
+      }
+    });
+    WelcomeView = app.WelcomeView = Backbone.View.extend({
+      template: "#welcomeTemplate",
+      events: {
+        'click #startDataTour': function(e) {
+          e.preventDefault();
+          return this.startDataTour();
+        }
+      },
+      startDataTour: function() {
+        var dataTour, dataView;
+        $('#welcomeModal').modal('hide');
+        dataTour = new DataTourView();
+        dataView = this.insertView('#dataTour', dataTour);
+        return dataView.render();
+      },
+      afterRender: function() {
+        return $('#welcomeModal').modal('show');
       }
     });
     MapView = app.MapView = Backbone.View.extend({
@@ -321,9 +468,11 @@
         ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap');
         ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep');
         this.addLayer(base, 0);
-        this.addLayer(floods, 1);
-        this.addLayer(ap, 2);
-        this.addLayer(ep, 3);
+        if (!window.welcome) {
+          this.addLayer(floods, 1);
+          this.addLayer(ap, 2);
+          this.addLayer(ep, 3);
+        }
         this.addLayer(labels, 4);
         map.addControl(L.control.zoom({
           position: "bottomleft"
@@ -429,6 +578,14 @@
     });
     FloatLayout = app.FloatLayout = Backbone.Layout.extend({
       template: "#floatLayout",
+      initialize: function() {
+        var welcome;
+        window.welcome = false;
+        if (welcome) {
+          welcome = new WelcomeView();
+          return this.insertView('#welcome', welcome);
+        }
+      },
       views: {
         '#header': new HeaderView(),
         'map': new MapView(),

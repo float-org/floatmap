@@ -33,33 +33,33 @@
       <script id="legendTemplate" type="template">   
             <div id="query"></div>
             <div class='legend-panel col-md-4'>
-              <div>
+              <div id="apLegendContainer">
                 <h3>Annual Precipitation</h3>
                 <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)'></span>
                 <div class="onoffswitch">
-                  <input type="checkbox" name="apLayer-switch" class="onoffswitch-checkbox" data-layer="apLayer" id="apLayer-switch" checked>
+                  <input type="checkbox" name="apLayer-switch" class="onoffswitch-checkbox" data-layer="apLayer" id="apLayer-switch">
                   <label class="onoffswitch-label" for="apLayer-switch">
                     <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
                   </label>
                 </div>    
               </div>
 
-              <div>
+              <div id="epLegendContainer">
                 <h3>Storm Frequency</h3>
                 <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)'></span>
                 <div class="onoffswitch">
-                  <input type="checkbox" name="epLayer-switch" class="onoffswitch-checkbox" data-layer="epLayer" id="epLayer-switch" checked>
+                  <input type="checkbox" name="epLayer-switch" class="onoffswitch-checkbox" data-layer="epLayer" id="epLayer-switch">
                   <label class="onoffswitch-label" for="epLayer-switch">
                     <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
                   </label>
                 </div>   
               </div>
 
-              <div>
+              <div id="floodsLegendContainer">
                 <h3>Flood Zones</h3>
                 <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)'></span>
                 <div class="onoffswitch">
-                  <input type="checkbox" name="floods-switch" class="onoffswitch-checkbox" data-layer="floods" id="floods-switch" checked>
+                  <input type="checkbox" name="floods-switch" class="onoffswitch-checkbox" data-layer="floods" id="floods-switch" >
                   <label class="onoffswitch-label" for="floods-switch">
                     <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
                   </label>
@@ -118,10 +118,31 @@
         </div>
       </script>
 
+      <script id="welcomeTemplate" type="template">
+        <div class="modal fade" id="welcomeModal" tabindex="-" role="dialog" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>Float shows the projected impacts of climate chaos on American communities in the 2040-2070 period.</p>
+
+                <p>Float currently shows how key risk factors for flooding are projected to worsen in the Midwest US.</p>
+  
+                <p>If you see areas without one of the data layers, that doesn’t mean those places are risk free--it just means the science hasn’t got there yet. We show only projections where a large majority of studies agree.</p>
+              </div>
+              <div class="modal-footer">
+                <a id="startDataTour" class="btn btn-primary" href="#">Continue</a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+      </script>
+
       <script id="floatLayout" type="layout">
           <header id="header"></header>
           <div id="map"></div>
           <div id="legend"></div>
+          <div id="welcome"></div>
       </script>
 
        <div class="modal fade" id="aboutModal" tabindex="-" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">

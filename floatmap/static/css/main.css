@@ -112,7 +112,7 @@ header a:hover {
   color: #FFF;
   text-decoration: none;
 }
-header {
+#header {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8');
   /* for IE */
   background: #56a8ca;
@@ -140,7 +140,7 @@ header {
   z-index: 1049;
   /* one less than bootstrap modal */
 }
-header nav {
+#header nav {
   color: #FFF;
   text-align: right;
   padding-right: 20px;
@@ -148,13 +148,13 @@ header nav {
   -moz-box-sizing: border-box;
   clear: both;
 }
-header nav a {
+#header nav a {
   color: #FFF;
   font-size: 22px;
   font-weight: bold;
   margin-left: 20px;
 }
-header nav a:first-child {
+#header nav a:first-child {
   margin-left: 0;
 }
 .logo {
@@ -205,6 +205,11 @@ button {
 .modal-backdrop {
   height: 100%;
   z-index: 1049;
+}
+/* Tour Styles */
+.shepherd-step.shepherd-theme-arrows {
+  z-index: 99999999;
+  max-width: 400px !important;
 }
 /* Query Styles */
 #queryContent {
@@ -581,7 +586,7 @@ marker#arrow {
    Modify as content requires.
    ========================================================================== */
 @media all and (min-width: 1024px) {
-  header nav {
+  #header nav {
     clear: none;
   }
 }

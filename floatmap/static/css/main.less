@@ -138,7 +138,7 @@ img[src*="http://d.tiles.mapbox.com/v3/floatmap.2ce887fe"]    {
     text-decoration: none;
 }
 
-header {
+#header {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
     background: #56a8ca; /* Old browsers */
     background: -moz-linear-gradient(top, #56a8ca 46%, #2989d8 100%, #64a7dc 100%); /* FF3.6+ */
@@ -157,7 +157,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', end
     z-index:1049; /* one less than bootstrap modal */
 }
 
-header nav {
+#header nav {
     color:#FFF;
     text-align:right;
     padding-right:20px;
@@ -166,14 +166,14 @@ header nav {
     clear:both;
 }
 
-header nav a {
+#header nav a {
     color:#FFF;
     font-size:22px;
     font-weight:bold;
     margin-left:20px;
 }
 
-header nav a:first-child {
+#header nav a:first-child {
     margin-left:0;
 }
 
@@ -240,6 +240,13 @@ button {
   z-index: 1049;
 }
 
+
+/* Tour Styles */
+
+.shepherd-step.shepherd-theme-arrows {
+    z-index:99999999; // Always on top!
+    max-width:400px !important; // Really don't like the CSS in this library
+}
 
 /* Query Styles */
 
@@ -641,7 +648,7 @@ marker#arrow {
    ========================================================================== */
 
 @media all and (min-width: 1024px) {
-    header nav {
+    #header nav {
         clear:none;    
     }
 }

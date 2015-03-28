@@ -22,7 +22,7 @@ def map(request):
 
 # Question: Is there a better term for "data_type" w/ regard to Elasticsearch lingo?
 # Query Elasticsearch for particular dataset - currently assumes datasets are structured the same.
-
+import traceback
 def get_query(data_type, lng, lat):
     url = os.path.join(settings.ES_URL, data_type, "region", "_search")
 
@@ -49,10 +49,11 @@ def get_query(data_type, lng, lat):
     try:
         r = requests.get(url, params=params, data=json.dumps(data))
         dn = r.json()["hits"]["hits"][0]["fields"]["DN"][0]
+        print r.json()
         print dn
         return dn
     except Exception as e:
-        print "Bad response: ", r.json()
+        print traceback.print_exc()
         return 0
 
 

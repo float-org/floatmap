@@ -535,7 +535,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     initialize: () ->
-      # TODO: replace boolean with a cookie check, we only show Welcome first time user comes to the page
+      # TODO: replace boolean with a cookie check, we only show Welcome first time user comes to the page.
+      # Set to true to kick off the welcome modal + tour.
       window.welcome = false
       if welcome
         welcome = new WelcomeView()

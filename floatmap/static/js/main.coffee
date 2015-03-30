@@ -220,7 +220,7 @@ $ ->
         text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow, between now and the 2040-2070 period. 
 More annual precipitation means more overall water going into rivers, lakes and snowbanks, a key risk factor for bigger floods.
 These projections come from the National Oceanic and Atmospheric Administration (2014).'
-        attachTo: '#apLegendContainer'
+        attachTo: '#apLegendContainer top'
         buttons: [
           text: 'Next'
           action: () ->
@@ -233,7 +233,7 @@ These projections come from the National Oceanic and Atmospheric Administration 
         text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often, between now and the 2040-2070 period. 
 More storm frequency means more rapid surges of water into rivers and lakes, a key risk factor for more frequent flooding.
 These projections also come from the National Oceanic and Atmospheric Administration (2014).'
-        attachTo: '#epLegendContainer'
+        attachTo: '#epLegendContainer top'
         buttons: [
           text: 'Next'
           action: () ->
@@ -246,7 +246,7 @@ These projections also come from the National Oceanic and Atmospheric Administra
         text: 'The Flood Zones show the areas that already are at major risk for flooding, based on where floods have historically reached. 
 If floods become larger and more frequent, many neighboring areas to these historical flood zones are likely to start experience flooding. 
 This information comes from the Federal Emergency Management Administration (2014).'
-        attachTo: '#floodsLegendContainer'
+        attachTo: '#floodsLegendContainer top'
         buttons: [
           text: 'Next'
           action: tour.next
@@ -256,11 +256,15 @@ This information comes from the Federal Emergency Management Administration (201
         title: 'Query'
         text: 'Use the search bar or right-click anywhere on the map to see the risks for a specific location.
 Try using the search bar now to find a location you care about in the Midwest, or take a tour of some communities at high risk for worsened flooding.'
-        attachTo: '.search-input'
+        attachTo: '.search-input bottom'
         buttons: [{
           text: 'Take a Tour'
           action: () ->
-            mediator.publish('searched', [44.5010, -88.0620], 15)
+            latlng = [44.5010, -88.0620]
+            app.map.setView(latlng, 15)
+            if app.map.marker
+              app.map.removeLayer(app.map.marker)
+            marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
         }, {
           text: 'Stop Tour'
@@ -272,10 +276,15 @@ Try using the search bar now to find a location you care about in the Midwest, o
         title: 'Lambeau Field'
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
         with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.'
+        attachTo: '.leaflet-marker-icon left'
         buttons: [{
           text: 'Continue'
           action: () ->
-            mediator.publish('searched', [43.1397, -89.3375], 15)
+            latlng = [43.1397, -89.3375]
+            app.map.setView(latlng, 15)
+            if app.map.marker
+              app.map.removeLayer(app.map.marker)
+            marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
         }, {
           text: 'Stop Tour'
@@ -285,10 +294,15 @@ Try using the search bar now to find a location you care about in the Midwest, o
       this.tour.addStep 'map-dane',
         title: 'Dane County Regional Airport'
         text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.'
+        attachTo: '.leaflet-marker-icon left'
         buttons: [{
           text: 'Continue'
           action: () ->
-            mediator.publish('searched', [42.732072157891224, -84.50576305389404], 15)
+            latlng = [42.732072157891224, -84.50576305389404]
+            app.map.setView(latlng, 15)
+            if app.map.marker
+              app.map.removeLayer(app.map.marker)
+            marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
         }, {
           text: 'Stop Tour'
@@ -298,10 +312,15 @@ Try using the search bar now to find a location you care about in the Midwest, o
       this.tour.addStep 'map-lansing',
         title: 'East Lansing'
         text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.'
+        attachTo: '.leaflet-marker-icon left'
         buttons: [{
           text: 'Continue'
           action: () ->
-            mediator.publish('searched', [41.726, -90.310], 15)
+            latlng = [41.726, -90.310]
+            app.map.setView(latlng, 15)
+            if app.map.marker
+              app.map.removeLayer(app.map.marker)
+            marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
         }, {
           text: 'Stop Tour'
@@ -311,12 +330,11 @@ Try using the search bar now to find a location you care about in the Midwest, o
       this.tour.addStep 'map-quadcities',
         title: 'Quad Cities Nuclear Generating Station'
         text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.'
+        attachTo: '.leaflet-marker-icon left'
         buttons: [{
           text: 'Stop Tour'
           action: tour.complete
         }]
-
-
 
       this.tour.start()
 
@@ -336,9 +354,6 @@ Try using the search bar now to find a location you care about in the Midwest, o
     afterRender: () ->
       $('#welcomeModal').modal('show')
       
-
-
-
   MapView = app.MapView = Backbone.View.extend
     template: "#mapTemplate"
     el: false
@@ -353,7 +368,6 @@ Try using the search bar now to find a location you care about in the Midwest, o
       # When a user right clicks, publish the event to the mediator and trigger a query.
       app.map.on 'contextmenu', (e) ->
         latLng = [e.latlng.lat, e.latlng.lng]
-        console.log latLng
         mediator.publish('searched', latLng, app.map.getZoom());
 
       # When zoom begins, get the current zoom and cache for later.
@@ -510,7 +524,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
             map.addLayer(layer)
         else 
           map.removeLayer layer if map.hasLayer(layer)
-      
+    
+    #Query popup box as a subview  
     views: 
       '#query': new QueryView()
 
@@ -537,8 +552,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
     initialize: () ->
       # TODO: replace boolean with a cookie check, we only show Welcome first time user comes to the page.
       # Set to true to kick off the welcome modal + tour.
-      window.welcome = false
-      if welcome
+      window.welcome = true
+      if window.welcome
         welcome = new WelcomeView()
         this.insertView('#welcome', welcome)
 

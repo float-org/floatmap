@@ -215,6 +215,10 @@
           e.preventDefault();
           address = $(e.target).find('.search-input').val();
           return this.getAddress(address);
+        },
+        "click #tourLink": function(e) {
+          e.preventDefault();
+          return app.layout.views['#welcome'][0].startDataTour();
         }
       }
     });
@@ -287,7 +291,9 @@
               }
             }, {
               text: 'Stop Tour',
-              action: tour.close
+              action: function() {
+                return tour.complete();
+              }
             }
           ]
         });
@@ -310,7 +316,9 @@
               }
             }, {
               text: 'Stop Tour',
-              action: tour.close
+              action: function() {
+                return tour.complete();
+              }
             }
           ]
         });
@@ -333,7 +341,9 @@
               }
             }, {
               text: 'Stop Tour',
-              action: tour.close
+              action: function() {
+                return tour.complete();
+              }
             }
           ]
         });
@@ -356,7 +366,9 @@
               }
             }, {
               text: 'Stop Tour',
-              action: tour.close
+              action: function() {
+                return tour.complete();
+              }
             }
           ]
         });
@@ -367,7 +379,9 @@
           buttons: [
             {
               text: 'Stop Tour',
-              action: tour.complete
+              action: function() {
+                return tour.complete();
+              }
             }
           ]
         });
@@ -382,8 +396,21 @@
           return this.startDataTour();
         }
       },
+      resetMapData: function() {
+        var j, layer, len, ref;
+        ref = [window.ap, window.ep, window.floods];
+        for (j = 0, len = ref.length; j < len; j++) {
+          layer = ref[j];
+          app.map.removeLayer(layer);
+        }
+        $('#floods-switch').prop('checked', false);
+        $('#apLayer-switch').prop('checked', false);
+        return $('#epLayer-switch').prop('checked', false);
+      },
       startDataTour: function() {
         var dataTour, dataView;
+        app.map.setZoom(6);
+        this.resetMapData();
         $('#welcomeModal').modal('hide');
         dataTour = new DataTourView();
         dataView = this.insertView('#dataTour', dataTour);

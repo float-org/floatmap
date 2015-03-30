@@ -198,11 +198,17 @@ $ ->
         # Sends latLng to mediator, which will handle talking to the map.
         mediator.publish('searched', latLng, 15);
 
+    # TODO: Currently, we are blessed with Bootstrap Modal working properly outside of Backbone.  I should probably
+    # make an event that creates an AboutModalView at some point just so it follows our convention.
     events: 
       "submit #search": (e) ->
         e.preventDefault()
         address = $(e.target).find('.search-input').val()
         this.getAddress address
+
+      "click #tourLink": (e) ->
+        e.preventDefault()
+        app.layout.views['#welcome'][0].startDataTour() # Why does views['#welcome'] return an array?
 
 
   DataTourView = app.DataTourView = Backbone.View.extend
@@ -271,8 +277,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
             tour.next()
         }, {
           text: 'Stop Tour'
-          action: tour.close
-
+          action: () ->
+            tour.complete()
         }]
 
       this.tour.addStep 'map-lambeau',
@@ -291,7 +297,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
             tour.next()
         }, {
           text: 'Stop Tour'
-          action: tour.close
+          action: () ->
+            tour.complete()
         }]
 
       this.tour.addStep 'map-dane',
@@ -309,7 +316,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
             tour.next()
         }, {
           text: 'Stop Tour'
-          action: tour.close
+          action: () ->
+            tour.complete()
         }]
 
       this.tour.addStep 'map-lansing',
@@ -327,7 +335,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
             tour.next()
         }, {
           text: 'Stop Tour'
-          action: tour.close
+          action: () ->
+            tour.complete()
         }]
 
       this.tour.addStep 'map-quadcities',
@@ -336,7 +345,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
         attachTo: '.leaflet-marker-icon left'
         buttons: [{
           text: 'Stop Tour'
-          action: tour.complete
+          action: () ->
+            tour.complete()
         }]
 
       this.tour.start()
@@ -348,7 +358,16 @@ Try using the search bar now to find a location you care about in the Midwest, o
         e.preventDefault()
         this.startDataTour()
 
+    resetMapData: () ->
+      for layer in [window.ap, window.ep, window.floods]
+        app.map.removeLayer(layer)
+      $('#floods-switch').prop('checked',false)
+      $('#apLayer-switch').prop('checked',false)
+      $('#epLayer-switch').prop('checked',false)
+
     startDataTour: () ->
+      app.map.setZoom(6)
+      this.resetMapData()
       $('#welcomeModal').modal('hide')
       dataTour = new DataTourView()
       dataView = this.insertView('#dataTour', dataTour)

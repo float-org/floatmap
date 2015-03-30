@@ -87,6 +87,9 @@ Query = Backbone.Model.extend
 
 # A mediator pattern allows our different Views to publish and subscribed to a shared, but independent, set of events.
 # Read more at http://addyosmani.com/largescalejavascript/#mediatorpattern
+
+# TODO: Maybe we don't actually need a Mediator object since we're using LayoutManager...
+
 Mediator = () ->
   subscribe = (channel, fn) ->
     if not this.channels[channel] 

@@ -83,41 +83,6 @@ Query = Backbone.Model.extend
 
   url: '/get_queries/'
 
-
-
-# A mediator pattern allows our different Views to publish and subscribed to a shared, but independent, set of events.
-# Read more at http://addyosmani.com/largescalejavascript/#mediatorpattern
-
-# TODO: Maybe we don't actually need a Mediator object since we're using LayoutManager...
-
-Mediator = () ->
-  subscribe = (channel, fn) ->
-    if not this.channels[channel] 
-      this.channels[channel] = []
-      this.channels[channel].push({ context: this, callback: fn })
-      this
-  
-  publish = (channel) ->
-    if not this.channels[channel]
-      return false
-    args = Array.prototype.slice.call(arguments, 1);
-    i = 0
-    l = this.channels[channel].length
-    while i < l
-      subscription = this.channels[channel][i]
-      subscription.callback.apply subscription.context, args
-      i++
-    this
-
-  {
-    channels: {},
-    publish: publish,
-    subscribe: subscribe,
-    installTo: (obj) ->
-        obj.subscribe = subscribe;
-        obj.publish = publish;
-  }
-
 $ ->
 
   # App namespace
@@ -125,9 +90,6 @@ $ ->
 
   # Our layers object, which will contain all of the data layers
   layers = app.layers = []
-
-  # Create an instance of the Mediator class so we can pass things around views
-  mediator = app.mediator = new Mediator()
 
   # Accepts a data type and a data value (e.g NOAA Ext. Precipitation DN value)
   # Returns an ID which corresponds to one of four SVG patterns
@@ -195,8 +157,7 @@ $ ->
       g = new google.maps.Geocoder()
       g.geocode { address: address }, (results, status) ->
         latLng = [ results[0].geometry.location.lat(), results[0].geometry.location.lng() ]
-        # Sends latLng to mediator, which will handle talking to the map.
-        mediator.publish('searched', latLng, 15);
+        app.layout.views['map'].setAddress(latLng, 15)
 
     # TODO: Currently, we are blessed with Bootstrap Modal working properly outside of Backbone.  I should probably
     # make an event that creates an AboutModalView at some point just so it follows our convention.
@@ -387,10 +348,10 @@ Try using the search bar now to find a location you care about in the Midwest, o
       
       self = this
 
-      # When a user right clicks, publish the event to the mediator and trigger a query.
+      # When a user right clicks, trigger a query in Elasticsearch for the coords at the click.
       app.map.on 'contextmenu', (e) ->
         latLng = [e.latlng.lat, e.latlng.lng]
-        mediator.publish('searched', latLng, app.map.getZoom());
+        app.layout.views['map'].setAddress(latLng, app.map.getZoom())
 
       # When zoom begins, get the current zoom and cache for later.
       app.map.on 'zoomstart', (e) ->
@@ -434,13 +395,6 @@ Try using the search bar now to find a location you care about in the Midwest, o
               return true
 
       layer
-
-
-    initialize: () ->
-      # Subscribe setAddress method to the mediator so the nav
-      # can access this method when an address is searched.
-      self = this
-      mediator.subscribe('searched', self.setAddress)
 
     renderTemplate: () -> 
       # Path to Base layer (no labels)

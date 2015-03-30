@@ -10,7 +10,7 @@
  */
 
 (function() {
-  var GeoCollection, GeoModel, Mediator, Query;
+  var GeoCollection, GeoModel, Query;
 
   GeoModel = L.GeoModel = Backbone.Model.extend({
     keepId: false,
@@ -94,49 +94,10 @@
     url: '/get_queries/'
   });
 
-  Mediator = function() {
-    var publish, subscribe;
-    subscribe = function(channel, fn) {
-      if (!this.channels[channel]) {
-        this.channels[channel] = [];
-        this.channels[channel].push({
-          context: this,
-          callback: fn
-        });
-        return this;
-      }
-    };
-    publish = function(channel) {
-      var args, i, l, subscription;
-      if (!this.channels[channel]) {
-        return false;
-      }
-      args = Array.prototype.slice.call(arguments, 1);
-      i = 0;
-      l = this.channels[channel].length;
-      while (i < l) {
-        subscription = this.channels[channel][i];
-        subscription.callback.apply(subscription.context, args);
-        i++;
-      }
-      return this;
-    };
-    return {
-      channels: {},
-      publish: publish,
-      subscribe: subscribe,
-      installTo: function(obj) {
-        obj.subscribe = subscribe;
-        return obj.publish = publish;
-      }
-    };
-  };
-
   $(function() {
-    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, WelcomeView, app, layers, layout, mediator;
+    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, WelcomeView, app, layers, layout;
     app = window.app = window.app || {};
     layers = app.layers = [];
-    mediator = app.mediator = new Mediator();
     app.getPattern = function(type, d) {
       var pattern;
       if (type === 'ep') {
@@ -206,7 +167,7 @@
         }, function(results, status) {
           var latLng;
           latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-          return mediator.publish('searched', latLng, 15);
+          return app.layout.views['map'].setAddress(latLng, 15);
         });
       },
       events: {
@@ -397,10 +358,10 @@
         }
       },
       resetMapData: function() {
-        var j, layer, len, ref;
+        var i, layer, len, ref;
         ref = [window.ap, window.ep, window.floods];
-        for (j = 0, len = ref.length; j < len; j++) {
-          layer = ref[j];
+        for (i = 0, len = ref.length; i < len; i++) {
+          layer = ref[i];
           app.map.removeLayer(layer);
         }
         $('#floods-switch').prop('checked', false);
@@ -429,7 +390,7 @@
         app.map.on('contextmenu', function(e) {
           var latLng;
           latLng = [e.latlng.lat, e.latlng.lng];
-          return mediator.publish('searched', latLng, app.map.getZoom());
+          return app.layout.views['map'].setAddress(latLng, app.map.getZoom());
         });
         app.map.on('zoomstart', function(e) {
           return self.previousZoom = app.map.getZoom();
@@ -482,11 +443,6 @@
           });
         }
         return layer;
-      },
-      initialize: function() {
-        var self;
-        self = this;
-        return mediator.subscribe('searched', self.setAddress);
       },
       renderTemplate: function() {
         var ap, base, baseURL, ep, floodBounds, floods, labels, labelsURL, map, northEast, southWest;

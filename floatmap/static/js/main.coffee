@@ -443,6 +443,10 @@ Try using the search bar now to find a location you care about in the Midwest, o
   QueryView = app.QueryView = Backbone.View.extend
     template: "#queryTemplate"
 
+    events:
+      "click #queryToggle": (e) -> 
+        app.layout.views['#legend'].$el.toggleClass('active-query')
+
     initialize: () ->
       this.model = new Query()
       this.listenTo(this.model, "change", this.render);

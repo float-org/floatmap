@@ -492,6 +492,11 @@
     });
     QueryView = app.QueryView = Backbone.View.extend({
       template: "#queryTemplate",
+      events: {
+        "click #queryToggle": function(e) {
+          return app.layout.views['#legend'].$el.toggleClass('active-query');
+        }
+      },
       initialize: function() {
         this.model = new Query();
         return this.listenTo(this.model, "change", this.render);

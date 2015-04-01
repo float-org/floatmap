@@ -230,7 +230,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
         buttons: [{
           text: 'Take a Tour'
           action: () ->
-            latlng = [44.5010, -88.0620]
+            latlng = [44.519, -88.019]
             app.map.setView(latlng, 15)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
@@ -243,7 +243,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
         }]
 
       this.tour.addStep 'map-lambeau',
-        title: 'Lambeau Field'
+        title: 'Green Bay'
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
         with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.'
         attachTo: '.leaflet-marker-icon left'

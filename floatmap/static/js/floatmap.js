@@ -358,6 +358,14 @@
         },
         'shown.bs.modal #welcomeModal': function(e) {
           return this.reposition();
+        },
+        'click #closeModal': function(e) {
+          app.map.addLayer(floods, 1);
+          $('#floods-switch').prop('checked', true);
+          app.map.addLayer(ap, 2);
+          $('#apLayer-switch').prop('checked', true);
+          app.map.addLayer(ep, 3);
+          return $('#epLayer-switch').prop('checked', true);
         }
       },
       initialize: function(e) {
@@ -388,7 +396,10 @@
         return dataView.render();
       },
       afterRender: function() {
-        return $('#welcomeModal').modal('show');
+        return $('#welcomeModal').modal({
+          backdrop: 'static',
+          keyboard: true
+        }, 'show');
       },
       reposition: function() {
         var dialog, modal;

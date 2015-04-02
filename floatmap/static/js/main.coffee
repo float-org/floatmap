@@ -174,15 +174,11 @@ $ ->
 
   DataTourView = app.DataTourView = Backbone.View.extend
     initialize: () ->
-      window.tour = this.tour = new Shepherd.Tour({
-        defaults: {
+      window.tour = this.tour = new Shepherd.Tour
+        defaults: 
           classes: 'shepherd-theme-arrows'
           scrollTo: true
-        }
-      })
-        
-
-
+      
     afterRender: () ->   
       $('#apLayer-switch').trigger('click')
       this.tour.addStep 'ap-step',
@@ -322,6 +318,14 @@ Try using the search bar now to find a location you care about in the Midwest, o
       'shown.bs.modal #welcomeModal': (e) ->
         this.reposition()
 
+      'click #closeModal': (e) ->
+        app.map.addLayer floods, 1
+        $('#floods-switch').prop('checked',true)
+        app.map.addLayer ap, 2
+        $('#apLayer-switch').prop('checked',true)
+        app.map.addLayer ep, 3
+        $('#epLayer-switch').prop('checked',true)
+
     initialize: (e) ->
       self = this
       $(window).on 'resize', (e) ->
@@ -343,7 +347,10 @@ Try using the search bar now to find a location you care about in the Midwest, o
       dataView.render()
 
     afterRender: () ->
-      $('#welcomeModal').modal('show')
+      $('#welcomeModal').modal({
+        backdrop: 'static'
+        keyboard: true
+      }, 'show')
 
     reposition: () ->
       modal = this.$el

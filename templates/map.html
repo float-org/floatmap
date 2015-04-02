@@ -153,21 +153,68 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h3 class="modal-title">About Float</h4>
               </div>
-              <div class="modal-body">
-                <p>Float Map shows the projected impacts of unrestrained climate change on where you live and work.</p>
-                <p>Float Map shows projections of the 2040-2070 time period.</p>
-                <p>The Map projects what happens if the current path continues with no serious reductions in climate pollution.</p>
-                <p>We use only statistically strong data from the most recent available NOAA, FEMA, and university research, and we always share our sources.</p>
-                <p>Float Map currently shows projections related to worsening flooding in the Midwest US, and plans to expand to other impacts and other regions of the United States.</p>
+              <div class="modal-body" id="accordion">
+                  <div class="panel">
+                  <h2>
+                   <a data-toggle="collapse" data-parent="#accordion" href="#overview" aria-expanded="true" aria-controls="overview">
+                    Overview
+                  </a>
+                  </h2>
 
-                <h4>Our Team:</h4>
-                <p>Float is an independent, not-for-profit organization.</p>
-                <li>Keith Brower Brown</li>
-                <li>Mike Vattuone</li>
-                <li>Matteo Bannerjee</li>
-                <li>Max Gardner</li>
-                <li>Daniel Goldfarb</li>
-              </div>
+                  <div id="overview" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="overview">
+                    <p>Float Map shows the projected impacts of unchecked climate change on American homes, businesses, and communities.</p>
+                    <p>Float Map shows projections of the 2040-2070 time period, if the current path continues with no serious reductions in climate pollution.</p>
+                    <p>Float Map currently shows projections related to worsening flooding in the Midwest US. We working to expand to other projections and other regions of the United States.</p>
+                    <p>We use data only from the most recent available NOAA and FEMA research, and we always share our sources. </p>
+                    <p>Float is an independent, non-partisan, not-for-profit organization. Float received the Judges’ Choice and Popular Choice awards in the MIT Climate Colab competition.</p>
+                    <p>Please feel free to send questions and your feedback on how to make Float better: info@floatmap.us</p>
+                  </div>
+                  
+                  <h2>
+                  <a data-toggle="collapse" data-parent="#accordion" href="#dataSources" aria-expanded="true" aria-controls="dataSources">
+                    Data Sources
+                  </a>
+                  </h2>
+                  <div id="dataSources" class="panel-collapse collapse" role="tabpanel" aria-labelledby="dataSources">
+                    <p>We selected the data layers used for Float after consultation with experts at Lawrence Berkeley National Laboratory (LBNL, the National Center for Atmospheric Research (NCAR), and the National Climate Data Center (NCDC). All of these institutions are public, not-for-profit research organizations.</p>
+
+                    <p>The average precipitation layer uses data from the National Oceanic and Atmospheric Administration’s “Regional Climate Trends and Scenarios for the U.S. National Climate Assessment” (Technical Report 142, 2014, link). This layer shows the percent change between high-emissions scenario (A2) projections of the 2040-2070 time period, versus the historical climate data from 1971-1999. The data presented on Float is a multi-model average of the results from 15 distinct climate models (Atmosphere-Ocean General Circulation Models), compiled in the Coupled Model Intercomparison Project phase 3 (CMIP3) dataset. The Float average precipitation layer uses only the NOAA data where a majority of the models show statistically significant change, and over 67% of the models agree on the direction of the change, which is the highest category of data significance which NOAA distinguishes in this report. This data is visualized in the NOAA report for the Midwest (142-3) in Section 3.7, Figure 40, center left.</p>
+
+                    <p>The storm frequency layer uses data from the National Oceanic and Atmospheric Administration’s “Regional Climate Trends and Scenarios for the U.S. National Climate Assessment” (Technical Report 142, 2014, link). This layer shows the percent change between high-emissions scenario (A2) projections of the 2040-2070 time period, versus the historical climate data from 1971-1999. The data presented on Float is a multi-model average of the results from 11 distinct climate models compiled in the North American Regional Climate Change Assessment Program (NARCCAP) dataset. The Float storm frequency layer uses only the NOAA data where a majority of the models show statistically significant change, and over 67% of the models agree on the direction of the change, which is the highest category of data significance which NOAA distinguishes in this report. This data is visualized in the NOAA report for the Midwest (142-3) in Section 3.9, Figure 44, top.</p>
+
+                    <p>Float was constructed using Django, Elasticsearch, BackboneJS, Leaflet, and Mapbox Studio.  Check out the source, and stay up to date with our current development on <a href="https://github.com/float-org/floatmap/">Github.</a></p>
+                  </div>
+
+                  <h2>
+                  <a data-toggle="collapse" data-parent="#accordion" href="#team" aria-expanded="true" aria-controls="team">
+                  About Our Team
+                  </a>
+                  </h2>
+
+                  <div id="team" class="panel-collapse collapse" role="tabpanel" aria-labelledby="dataSources">
+                    <p>Float is an independent, not-for-profit organization.</p>
+
+                    <h3>Keith Brower Brown</h3>
+                    <p>Growing up in Oregon, with family on an apple orchard and summers on Cascade trails,  Keith became passionate for protecting how communities depend on their land and climate. After studying Environmental Economics and Geography at UC Berkeley, Keith worked in the energy industry at PG&E and Navigant Consulting, before founding Float in 2013.</p> 
+
+                    <h3>Mike Vattuone</h3>
+                    <p>A former developer at Citizen Engagement Laboratory, Mike has worked on a number of climate related campaigns for a number of advocacy groups.  With a background in cognitive science and user experience research, Mike has a unique interest in both modular software architecture and user interface design.</p>
+
+                    <h3>Matteo Banerjee</h3>
+                    <h3>Max Gardner</h3>
+                  </div>
+
+                  <h2>
+                    <a data-toggle="collapse" data-parent="#accordion" href="#contact" aria-expanded="true" aria-controls="contact">
+                      Contact Us
+                    </a>
+                  </h2>
+
+                  <div id="contact" class="panel-collapse collapse" role="tabpanel" aria-labelledby="contact">
+                    <p><a href="mailto:info@floatmap.us">info@floatmap.us</a></p>
+                  </div>
+                </div>
+                </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>

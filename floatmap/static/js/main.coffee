@@ -86,7 +86,7 @@ Query = Backbone.Model.extend
 $ ->
 
   # App namespace
-  app = window.app = ( window.app || {} );
+  app = window.app = ( window.app || {} )
 
   # Our layers object, which will contain all of the data layers
   layers = app.layers = []
@@ -319,6 +319,14 @@ Try using the search bar now to find a location you care about in the Midwest, o
         e.preventDefault()
         this.startDataTour()
 
+      'shown.bs.modal #welcomeModal': (e) ->
+        this.reposition()
+
+    initialize: (e) ->
+      self = this
+      $(window).on 'resize', (e) ->
+        self.reposition()
+
     resetMapData: () ->
       for layer in [window.ap, window.ep, window.floods]
         app.map.removeLayer(layer)
@@ -336,6 +344,14 @@ Try using the search bar now to find a location you care about in the Midwest, o
 
     afterRender: () ->
       $('#welcomeModal').modal('show')
+
+    reposition: () ->
+      modal = this.$el
+      dialog = modal.find('.modal-dialog')
+      modal.css('display', 'block')
+      # Dividing by two centers the modal exactly, but dividing by three 
+      # or four works better for larger screens.
+      dialog.css("margin-top", Math.max(0, ($(window).height() - dialog.height()) / 2))
       
   MapView = app.MapView = Backbone.View.extend
     template: "#mapTemplate"
@@ -408,7 +424,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
         map = app.map = new L.Map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 6)
       
       # Create new SVG renderer and add to Tile pane, so we can work with GeoJSON like other layers
-      map.renderer = L.svg({pane:'tilePane'}).addTo(map);
+      map.renderer = L.svg({pane:'tilePane'}).addTo(map)
       
       # We're only dealing with the Midwest for now, so bound our 
       # tile layer queries.
@@ -418,8 +434,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
       floodBounds = L.latLngBounds(southWest, northEast)
       
       # Create our layers
-      base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5});
-      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {bounds: floodBounds, pane: 'tilePane', maxZoom: 15, minZoom: 5});
+      base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
+      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {bounds: floodBounds, pane: 'tilePane', maxZoom: 15, minZoom: 5})
       labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
       
       ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap')
@@ -449,7 +465,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
 
     initialize: () ->
       this.model = new Query()
-      this.listenTo(this.model, "change", this.render);
+      this.listenTo(this.model, "change", this.render)
 
     serialize: () ->
       { query: this.model.attributes }
@@ -516,7 +532,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
       
       # ToDo: Worth transferring this HTML to the template at some point?
       $(apGrades).each (index) ->
-        apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + ";\"></i></div>")
+        apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + "\"></i></div>")
         if index % 4 is 0
           textNode = "<span>+" + this + "%</span>"
           apValue.append textNode
@@ -526,7 +542,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
 
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
-      $("[data-toggle=tooltip]").tooltip({ placement: 'right'});
+      $("[data-toggle=tooltip]").tooltip({ placement: 'right'})
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     initialize: () ->

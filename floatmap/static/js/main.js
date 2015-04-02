@@ -355,7 +355,17 @@
         'click #startDataTour': function(e) {
           e.preventDefault();
           return this.startDataTour();
+        },
+        'shown.bs.modal #welcomeModal': function(e) {
+          return this.reposition();
         }
+      },
+      initialize: function(e) {
+        var self;
+        self = this;
+        return $(window).on('resize', function(e) {
+          return self.reposition();
+        });
       },
       resetMapData: function() {
         var i, layer, len, ref;
@@ -379,6 +389,13 @@
       },
       afterRender: function() {
         return $('#welcomeModal').modal('show');
+      },
+      reposition: function() {
+        var dialog, modal;
+        modal = this.$el;
+        dialog = modal.find('.modal-dialog');
+        modal.css('display', 'block');
+        return dialog.css("margin-top", Math.max(0, ($(window).height() - dialog.height()) / 2));
       }
     });
     MapView = app.MapView = Backbone.View.extend({
@@ -577,7 +594,7 @@
         labels = [];
         $(apGrades).each(function(index) {
           var apValue, textNode;
-          apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + ";\"></i></div>");
+          apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + "\"></i></div>");
           if (index % 4 === 0) {
             textNode = "<span>+" + this + "%</span>";
             apValue.append(textNode);

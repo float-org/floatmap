@@ -218,7 +218,7 @@ These projections come from the National Oceanic and Atmospheric Administration 
 
       # Ext Precip explanation step
       this.tour.addStep 'ep-step',
-        title: 'Extreme Precipitation'
+        title: 'Storm Frequency'
         text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often, between now and the 2040-2070 period. 
 More storm frequency means more rapid surges of water into rivers and lakes, a key risk factor for more frequent flooding.
 These projections also come from the National Oceanic and Atmospheric Administration (2014).'
@@ -232,7 +232,7 @@ These projections also come from the National Oceanic and Atmospheric Administra
 
       # Floods explanation step
       this.tour.addStep 'flood-step',
-        title: 'Floods'
+        title: 'Flood Zones'
         text: 'The Flood Zones show the areas that already are at major risk for flooding, based on where floods have historically reached. 
 If floods become larger and more frequent, many neighboring areas to these historical flood zones are likely to start experience flooding. 
 This information comes from the Federal Emergency Management Administration (2014).'
@@ -242,10 +242,9 @@ This information comes from the Federal Emergency Management Administration (201
           action: tour.next
         ]
 
-      # Display query step
-      # TODO: Update this to be "search-step"
-      this.tour.addStep 'query-step',
-        title: 'Query'
+      # Display search step
+      this.tour.addStep 'search-step',
+        title: 'Search'
         text: 'Use the search bar or right-click anywhere on the map to see the risks for a specific location.
 Try using the search bar now to find a location you care about in the Midwest, or take a tour of some communities at high risk for worsened flooding.'
         attachTo: '.search-input bottom'
@@ -268,7 +267,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
 
       # The following steps show particular regions on the map
       this.tour.addStep 'map-lambeau',
-        title: 'Green Bay'
+        title: 'Green Bay, WI'
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
         with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.'
         attachTo: '.leaflet-marker-icon left'
@@ -288,7 +287,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
         }]
 
       this.tour.addStep 'map-dane',
-        title: 'Dane County Regional Airport'
+        title: 'Madison, WI Airport'
         text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.'
         attachTo: '.leaflet-marker-icon left'
         buttons: [{
@@ -307,7 +306,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
         }]
 
       this.tour.addStep 'map-lansing',
-        title: 'East Lansing'
+        title: 'Lansing, MI'
         text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.'
         attachTo: '.leaflet-marker-icon left'
         buttons: [{
@@ -587,7 +586,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
       $("[data-toggle=tooltip]").tooltip({ placement: 'right'})
-      
+
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     initialize: () ->

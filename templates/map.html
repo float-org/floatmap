@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+  {% extends "base.html" %}
 {% load static from staticfiles %}
  {% block extra_css %}
   <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
@@ -75,19 +75,19 @@
 
               <div class='epRange'>
                 <svg width="325" height"70">
-                  <rect x="0" y="0" width="81" height="32" class="tiny dots"></rect>
-                  <rect x="81" y="0" width="81" height="32" class="small dots"></rect>
-                  <rect x="162" y="0" width="81" height="32" class="large dots"></rect>
-                  <rect x="243" y="0" width="81" height="32" class="huge dots"></rect>
+                  <rect x="0" y="0" width="81" height="32" class="low-mid dots"></rect>
+                  <rect x="81" y="0" width="81" height="32" class="mid-high dots"></rect>
+                  <rect x="162" y="0" width="81" height="32" class="high-extreme dots"></rect>
+                  <rect x="243" y="0" width="81" height="32" class="extreme-severe dots"></rect>
                   <defs>
                   <marker id="arrow" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,-5L10,0L0,5"></path></marker>
                   </defs>
                   <line x1="0" y1="55" x2="325" y2="55" class="link arrow" marker-end="url(#arrow)"></line>
                   <text x="94" y="67">Increasing storm frequency</text>
-                  <text x="3" y="45">+13%</text>
+                  <text x="3" y="45">+12%</text>
                   <text x="95" y="45">+26%</text>
-                  <text x="196" y="45">+39%</text>
-                  <text x="297" y="45">+52%</text>
+                  <text x="196" y="45">+40%</text>
+                  <text x="297" y="45">+54%</text>
                 </svg>
               </div>
            

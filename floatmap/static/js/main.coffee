@@ -1,7 +1,5 @@
 ###
-
  TO DO
-
   - Move GeoModel code to separate file
   - Separate out code into better named methods
   - Fix tooltips not rendering
@@ -57,6 +55,7 @@ GeoModel = L.GeoModel = Backbone.Model.extend(
     if @keepId
       json[@idAttribute] = @id
     json)
+
 GeoCollection = L.GeoCollection = Backbone.Collection.extend(
   model: GeoModel
   reset: (models, options) ->
@@ -89,35 +88,38 @@ $ ->
   app = window.app = ( window.app || {} )
 
   # Our layers object, which will contain all of the data layers
+  # TODO: This seems like something Leaflet should be able to handle but I don't know...
   layers = app.layers = []
 
   # Accepts a data type and a data value (e.g NOAA Ext. Precipitation DN value)
-  # Returns an ID which corresponds to one of four SVG patterns
+  # Returns a class which corresponds to one of four SVG patterns, which inherit styles from CSS
   app.getPattern = (type, d) ->
     if type == 'ep'
       if d is null
         return false
-      if d <= 12
-        pattern = 'tiny dots' 
-      else if d >= 12 and d <= 24
-        pattern = 'small dots' 
-      else if d >= 25 and d <= 35
-        pattern = 'large dots' 
-      else if d >= 36 and d <= 100
-        pattern = 'huge dots' 
+      pattern = 'dots '
+      if d <= 22
+        pattern += 'low-mid' 
+      else if d >= 23 and d <= 33
+        pattern += 'mid-high' 
+      else if d >= 34 and d <= 44
+        pattern += 'high-extreme' 
+      else if d >= 45 and d <= 55
+        pattern += 'extreme-severe' 
       return pattern
 
-  # Accepts a data type and a data value (e.g NOAA Ext. Precipitation DN value)
-  # Creates a gradient from the start color and end color in setSpectrum
+  # Accepts a data type (e.g. 'ex precip, avg precip') and a data value (e.g 'DN')
+  # Creates a gradient from the start color and end color using setSpectrum
   # Returns a hex Value that corresponds to the color for that particular number/data value
   app.getColor = (type, d) ->
     if type == 'ap'
       rainbow = new Rainbow
-      rainbow.setSpectrum '#94FFDB', '#1900FF'
+      rainbow.setSpectrum '#94FFDB', '#1900FF' # Probably just need to set once
       rainbow.setNumberRange 0, 12
       '#' + rainbow.colourAt(d)
 
   # Simple config for spin.js spinner that loads when we query Elasticsearch
+  # Question: Is this reeeeally necessary?
   app.createSpinner = (element) ->
     opts =
       lines: 11
@@ -140,47 +142,67 @@ $ ->
     target = $(element)[0]
     window.spinner = new Spinner(opts).spin(target)
 
-
+  # Option so that all created views are managed by LayoutManager (i.e. they behave like Layout)
   Backbone.Layout.configure
     manage: true
 
+  # Create a new collection for Average Precip data
   app.AvgPrecipCollection = GeoCollection.extend
     url: 'static/ap/noaa_avg_precip.geojson',
 
+  # Create a new collection for Extreme Precip data
   app.ExtPrecipCollection = GeoCollection.extend
     url: 'static/ep/noaa_ex_precip.geojson',
 
+  # Header View handles behavior for the header, including search and nav.
   HeaderView = app.HeaderView = Backbone.View.extend
+
+    # As defined in map.html
     template: "#headerTemplate"
 
+    # GeoCode whatever we put into the search input, update the location of the map by calling MapView.setAddress
+    # from our layout
     getAddress: (address) ->
       g = new google.maps.Geocoder()
       g.geocode { address: address }, (results, status) ->
         latLng = [ results[0].geometry.location.lat(), results[0].geometry.location.lng() ]
         app.layout.views['map'].setAddress(latLng, 15)
 
-    # TODO: Currently, we are blessed with Bootstrap Modal working properly outside of Backbone.  I should probably
-    # make an event that creates an AboutModalView at some point just so it follows our convention.
     events: 
       "submit #search": (e) ->
         e.preventDefault()
         address = $(e.target).find('.search-input').val()
         this.getAddress address
 
+      # TODO: Currently, we are blessed with Bootstrap Modal working properly outside of Backbone.  I should probably
+      # make an event that creates an AboutModalView at some point just so it follows our convention.
+
+      # Start the tour from the nav
       "click #tourLink": (e) ->
         e.preventDefault()
         app.layout.views['#welcome'][0].startDataTour() # Why does views['#welcome'] return an array?
 
-
+  # Creates tour of the Float interface, using ShepherdJS
   DataTourView = app.DataTourView = Backbone.View.extend
+
+    # Create new tour, use default Shepherd theme for now
     initialize: () ->
+      # Remove existing instance of Shepherd Tour
+      # TODO: Still have zombie view problem, which I *thought* LayoutManager helped with...
+      if window.tour
+        window.tour.complete()
       window.tour = this.tour = new Shepherd.Tour
         defaults: 
           classes: 'shepherd-theme-arrows'
           scrollTo: true
       
+    # Once view renders, add steps to tour and start it up.
     afterRender: () ->   
+
+      # Display average precipitation layer - this sort of thing happens in tour step action methods hereafter
       $('#apLayer-switch').trigger('click')
+
+      # Avg Precip explanation step
       this.tour.addStep 'ap-step',
         title: 'Annual Precipitation'
         text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow, between now and the 2040-2070 period. 
@@ -194,6 +216,7 @@ These projections come from the National Oceanic and Atmospheric Administration 
             tour.next()
         ]
 
+      # Ext Precip explanation step
       this.tour.addStep 'ep-step',
         title: 'Extreme Precipitation'
         text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often, between now and the 2040-2070 period. 
@@ -207,6 +230,7 @@ These projections also come from the National Oceanic and Atmospheric Administra
             tour.next()
         ]
 
+      # Floods explanation step
       this.tour.addStep 'flood-step',
         title: 'Floods'
         text: 'The Flood Zones show the areas that already are at major risk for flooding, based on where floods have historically reached. 
@@ -218,6 +242,8 @@ This information comes from the Federal Emergency Management Administration (201
           action: tour.next
         ]
 
+      # Display query step
+      # TODO: Update this to be "search-step"
       this.tour.addStep 'query-step',
         title: 'Query'
         text: 'Use the search bar or right-click anywhere on the map to see the risks for a specific location.
@@ -238,6 +264,9 @@ Try using the search bar now to find a location you care about in the Midwest, o
             tour.complete()
         }]
 
+      # TODO: Create `query step`
+
+      # The following steps show particular regions on the map
       this.tour.addStep 'map-lambeau',
         title: 'Green Bay'
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
@@ -308,8 +337,11 @@ Try using the search bar now to find a location you care about in the Midwest, o
 
       this.tour.start()
 
+  # Display welcome modal - should only appear if a cookie hasn't been set in the browser
   WelcomeView = app.WelcomeView = Backbone.View.extend
+
     template: "#welcomeTemplate"
+
     events: 
       'click #startDataTour': (e) ->
         e.preventDefault()
@@ -338,6 +370,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
       $('#apLayer-switch').prop('checked',false)
       $('#epLayer-switch').prop('checked',false)
 
+    # Insert a tour into the app
+    # TODO: How do we tell Layout that we only want to create a new TourView if one hasn't been created?
     startDataTour: () ->
       app.map.setZoom(6)
       this.resetMapData()
@@ -346,12 +380,14 @@ Try using the search bar now to find a location you care about in the Midwest, o
       dataView = this.insertView('#dataTour', dataTour)
       dataView.render()
 
+    # Kick off the modal once the view has been created
     afterRender: () ->
       $('#welcomeModal').modal({
         backdrop: 'static'
         keyboard: true
       }, 'show')
 
+    # Keeps the modal centered (more or less)
     reposition: () ->
       modal = this.$el
       dialog = modal.find('.modal-dialog')
@@ -496,6 +532,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
           spinner.stop()
         complete: (model, response) -> 
           spinner.stop()
+
   LegendView = app.LegendView = Backbone.View.extend
     template: "#legendTemplate"  
 
@@ -550,6 +587,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
       $("[data-toggle=tooltip]").tooltip({ placement: 'right'})
+      
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     initialize: () ->

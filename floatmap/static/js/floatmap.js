@@ -1,8 +1,6 @@
 
 /*
-
  TO DO
-
   - Move GeoModel code to separate file
   - Separate out code into better named methods
   - Fix tooltips not rendering
@@ -104,14 +102,15 @@
         if (d === null) {
           return false;
         }
-        if (d <= 12) {
-          pattern = 'tiny dots';
-        } else if (d >= 12 && d <= 24) {
-          pattern = 'small dots';
-        } else if (d >= 25 && d <= 35) {
-          pattern = 'large dots';
-        } else if (d >= 36 && d <= 100) {
-          pattern = 'huge dots';
+        pattern = 'dots ';
+        if (d <= 22) {
+          pattern += 'low-mid';
+        } else if (d >= 23 && d <= 33) {
+          pattern += 'mid-high';
+        } else if (d >= 34 && d <= 44) {
+          pattern += 'high-extreme';
+        } else if (d >= 45 && d <= 55) {
+          pattern += 'extreme-severe';
         }
         return pattern;
       }
@@ -185,6 +184,9 @@
     });
     DataTourView = app.DataTourView = Backbone.View.extend({
       initialize: function() {
+        if (window.tour) {
+          window.tour.complete();
+        }
         return window.tour = this.tour = new Shepherd.Tour({
           defaults: {
             classes: 'shepherd-theme-arrows',

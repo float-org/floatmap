@@ -282,8 +282,6 @@ This information comes from the Federal Emergency Management Administration (201
               tour.next()
             , 450
         ]
-            
-        
 
       # Display query step
       # TODO: Not totally in love w/ the animation here - play around with it some more.

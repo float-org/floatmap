@@ -232,8 +232,8 @@ $ ->
       # Avg Precip explanation step
       this.tour.addStep 'ap-step',
         title: 'Annual Precipitation'
-        text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow, between now and the 2040-2070 period. 
-More annual precipitation means more overall water going into rivers, lakes and snowbanks, a key risk factor for bigger floods.
+        text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow by the 2040-2070 period. 
+More annual precipitation means more water going into rivers, lakes and snowbanks, a key risk factor for bigger floods.
 These projections come from the National Oceanic and Atmospheric Administration (2014).'
         attachTo: '#apLegendContainer top'
         buttons: [
@@ -246,7 +246,7 @@ These projections come from the National Oceanic and Atmospheric Administration 
       # Ext Precip explanation step
       this.tour.addStep 'ep-step',
         title: 'Storm Frequency'
-        text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often, between now and the 2040-2070 period. 
+        text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often by the 2040-2070 period. 
 More storm frequency means more rapid surges of water into rivers and lakes, a key risk factor for more frequent flooding.
 These projections also come from the National Oceanic and Atmospheric Administration (2014).'
         attachTo: '#epLegendContainer top'
@@ -492,7 +492,7 @@ This information comes from the Federal Emergency Management Administration (201
       # We're only dealing with the Midwest for now, so bound our 
       # tile layer queries.
       # TODO: Determine a better way to have a more precise set of bounds
-      southWest = L.latLng(37.92686760148135, -95.88867187500001)
+      southWest = L.latLng(37.9686760148135, -85.82133293151857)
       northEast = L.latLng(48.60385760823255, -80.72753906250001)
       floodBounds = L.latLngBounds(southWest, northEast)
       

@@ -177,8 +177,11 @@
           return this.getAddress(address);
         },
         "click #tourLink": function(e) {
+          var dataTour, dataView;
           e.preventDefault();
-          return app.layout.views['#welcome'][0].startDataTour();
+          dataTour = new DataTourView();
+          dataView = this.insertView('#dataTour', dataTour);
+          return dataView.render();
         }
       }
     });
@@ -207,7 +210,24 @@
         $('#epLayer-switch').prop('checked', true);
         return tour.complete();
       },
+      resetMapData: function() {
+        var i, layer, len, ref;
+        if ($('.active-query')) {
+          $('.active-query').removeClass('active-query');
+        }
+        ref = [window.ap, window.ep, window.floods];
+        for (i = 0, len = ref.length; i < len; i++) {
+          layer = ref[i];
+          app.map.removeLayer(layer);
+        }
+        $('#floods-switch').prop('checked', false);
+        $('#apLayer-switch').prop('checked', false);
+        return $('#epLayer-switch').prop('checked', false);
+      },
       afterRender: function() {
+        app.map.setZoom(6);
+        this.resetMapData();
+        $('#welcomeModal').modal('hide');
         $('#apLayer-switch').trigger('click');
         this.tour.addStep('ap-step', {
           title: 'Annual Precipitation',
@@ -374,8 +394,11 @@
       template: "#welcomeTemplate",
       events: {
         'click #startDataTour': function(e) {
+          var dataTour, dataView;
           e.preventDefault();
-          return this.startDataTour();
+          dataTour = new DataTourView();
+          dataView = this.insertView('#dataTour', dataTour);
+          return dataView.render();
         },
         'shown.bs.modal #welcomeModal': function(e) {
           return this.reposition();
@@ -398,29 +421,6 @@
         return $(window).on('resize', function(e) {
           return self.reposition();
         });
-      },
-      resetMapData: function() {
-        var i, layer, len, ref;
-        if ($('.active-query')) {
-          $('.active-query').removeClass('active-query');
-        }
-        ref = [window.ap, window.ep, window.floods];
-        for (i = 0, len = ref.length; i < len; i++) {
-          layer = ref[i];
-          app.map.removeLayer(layer);
-        }
-        $('#floods-switch').prop('checked', false);
-        $('#apLayer-switch').prop('checked', false);
-        return $('#epLayer-switch').prop('checked', false);
-      },
-      startDataTour: function() {
-        var dataTour, dataView;
-        app.map.setZoom(6);
-        this.resetMapData();
-        $('#welcomeModal').modal('hide');
-        dataTour = new DataTourView();
-        dataView = this.insertView('#dataTour', dataTour);
-        return dataView.render();
       },
       afterRender: function() {
         return $('#welcomeModal').modal({
@@ -533,7 +533,7 @@
         ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap');
         ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep');
         this.addLayer(base, 0);
-        if (!window.welcome) {
+        if ($.cookie('welcomed')) {
           this.addLayer(floods, 1);
           this.addLayer(ap, 2);
           this.addLayer(ep, 3);
@@ -641,6 +641,11 @@
         });
         self.$el.find(".apRange").append("<div class='bottom-line'>increasing annual precipitation</div>");
         self.$el.appendTo(layout.$el.find('#legend'));
+        if ($.cookie('welcomed')) {
+          $('#floods-switch').prop('checked', true);
+          $('#apLayer-switch').prop('checked', true);
+          $('#epLayer-switch').prop('checked', true);
+        }
         return $("[data-toggle=tooltip]").tooltip({
           placement: 'right'
         });
@@ -650,10 +655,10 @@
       template: "#floatLayout",
       initialize: function() {
         var welcome;
-        window.welcome = true;
-        if (window.welcome) {
-          welcome = new WelcomeView();
-          return this.insertView('#welcome', welcome);
+        welcome = new WelcomeView();
+        if (!$.cookie('welcomed')) {
+          this.insertView('#welcome', welcome);
+          return $.cookie('welcomed', true);
         }
       },
       views: {

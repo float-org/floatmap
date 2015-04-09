@@ -177,8 +177,11 @@
           return this.getAddress(address);
         },
         "click #tourLink": function(e) {
+          var dataTour, dataView;
           e.preventDefault();
-          return app.layout.views['#welcome'][0].startDataTour();
+          dataTour = new DataTourView();
+          dataView = this.insertView('#dataTour', dataTour);
+          return dataView.render();
         }
       }
     });
@@ -207,7 +210,24 @@
         $('#epLayer-switch').prop('checked', true);
         return tour.complete();
       },
+      resetMapData: function() {
+        var i, layer, len, ref;
+        if ($('.active-query')) {
+          $('.active-query').removeClass('active-query');
+        }
+        ref = [window.ap, window.ep, window.floods];
+        for (i = 0, len = ref.length; i < len; i++) {
+          layer = ref[i];
+          app.map.removeLayer(layer);
+        }
+        $('#floods-switch').prop('checked', false);
+        $('#apLayer-switch').prop('checked', false);
+        return $('#epLayer-switch').prop('checked', false);
+      },
       afterRender: function() {
+        app.map.setZoom(6);
+        this.resetMapData();
+        $('#welcomeModal').modal('hide');
         $('#apLayer-switch').trigger('click');
         this.tour.addStep('ap-step', {
           title: 'Annual Precipitation',
@@ -374,8 +394,11 @@
       template: "#welcomeTemplate",
       events: {
         'click #startDataTour': function(e) {
+          var dataTour, dataView;
           e.preventDefault();
-          return this.startDataTour();
+          dataTour = new DataTourView();
+          dataView = this.insertView('#dataTour', dataTour);
+          return dataView.render();
         },
         'shown.bs.modal #welcomeModal': function(e) {
           return this.reposition();
@@ -398,29 +421,6 @@
         return $(window).on('resize', function(e) {
           return self.reposition();
         });
-      },
-      resetMapData: function() {
-        var i, layer, len, ref;
-        if ($('.active-query')) {
-          $('.active-query').removeClass('active-query');
-        }
-        ref = [window.ap, window.ep, window.floods];
-        for (i = 0, len = ref.length; i < len; i++) {
-          layer = ref[i];
-          app.map.removeLayer(layer);
-        }
-        $('#floods-switch').prop('checked', false);
-        $('#apLayer-switch').prop('checked', false);
-        return $('#epLayer-switch').prop('checked', false);
-      },
-      startDataTour: function() {
-        var dataTour, dataView;
-        app.map.setZoom(6);
-        this.resetMapData();
-        $('#welcomeModal').modal('hide');
-        dataTour = new DataTourView();
-        dataView = this.insertView('#dataTour', dataTour);
-        return dataView.render();
       },
       afterRender: function() {
         return $('#welcomeModal').modal({
@@ -533,7 +533,7 @@
         ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap');
         ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep');
         this.addLayer(base, 0);
-        if (!window.welcome) {
+        if ($.cookie('welcomed')) {
           this.addLayer(floods, 1);
           this.addLayer(ap, 2);
           this.addLayer(ep, 3);
@@ -641,6 +641,11 @@
         });
         self.$el.find(".apRange").append("<div class='bottom-line'>increasing annual precipitation</div>");
         self.$el.appendTo(layout.$el.find('#legend'));
+        if ($.cookie('welcomed')) {
+          $('#floods-switch').prop('checked', true);
+          $('#apLayer-switch').prop('checked', true);
+          $('#epLayer-switch').prop('checked', true);
+        }
         return $("[data-toggle=tooltip]").tooltip({
           placement: 'right'
         });
@@ -650,10 +655,10 @@
       template: "#floatLayout",
       initialize: function() {
         var welcome;
-        window.welcome = true;
-        if (window.welcome) {
-          welcome = new WelcomeView();
-          return this.insertView('#welcome', welcome);
+        welcome = new WelcomeView();
+        if (!$.cookie('welcomed')) {
+          this.insertView('#welcome', welcome);
+          return $.cookie('welcomed', true);
         }
       },
       views: {
@@ -670,6 +675,123 @@
 }).call(this);
 
 //# sourceMappingURL=main.js.map
+;/*!
+ * jQuery Cookie Plugin v1.4.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define(['jquery'], factory);
+	} else if (typeof exports === 'object') {
+		// CommonJS
+		factory(require('jquery'));
+	} else {
+		// Browser globals
+		factory(jQuery);
+	}
+}(function ($) {
+
+	var pluses = /\+/g;
+
+	function encode(s) {
+		return config.raw ? s : encodeURIComponent(s);
+	}
+
+	function decode(s) {
+		return config.raw ? s : decodeURIComponent(s);
+	}
+
+	function stringifyCookieValue(value) {
+		return encode(config.json ? JSON.stringify(value) : String(value));
+	}
+
+	function parseCookieValue(s) {
+		if (s.indexOf('"') === 0) {
+			// This is a quoted cookie as according to RFC2068, unescape...
+			s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+		}
+
+		try {
+			// Replace server-side written pluses with spaces.
+			// If we can't decode the cookie, ignore it, it's unusable.
+			// If we can't parse the cookie, ignore it, it's unusable.
+			s = decodeURIComponent(s.replace(pluses, ' '));
+			return config.json ? JSON.parse(s) : s;
+		} catch(e) {}
+	}
+
+	function read(s, converter) {
+		var value = config.raw ? s : parseCookieValue(s);
+		return $.isFunction(converter) ? converter(value) : value;
+	}
+
+	var config = $.cookie = function (key, value, options) {
+
+		// Write
+
+		if (value !== undefined && !$.isFunction(value)) {
+			options = $.extend({}, config.defaults, options);
+
+			if (typeof options.expires === 'number') {
+				var days = options.expires, t = options.expires = new Date();
+				t.setTime(+t + days * 864e+5);
+			}
+
+			return (document.cookie = [
+				encode(key), '=', stringifyCookieValue(value),
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.path    ? '; path=' + options.path : '',
+				options.domain  ? '; domain=' + options.domain : '',
+				options.secure  ? '; secure' : ''
+			].join(''));
+		}
+
+		// Read
+
+		var result = key ? undefined : {};
+
+		// To prevent the for loop in the first place assign an empty array
+		// in case there are no cookies at all. Also prevents odd result when
+		// calling $.cookie().
+		var cookies = document.cookie ? document.cookie.split('; ') : [];
+
+		for (var i = 0, l = cookies.length; i < l; i++) {
+			var parts = cookies[i].split('=');
+			var name = decode(parts.shift());
+			var cookie = parts.join('=');
+
+			if (key && key === name) {
+				// If second argument (value) is a function it's a converter...
+				result = read(cookie, value);
+				break;
+			}
+
+			// Prevent storing a cookie that we couldn't decode.
+			if (!key && (cookie = read(cookie)) !== undefined) {
+				result[name] = cookie;
+			}
+		}
+
+		return result;
+	};
+
+	config.defaults = {};
+
+	$.removeCookie = function (key, options) {
+		if ($.cookie(key) === undefined) {
+			return false;
+		}
+
+		// Must not alter options, thus extending a fresh object...
+		$.cookie(key, '', $.extend({}, options, { expires: -1 }));
+		return !$.cookie(key);
+	};
+
+}));
 ;/*
  @preserve Leaflet Data Visualization Framework, a JavaScript library for creating thematic maps using Leaflet
  (c) 2013-2014, Scott Fairgrieve, HumanGeo

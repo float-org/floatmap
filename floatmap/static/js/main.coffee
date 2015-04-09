@@ -180,7 +180,9 @@ $ ->
       # Start the tour from the nav
       "click #tourLink": (e) ->
         e.preventDefault()
-        app.layout.views['#welcome'][0].startDataTour() # Why does views['#welcome'] return an array?
+        dataTour = new DataTourView()
+        dataView = this.insertView('#dataTour', dataTour)
+        dataView.render()
 
   # Creates tour of the Float interface, using ShepherdJS
   DataTourView = app.DataTourView = Backbone.View.extend
@@ -208,9 +210,21 @@ $ ->
       $('#epLayer-switch').prop('checked',true)
       tour.complete()
 
-      
+    resetMapData: () ->
+      if $('.active-query')
+        $('.active-query').removeClass('active-query')
+      for layer in [window.ap, window.ep, window.floods]
+        app.map.removeLayer(layer)
+      $('#floods-switch').prop('checked',false)
+      $('#apLayer-switch').prop('checked',false)
+      $('#epLayer-switch').prop('checked',false)
+
     # Once view renders, add steps to tour and start it up.
     afterRender: () ->   
+
+      app.map.setZoom(6)
+      this.resetMapData()
+      $('#welcomeModal').modal('hide')
 
       # Display average precipitation layer - this sort of thing happens in tour step action methods hereafter
       $('#apLayer-switch').trigger('click')
@@ -366,7 +380,9 @@ This information comes from the Federal Emergency Management Administration (201
     events: 
       'click #startDataTour': (e) ->
         e.preventDefault()
-        this.startDataTour()
+        dataTour = new DataTourView()
+        dataView = this.insertView('#dataTour', dataTour)
+        dataView.render()
 
       'shown.bs.modal #welcomeModal': (e) ->
         this.reposition()
@@ -385,25 +401,6 @@ This information comes from the Federal Emergency Management Administration (201
       self = this
       $(window).on 'resize', (e) ->
         self.reposition()
-
-    resetMapData: () ->
-      if $('.active-query')
-        $('.active-query').removeClass('active-query')
-      for layer in [window.ap, window.ep, window.floods]
-        app.map.removeLayer(layer)
-      $('#floods-switch').prop('checked',false)
-      $('#apLayer-switch').prop('checked',false)
-      $('#epLayer-switch').prop('checked',false)
-
-    # Insert a tour into the app
-    # TODO: How do we tell Layout that we only want to create a new TourView if one hasn't been created?
-    startDataTour: () ->
-      app.map.setZoom(6)
-      this.resetMapData()
-      $('#welcomeModal').modal('hide')
-      dataTour = new DataTourView()
-      dataView = this.insertView('#dataTour', dataTour)
-      dataView.render()
 
     # Kick off the modal once the view has been created
     afterRender: () ->
@@ -512,11 +509,11 @@ This information comes from the Federal Emergency Management Administration (201
       # ...and then append them to the map, in order!
       # TODO: Why doesn't zindex work with GeoJSON layers?
       this.addLayer base, 0
-      if not window.welcome
+      if $.cookie('welcomed')
         this.addLayer floods, 1
         this.addLayer ap, 2
         this.addLayer ep, 3
-
+      
       this.addLayer labels, 4
         
       # Then we add zoom controls and finally set off event listeners
@@ -611,17 +608,22 @@ This information comes from the Federal Emergency Management Administration (201
 
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
+
+      if $.cookie('welcomed')
+        $('#floods-switch').prop('checked',true)
+        $('#apLayer-switch').prop('checked',true)
+        $('#epLayer-switch').prop('checked',true)
+
       $("[data-toggle=tooltip]").tooltip({ placement: 'right'})
 
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     initialize: () ->
-      # TODO: replace boolean with a cookie check, we only show Welcome first time user comes to the page.
-      # Set to true to kick off the welcome modal + tour.
-      window.welcome = true
-      if window.welcome
-        welcome = new WelcomeView()
+      # TODO: Separate tour from welcomeview so we don't have to instantiate it at all if the cookie exists
+      welcome = new WelcomeView()
+      if not $.cookie('welcomed')
         this.insertView('#welcome', welcome)
+        $.cookie('welcomed', true)
 
     views: 
       '#header': new HeaderView()

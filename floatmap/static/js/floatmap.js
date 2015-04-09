@@ -194,6 +194,19 @@
           }
         });
       },
+      resetMapAfterTour: function() {
+        if ($('.active-query')) {
+          $('.active-query').removeClass('active-query');
+        }
+        app.map.setZoom(6);
+        app.map.addLayer(floods, 1);
+        $('#floods-switch').prop('checked', true);
+        app.map.addLayer(ap, 2);
+        $('#apLayer-switch').prop('checked', true);
+        app.map.addLayer(ep, 3);
+        $('#epLayer-switch').prop('checked', true);
+        return tour.complete();
+      },
       afterRender: function() {
         $('#apLayer-switch').trigger('click');
         this.tour.addStep('ap-step', {
@@ -237,8 +250,24 @@
         });
         this.tour.addStep('search-step', {
           title: 'Search',
-          text: 'Use the search bar or right-click anywhere on the map to see the risks for a specific location. Try using the search bar now to find a location you care about in the Midwest, or take a tour of some communities at high risk for worsened flooding.',
+          text: 'Use the search bar to see the risks for a specific location. Try using the search bar now to find a location you care about in the Midwest.',
           attachTo: '.search-input bottom',
+          buttons: [
+            {
+              text: 'Next',
+              action: function() {
+                $('#queryToggle').trigger('click');
+                return setTimeout(function() {
+                  return tour.next();
+                }, 450);
+              }
+            }
+          ]
+        });
+        this.tour.addStep('query-step', {
+          title: 'Query',
+          text: 'Right-click anywhere on the map to see more details about any location on the map, or take a tour of some communities at high risk for worsened flooding.',
+          attachTo: '#queryContent left',
           buttons: [
             {
               text: 'Take a Tour',
@@ -254,9 +283,7 @@
               }
             }, {
               text: 'Stop Tour',
-              action: function() {
-                return tour.complete();
-              }
+              action: this.resetMapAfterTour
             }
           ]
         });
@@ -279,9 +306,7 @@
               }
             }, {
               text: 'Stop Tour',
-              action: function() {
-                return tour.complete();
-              }
+              action: this.resetMapAfterTour
             }
           ]
         });
@@ -304,9 +329,7 @@
               }
             }, {
               text: 'Stop Tour',
-              action: function() {
-                return tour.complete();
-              }
+              action: this.resetMapAfterTour
             }
           ]
         });
@@ -329,9 +352,7 @@
               }
             }, {
               text: 'Stop Tour',
-              action: function() {
-                return tour.complete();
-              }
+              action: this.resetMapAfterTour
             }
           ]
         });
@@ -342,9 +363,7 @@
           buttons: [
             {
               text: 'Stop Tour',
-              action: function() {
-                return tour.complete();
-              }
+              action: this.resetMapAfterTour
             }
           ]
         });
@@ -362,6 +381,9 @@
           return this.reposition();
         },
         'click #closeModal': function(e) {
+          if ($('.active-query')) {
+            $('.active-query').removeClass('active-query');
+          }
           app.map.addLayer(floods, 1);
           $('#floods-switch').prop('checked', true);
           app.map.addLayer(ap, 2);
@@ -379,6 +401,9 @@
       },
       resetMapData: function() {
         var i, layer, len, ref;
+        if ($('.active-query')) {
+          $('.active-query').removeClass('active-query');
+        }
         ref = [window.ap, window.ep, window.floods];
         for (i = 0, len = ref.length; i < len; i++) {
           layer = ref[i];

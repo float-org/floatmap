@@ -195,6 +195,19 @@ $ ->
         defaults: 
           classes: 'shepherd-theme-arrows'
           scrollTo: true
+
+    resetMapAfterTour: () ->
+      if $('.active-query')
+        $('.active-query').removeClass('active-query')
+      app.map.setZoom(6)
+      app.map.addLayer floods, 1
+      $('#floods-switch').prop('checked',true)
+      app.map.addLayer ap, 2
+      $('#apLayer-switch').prop('checked',true)
+      app.map.addLayer ep, 3
+      $('#epLayer-switch').prop('checked',true)
+      tour.complete()
+
       
     # Once view renders, add steps to tour and start it up.
     afterRender: () ->   
@@ -245,25 +258,38 @@ This information comes from the Federal Emergency Management Administration (201
       # Display search step
       this.tour.addStep 'search-step',
         title: 'Search'
-        text: 'Use the search bar or right-click anywhere on the map to see the risks for a specific location.
-Try using the search bar now to find a location you care about in the Midwest, or take a tour of some communities at high risk for worsened flooding.'
+        text: 'Use the search bar to see the risks for a specific location. Try using the search bar now to find a location you care about in the Midwest.'
         attachTo: '.search-input bottom'
-        buttons: [{
-          text: 'Take a Tour'
+        buttons: [
+          text: 'Next'
           action: () ->
+            $('#queryToggle').trigger('click')
+            setTimeout () -> 
+              tour.next()
+            , 450
+        ]
+            
+        
+
+      # Display query step
+      # TODO: Not totally in love w/ the animation here - play around with it some more.
+      this.tour.addStep 'query-step',
+        title: 'Query'
+        text: 'Right-click anywhere on the map to see more details about any location on the map, or take a tour of some communities at high risk for worsened flooding.'
+        attachTo: '#queryContent left'
+        buttons: [
+          text: 'Take a Tour'
+          action: () -> 
             latlng = [44.519, -88.019]
             app.map.setView(latlng, 15)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
-        }, {
+        , 
           text: 'Stop Tour'
-          action: () ->
-            tour.complete()
-        }]
-
-      # TODO: Create `query step`
+          action: this.resetMapAfterTour
+        ]
 
       # The following steps show particular regions on the map
       this.tour.addStep 'map-lambeau',
@@ -271,7 +297,7 @@ Try using the search bar now to find a location you care about in the Midwest, o
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
         with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.'
         attachTo: '.leaflet-marker-icon left'
-        buttons: [{
+        buttons: [
           text: 'Continue'
           action: () ->
             latlng = [43.1397, -89.3375]
@@ -280,17 +306,16 @@ Try using the search bar now to find a location you care about in the Midwest, o
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
-        }, {
+        , 
           text: 'Stop Tour'
-          action: () ->
-            tour.complete()
-        }]
+          action: this.resetMapAfterTour
+        ]
 
       this.tour.addStep 'map-dane',
         title: 'Madison, WI Airport'
         text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.'
         attachTo: '.leaflet-marker-icon left'
-        buttons: [{
+        buttons: [
           text: 'Continue'
           action: () ->
             latlng = [42.732072157891224, -84.50576305389404]
@@ -299,17 +324,16 @@ Try using the search bar now to find a location you care about in the Midwest, o
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
-        }, {
+        , 
           text: 'Stop Tour'
-          action: () ->
-            tour.complete()
-        }]
+          action: this.resetMapAfterTour
+        ]
 
       this.tour.addStep 'map-lansing',
         title: 'Lansing, MI'
         text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.'
         attachTo: '.leaflet-marker-icon left'
-        buttons: [{
+        buttons: [
           text: 'Continue'
           action: () ->
             latlng = [41.726, -90.310]
@@ -318,21 +342,19 @@ Try using the search bar now to find a location you care about in the Midwest, o
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
             tour.next()
-        }, {
+        , 
           text: 'Stop Tour'
-          action: () ->
-            tour.complete()
-        }]
+          action: this.resetMapAfterTour
+        ]
 
       this.tour.addStep 'map-quadcities',
         title: 'Quad Cities Nuclear Generating Station'
         text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.'
         attachTo: '.leaflet-marker-icon left'
-        buttons: [{
+        buttons: [
           text: 'Stop Tour'
-          action: () ->
-            tour.complete()
-        }]
+          action: this.resetMapAfterTour
+        ]
 
       this.tour.start()
 
@@ -350,6 +372,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
         this.reposition()
 
       'click #closeModal': (e) ->
+        if $('.active-query')
+          $('.active-query').removeClass('active-query')
         app.map.addLayer floods, 1
         $('#floods-switch').prop('checked',true)
         app.map.addLayer ap, 2
@@ -363,6 +387,8 @@ Try using the search bar now to find a location you care about in the Midwest, o
         self.reposition()
 
     resetMapData: () ->
+      if $('.active-query')
+        $('.active-query').removeClass('active-query')
       for layer in [window.ap, window.ep, window.floods]
         app.map.removeLayer(layer)
       $('#floods-switch').prop('checked',false)

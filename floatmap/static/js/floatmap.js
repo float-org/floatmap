@@ -500,7 +500,7 @@
         return layer;
       },
       renderTemplate: function() {
-        var ap, base, baseURL, ep, floodBounds, floods, labels, labelsURL, map, northEast, southWest;
+        var ap, base, baseURL, ep, floods, labels, labelsURL, map;
         baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
         labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
@@ -511,19 +511,16 @@
         map.renderer = L.svg({
           pane: 'tilePane'
         }).addTo(map);
-        southWest = L.latLng(37.9686760148135, -85.82133293151857);
-        northEast = L.latLng(48.60385760823255, -80.72753906250001);
-        floodBounds = L.latLngBounds(southWest, northEast);
         base = window.base = app.layers['base'] = L.tileLayer(baseURL, {
           pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5
         });
         floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
-          bounds: floodBounds,
           pane: 'tilePane',
           maxZoom: 15,
-          minZoom: 5
+          minZoom: 5,
+          errorTileUrl: '#'
         });
         labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {
           pane: 'tilePane',
@@ -669,7 +666,16 @@
     });
     layout = app.layout = new FloatLayout();
     layout.$el.appendTo('#main');
-    return layout.render();
+    layout.render();
+    return $(window).load(function() {
+      return $("img").each(function() {
+        var $this;
+        $this = $(this);
+        return this.onerror = function() {
+          return $this.hide();
+        };
+      });
+    });
   });
 
 }).call(this);

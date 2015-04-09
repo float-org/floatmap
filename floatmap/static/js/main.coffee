@@ -492,13 +492,10 @@ This information comes from the Federal Emergency Management Administration (201
       # We're only dealing with the Midwest for now, so bound our 
       # tile layer queries.
       # TODO: Determine a better way to have a more precise set of bounds
-      southWest = L.latLng(37.9686760148135, -85.82133293151857)
-      northEast = L.latLng(48.60385760823255, -80.72753906250001)
-      floodBounds = L.latLngBounds(southWest, northEast)
       
       # Create our layers
       base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
-      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {bounds: floodBounds, pane: 'tilePane', maxZoom: 15, minZoom: 5})
+      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', maxZoom: 15, minZoom: 5, errorTileUrl: '#'})
       labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
       
       ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap')
@@ -618,6 +615,7 @@ This information comes from the Federal Emergency Management Administration (201
     template: "#floatLayout"
     initialize: () ->
       # TODO: Separate tour from welcomeview so we don't have to instantiate it at all if the cookie exists
+
       welcome = new WelcomeView()
       if not $.cookie('welcomed')
         this.insertView('#welcome', welcome)
@@ -632,4 +630,11 @@ This information comes from the Federal Emergency Management Administration (201
   layout.$el.appendTo('#main')
 
   layout.render()
+
+  $(window).load () ->
+     # TODO: Separate tour from welcomeview so we don't have to instantiate it at all if the cookie exists
+    $("img").each () ->
+      $this = $(this)
+      this.onerror = () ->
+        $this.hide()
   

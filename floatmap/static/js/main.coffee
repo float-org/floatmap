@@ -289,7 +289,7 @@ This information comes from the Federal Emergency Management Administration (201
       # TODO: Not totally in love w/ the animation here - play around with it some more.
       this.tour.addStep 'query-step',
         title: 'Query'
-        text: 'Right-click anywhere on the map to see more details about any location on the map, or take a tour of some communities at high risk for worsened flooding.'
+        text: 'Right click anywhere on the map to see the numbers for that specific place, or take a tour of some communities at high risk for worsened flooding.'
         attachTo: '#queryContent left'
         buttons: [
           text: 'Take a Tour'

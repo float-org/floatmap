@@ -331,7 +331,7 @@ This information comes from the Federal Emergency Management Administration (201
           text: 'Continue'
           action: () ->
             latlng = [42.732072157891224, -84.50576305389404]
-            app.map.setView(latlng, 15)
+            app.map.setView([42.73591782230738, -84.48997020721437], 15)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
@@ -349,7 +349,7 @@ This information comes from the Federal Emergency Management Administration (201
           text: 'Continue'
           action: () ->
             latlng = [41.726, -90.310]
-            app.map.setView(latlng, 15)
+            app.map.setView([41.7348457153312, -90.310], 15)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)

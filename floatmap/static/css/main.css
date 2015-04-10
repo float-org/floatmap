@@ -215,7 +215,7 @@ button {
 #queryContent {
   position: absolute;
   padding: 6px 19px;
-  bottom: 168px;
+  bottom: 178px;
   -webkit-transition: bottom 650ms ease-in;
   width: 100%;
   border: 10px solid #4099D1;
@@ -228,9 +228,18 @@ button {
 }
 #queryContent .metrics li {
   display: inline-block;
+  width: 32.33%;
 }
 #queryContent .metrics li span,
 #queryContent .metrics li label {
+  display: block;
+}
+#queryContent p {
+  text-align: center;
+}
+#queryToggle span {
+  text-align: center;
+  margin: 10px auto;
   display: block;
 }
 .active-query #queryContent {

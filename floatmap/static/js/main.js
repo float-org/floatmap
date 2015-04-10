@@ -340,7 +340,7 @@
               action: function() {
                 var latlng, marker;
                 latlng = [42.732072157891224, -84.50576305389404];
-                app.map.setView(latlng, 15);
+                app.map.setView([42.73591782230738, -84.48997020721437], 15);
                 if (app.map.marker) {
                   app.map.removeLayer(app.map.marker);
                 }
@@ -363,7 +363,7 @@
               action: function() {
                 var latlng, marker;
                 latlng = [41.726, -90.310];
-                app.map.setView(latlng, 15);
+                app.map.setView([41.7348457153312, -90.310], 15);
                 if (app.map.marker) {
                   app.map.removeLayer(app.map.marker);
                 }

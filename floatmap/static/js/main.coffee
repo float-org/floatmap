@@ -308,7 +308,7 @@ This information comes from the Federal Emergency Management Administration (201
         title: 'Green Bay, WI'
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
         with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.'
-        attachTo: '|#queryContent bottom'
+        attachTo: '|#queryContent top'
         buttons: [
           text: 'Continue'
           action: () ->
@@ -326,7 +326,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-dane',
         title: 'Madison, WI Airport'
         text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.'
-        attachTo: '|#queryContent bottom'
+        attachTo: '|#queryContent top'
         buttons: [
           text: 'Continue'
           action: () ->
@@ -344,7 +344,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-lansing',
         title: 'Lansing, MI'
         text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.'
-        attachTo: '|#queryContent bottom'
+        attachTo: '|#queryContent top'
         buttons: [
           text: 'Continue'
           action: () ->
@@ -362,7 +362,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-quadcities',
         title: 'Quad Cities Nuclear Generating Station'
         text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.'
-        attachTo: '|#queryContent bottom'
+        attachTo: '|#queryContent top'
         buttons: [
           text: 'Stop Tour'
           action: this.resetMapAfterTour

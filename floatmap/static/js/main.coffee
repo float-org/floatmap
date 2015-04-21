@@ -114,7 +114,7 @@ $ ->
   app.getColor = (type, d) ->
     if type == 'ap'
       rainbow = new Rainbow
-      rainbow.setSpectrum '#94FFDB', '#1900FF' # Probably just need to set once
+      rainbow.setSpectrum '#94FFDB', '#324ca8' # Probably just need to set once
       rainbow.setNumberRange 0, 12
       '#' + rainbow.colourAt(d)
 
@@ -495,7 +495,7 @@ This information comes from the Federal Emergency Management Administration (201
       
       # Create our layers
       base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
-      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', maxZoom: 15, minZoom: 5, errorTileUrl: '#'})
+      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', maxZoom: 15, minZoom: 5, errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
       labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
       
       ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap')
@@ -631,10 +631,6 @@ This information comes from the Federal Emergency Management Administration (201
 
   layout.render()
 
-  $(window).load () ->
-     # TODO: Separate tour from welcomeview so we don't have to instantiate it at all if the cookie exists
-    $("img").each () ->
-      $this = $(this)
-      this.onerror = () ->
-        $this.hide()
+  # TODO: Separate tour from welcomeview so we don't have to instantiate it at all if the cookie exists
+    
   

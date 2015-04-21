@@ -119,7 +119,7 @@
       var rainbow;
       if (type === 'ap') {
         rainbow = new Rainbow;
-        rainbow.setSpectrum('#94FFDB', '#1900FF');
+        rainbow.setSpectrum('#94FFDB', '#324ca8');
         rainbow.setNumberRange(0, 12);
         return '#' + rainbow.colourAt(d);
       }
@@ -520,7 +520,7 @@
           pane: 'tilePane',
           maxZoom: 15,
           minZoom: 5,
-          errorTileUrl: '#'
+          errorTileUrl: 'http://i.imgur.com/aZejCgY.png'
         });
         labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {
           pane: 'tilePane',
@@ -666,16 +666,7 @@
     });
     layout = app.layout = new FloatLayout();
     layout.$el.appendTo('#main');
-    layout.render();
-    return $(window).load(function() {
-      return $("img").each(function() {
-        var $this;
-        $this = $(this);
-        return this.onerror = function() {
-          return $this.hide();
-        };
-      });
-    });
+    return layout.render();
   });
 
 }).call(this);

@@ -100,17 +100,15 @@ svg.leaflet-zoom-animated {
 }
 
 // Cheap way to make our map grayscale
-img[src*="http://a.tiles.mapbox.com/v3/floatmap.2ce887fe"],
-img[src*="http://b.tiles.mapbox.com/v3/floatmap.2ce887fe"],
-img[src*="http://c.tiles.mapbox.com/v3/floatmap.2ce887fe"],
-img[src*="http://d.tiles.mapbox.com/v3/floatmap.2ce887fe"]    {
-  -webkit-filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-  filter: grayscale(100%);
-  filter: url(grayscale.svg); /* Firefox 4+ */
-  filter: gray; /* IE 6-9 */
+img[src*="//a.tiles.mapbox.com/v3/floatmap.2ce887fe"],
+img[src*="//b.tiles.mapbox.com/v3/floatmap.2ce887fe"],
+img[src*="//c.tiles.mapbox.com/v3/floatmap.2ce887fe"],
+img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
+  -webkit-filter: grayscale(60%);
+  -moz-filter: grayscale(60%);
+  -ms-filter: grayscale(60%);
+  -o-filter: grayscale(60%);
+  filter: grayscale(60%);
 }
 
 /* Base Styles */
@@ -140,14 +138,7 @@ img[src*="http://d.tiles.mapbox.com/v3/floatmap.2ce887fe"]    {
 
 #header {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
-    background: #56a8ca; /* Old browsers */
-    background: -moz-linear-gradient(top, #56a8ca 46%, #2989d8 100%, #64a7dc 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(46%,#56a8ca), color-stop(100%,#2989d8), color-stop(100%,#64a7dc)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #56a8ca 46%,#2989d8 100%,#64a7dc 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #56a8ca 46%,#2989d8 100%,#64a7dc 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #56a8ca 46%,#2989d8 100%,#64a7dc 100%); /* IE10+ */
-    background: linear-gradient(to bottom, #56a8ca 46%,#2989d8 100%,#64a7dc 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', endColorstr='#64a7dc',GradientType=0 ); /* IE6-9 */
+    background: #324ca8; /* Old browsers */
     display:block;
     height:90px;
     padding: 20px;
@@ -164,13 +155,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a8ca', end
     box-sizing:border-box;
     -moz-box-sizing:border-box;
     clear:both;
+    padding-top:5px;
 }
 
 #header nav a {
-    color:#FFF;
-    font-size:22px;
-    font-weight:bold;
-    margin-left:20px;
+    color: #FFF;
+    font-size: 19px;
+    margin-left: 20px;
+    font-weight: 100;
+    letter-spacing: 0.3px;
 }
 
 #header nav a:first-child {
@@ -255,7 +248,7 @@ button {
     bottom:178px;
     -webkit-transition: bottom 650ms ease-in;
     width:100%;
-    border: 10px solid #4099D1;
+    border: 10px solid #324ca8;
     .metrics {
         text-align:center;
         list-style: none;
@@ -298,9 +291,7 @@ button {
     z-index:1048;
 }
 
-.legend-panel, .legend-data {
-    height:100%;
-}
+#legend > div, .legend-panel { height: 100%}
 
 .legend-panel > div {
     padding:10px 0;
@@ -316,7 +307,7 @@ button {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   color: #fff;
-  background-color:#4099D1; 
+  background-color:#324ca8; 
   text-shadow: -1px 1px #000000;
   border: none;
 }
@@ -326,7 +317,7 @@ button {
 }
 
 .legend-data { 
-  background-color:#e1e1e1;
+  background-color:#D7D5D1;
   padding:13px 6px;
 }
 
@@ -422,7 +413,7 @@ button {
     text-align: center;
     font-size: 11px;
     color: #222;
-    background-color:#e1e1e1;
+    background-color:#D7D5D1;
 }
 
 .apRange > div.bottom-line{
@@ -431,7 +422,7 @@ button {
     font-size: 11px;
     text-align: center;
     width: 318px;
-    background: #e1e1e1;
+    background: #D7D5D1;
     display: block;
     position: relative;
     top: 19px;
@@ -508,7 +499,6 @@ marker#arrow {
 }
 .onoffswitch-label {
     display: block; overflow: hidden; cursor: pointer;
-    border: 2px solid #999999; border-radius: 20px;
 }
 .onoffswitch-inner {
     display: block; width: 200%; margin-left: -100%;
@@ -523,12 +513,14 @@ marker#arrow {
 .onoffswitch-inner:before {
     content: "ON";
     padding-left: 10px;
-    background-color: #34A7C1; color: #FFFFFF;
+    background-color: #A4A5A9; 
+    color: #FFFFFF;
 }
 .onoffswitch-inner:after {
     content: "OFF";
     padding-right: 10px;
-    background-color: #EEEEEE; color: #999999;
+    background-color: #B8B8BA; 
+    color: #FFFFFF;
     text-align: right;
 }
 .onoffswitch-switch {

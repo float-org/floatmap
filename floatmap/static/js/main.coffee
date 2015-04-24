@@ -75,10 +75,9 @@ GeoCollection = L.GeoCollection = Backbone.Collection.extend(
 
 Query = Backbone.Model.extend
   defaults:
-    ap: 0
-    ep: 0
-    flood: 0
-    overall_risk: 'unknown'
+    ap: ""
+    ep: ""
+    overall_risk: 'Search or right click anywhere on the map to learn more about a region.'
 
   url: '/get_queries/'
 
@@ -199,8 +198,9 @@ $ ->
           scrollTo: true
 
     resetMapAfterTour: () ->
-      if $('.active-query')
-        $('.active-query').removeClass('active-query')
+      if $('.active')
+        $('.active').removeClass('active').promise().done () ->
+          $('.legend-wrapper').addClass('invisible')
       app.map.setZoom(6)
       app.map.addLayer floods, 1
       $('#floods-switch').prop('checked',true)
@@ -211,8 +211,9 @@ $ ->
       tour.complete()
 
     resetMapData: () ->
-      if $('.active-query')
-        $('.active-query').removeClass('active-query')
+      if $('.active')
+        $('.active').removeClass('active').promise().done () ->
+          $('.legend-wrapper').addClass('invisible')
       for layer in [window.ap, window.ep, window.floods]
         app.map.removeLayer(layer)
       $('#floods-switch').prop('checked',false)
@@ -225,6 +226,7 @@ $ ->
       app.map.setZoom(6)
       this.resetMapData()
       $('#welcomeModal').modal('hide')
+      $('#legend-toggle').trigger('click')
 
       # Display average precipitation layer - this sort of thing happens in tour step action methods hereafter
       $('#apLayer-switch').trigger('click')
@@ -235,7 +237,7 @@ $ ->
         text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow by the 2040-2070 period. 
 More annual precipitation means more water going into rivers, lakes and snowbanks, a key risk factor for bigger floods.
 These projections come from the National Oceanic and Atmospheric Administration (2014).'
-        attachTo: '#apLegendContainer top'
+        attachTo: '#apToggle top'
         buttons: [
           text: 'Next'
           action: () ->
@@ -249,7 +251,7 @@ These projections come from the National Oceanic and Atmospheric Administration 
         text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often by the 2040-2070 period. 
 More storm frequency means more rapid surges of water into rivers and lakes, a key risk factor for more frequent flooding.
 These projections also come from the National Oceanic and Atmospheric Administration (2014).'
-        attachTo: '#epLegendContainer top'
+        attachTo: '#stormsToggle top'
         buttons: [
           text: 'Next'
           action: () ->
@@ -263,7 +265,7 @@ These projections also come from the National Oceanic and Atmospheric Administra
         text: 'The Flood Zones show the areas that already are at major risk for flooding, based on where floods have historically reached. 
 If floods become larger and more frequent, many neighboring areas to these historical flood zones are likely to start experience flooding. 
 This information comes from the Federal Emergency Management Administration (2014).'
-        attachTo: '#floodsLegendContainer top'
+        attachTo: '#floodZonesToggle top'
         buttons: [
           text: 'Next'
           action: tour.next
@@ -277,7 +279,6 @@ This information comes from the Federal Emergency Management Administration (201
         buttons: [
           text: 'Next'
           action: () ->
-            $('#queryToggle').trigger('click')
             setTimeout () -> 
               tour.next()
             , 450
@@ -288,7 +289,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'query-step',
         title: 'Query'
         text: 'Right click anywhere on the map to see the numbers for that specific place, or take a tour of some communities at high risk for worsened flooding.'
-        attachTo: '#queryContent left'
+        attachTo: '#query left'
         buttons: [
           text: 'Take a Tour'
           action: () -> 
@@ -308,7 +309,7 @@ This information comes from the Federal Emergency Management Administration (201
         title: 'Green Bay, WI'
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
         with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.'
-        attachTo: '|#queryContent top'
+        attachTo: '#legend-toggle top'
         buttons: [
           text: 'Continue'
           action: () ->
@@ -326,7 +327,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-dane',
         title: 'Madison, WI Airport'
         text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.'
-        attachTo: '|#queryContent top'
+        attachTo: '#legend-toggle top'
         buttons: [
           text: 'Continue'
           action: () ->
@@ -344,7 +345,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-lansing',
         title: 'Lansing, MI'
         text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.'
-        attachTo: '|#queryContent top'
+        attachTo: '#legend-toggle top'
         buttons: [
           text: 'Continue'
           action: () ->
@@ -362,7 +363,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-quadcities',
         title: 'Quad Cities Nuclear Generating Station'
         text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.'
-        attachTo: '|#queryContent top'
+        attachTo: '#legend-toggle top'
         buttons: [
           text: 'Stop Tour'
           action: this.resetMapAfterTour
@@ -386,8 +387,6 @@ This information comes from the Federal Emergency Management Administration (201
         this.reposition()
 
       'click #closeModal': (e) ->
-        if $('.active-query')
-          $('.active-query').removeClass('active-query')
         app.map.addLayer floods, 1
         $('#floods-switch').prop('checked',true)
         app.map.addLayer ap, 2
@@ -429,6 +428,8 @@ This information comes from the Federal Emergency Management Administration (201
 
       # When a user right clicks, trigger a query in Elasticsearch for the coords at the click.
       app.map.on 'contextmenu', (e) ->
+        if not $('.legend-wrapper').hasClass('active')
+          $('#legend-toggle').trigger('click')
         latLng = [e.latlng.lat, e.latlng.lng]
         app.layout.views['map'].setAddress(latLng, app.map.getZoom())
 
@@ -484,7 +485,10 @@ This information comes from the Federal Emergency Management Administration (201
 
       # Instantiate map if we haven't
       if not app.map
-        map = app.map = new L.Map('map', {zoomControl: false}).setView([43.05358653605547, -89.2815113067627], 6)
+        southWest = L.latLng(36.77409249464195, -96.85546875000001)
+        northEast = L.latLng(50.078294547389454, -81.91406250000001)
+        bounds = L.latLngBounds(southWest, northEast);
+        map = app.map = new L.Map('map', {zoomControl: false, zoom: 6}).fitBounds(bounds)
       
       # Create new SVG renderer and add to Tile pane, so we can work with GeoJSON like other layers
       map.renderer = L.svg({pane:'tilePane'}).addTo(map)
@@ -519,10 +523,6 @@ This information comes from the Federal Emergency Management Administration (201
   QueryView = app.QueryView = Backbone.View.extend
     template: "#queryTemplate"
 
-    events:
-      "click #queryToggle": (e) -> 
-        app.layout.views['#legend'].$el.toggleClass('active-query')
-
     initialize: () ->
       this.model = new Query()
       this.listenTo(this.model, "change", this.render)
@@ -531,7 +531,6 @@ This information comes from the Federal Emergency Management Administration (201
       { query: this.model.attributes }
 
     getQuery: (lnglat) ->
-      spinner = app.createSpinner "#queryContent"
       self = this   
 
       this.model.fetch
@@ -542,19 +541,25 @@ This information comes from the Federal Emergency Management Administration (201
         type: 'POST',
         success: (model, response) -> 
           setTimeout () ->
-            app.layout.views['#legend'].$el.addClass('active-query')
+            if not $('.legend-wrapper').hasClass('active')
+              $('#legend-toggle').trigger('click')
           , 100
-          spinner.stop()
-        error: (model, response) -> 
-          spinner.stop()
-        complete: (model, response) -> 
-          spinner.stop()
 
   LegendView = app.LegendView = Backbone.View.extend
-    template: "#legendTemplate"  
+    template: "#legendTemplate" 
 
     events:
       "click #legend": (e) -> e.stopPropagation()
+
+      "click #legend-toggle": (e) -> 
+        if $('.legend-wrapper').hasClass('active') # i.e. if panel is open
+          $('.legend-wrapper, #legend-toggle').removeClass('active').promise().done () ->
+            $('.legend-wrapper').addClass('invisible')     
+        else 
+          $('.legend-wrapper, #legend-toggle').addClass('active').promise().done () ->
+            $('.legend-wrapper').removeClass('invisible')
+            
+        
       "click .onoffswitch-checkbox": (e) ->
         e.stopPropagation()
         map = app.map
@@ -592,15 +597,16 @@ This information comes from the Federal Emergency Management Administration (201
       labels = []
       
       # ToDo: Worth transferring this HTML to the template at some point?
-      $(apGrades).each (index) ->
+      self.$el.find(".apRange").append "<span class='ap-text'>Increasing Average Precipitation</span>"
+      self.$el.find(".apRange").append "<div class='ap-arrow'></div>"
+      self.$el.find(".apRange").append "<div class='ap-values'></div>"
+      $($(apGrades).get().reverse()).each (index) ->
         apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + "\"></i></div>")
         if index % 4 is 0
           textNode = "<span>+" + this + "%</span>"
           apValue.append textNode
-        self.$el.find(".apRange").append apValue
+        self.$el.find(".ap-values").append apValue
         
-      self.$el.find(".apRange").append "<div class='bottom-line'>increasing annual precipitation</div>"
-
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
 

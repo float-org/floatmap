@@ -3,12 +3,12 @@ button,
 input,
 select,
 textarea {
-    color: #222;
+  color: #222;
 }
 
 html {
-    font-size: 1em;
-    line-height: 1.4;
+  font-size: 1em;
+  line-height: 1.4;
 }
 
 /*
@@ -17,27 +17,27 @@ html {
  * Customize the background color to match your design.
  */
 
-::-moz-selection {
-    background: #b3d4fc;
-    text-shadow: none;
+ ::-moz-selection {
+  background: #b3d4fc;
+  text-shadow: none;
 }
 
 ::selection {
-    background: #b3d4fc;
-    text-shadow: none;
+  background: #b3d4fc;
+  text-shadow: none;
 }
 
 /*
  * A better looking default horizontal rule
  */
 
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
+ hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
 }
 
 /*
@@ -45,58 +45,58 @@ hr {
  * their containers: h5bp.com/i/440
  */
 
-audio,
-canvas,
-img,
-video {
-    vertical-align: middle;
+ audio,
+ canvas,
+ img,
+ video {
+  vertical-align: middle;
 }
 
 /*
  * Remove default fieldset styles.
  */
 
-fieldset {
-    border: 0;
-    margin: 0;
-    padding: 0;
+ fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
 }
 
 /*
  * Allow only vertical resizing of textareas.
  */
 
-textarea {
-    resize: vertical;
+ textarea {
+  resize: vertical;
 }
 
 /* ==========================================================================
    Browse Happy prompt
    ========================================================================== */
 
-.browsehappy {
+   .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
     color: #000;
     padding: 0.2em 0;
-}
+  }
 
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
 
 
-/* My dumb hacks */
+   /* My dumb hacks */
 
 // This layers the GeoJSON above base map but 
 // under the labels tile layer.  I have no idea
 // why I have to do this.
 svg.leaflet-zoom-animated {
-    z-index: 4;
-    position: relative;
-    path {
-        stroke-width:0;
-    }
+  z-index: 4;
+  position: relative;
+  path {
+    stroke-width:0;
+  }
 }
 
 // Cheap way to make our map grayscale
@@ -114,118 +114,118 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 /* Base Styles */
 
 #map {
-    width:100%;
-    height:100%;
-    min-height:100vh;
-    position:relative;
+  width:100%;
+  height:100%;
+  min-height:100vh;
+  position:relative;
 }
 
 .ap {
-    fill-opacity: 0.5;
+  fill-opacity: 0.5;
 }
 
 
 /* Header Styles */
 
 .logo, header {
-    font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .logo a, .logo a:hover, header a:hover {
-    color:#FFF;
-    text-decoration: none;
+  color:#FFF;
+  text-decoration: none;
 }
 
 #header {
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
-    background: #324ca8; /* Old browsers */
-    display:block;
-    height:90px;
-    padding: 20px;
-    box-sizing: border-box;
-    position:fixed;
-    width:100%;
-    z-index:1049; /* one less than bootstrap modal */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
+  background: #324ca8; /* Old browsers */
+  display:block;
+  height:90px;
+  padding: 20px;
+  box-sizing: border-box;
+  position:fixed;
+  width:100%;
+  z-index:1049; /* one less than bootstrap modal */
 }
 
 #header nav {
-    color:#FFF;
-    text-align:right;
-    padding-right:20px;
-    box-sizing:border-box;
-    -moz-box-sizing:border-box;
-    clear:both;
-    padding-top:5px;
+  color:#FFF;
+  text-align:right;
+  padding-right:20px;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  clear:both;
+  padding-top:5px;
 }
 
 #header nav a {
-    color: #FFF;
-    font-size: 19px;
-    margin-left: 20px;
-    font-weight: 100;
-    letter-spacing: 0.3px;
+  color: #FFF;
+  font-size: 19px;
+  margin-left: 20px;
+  font-weight: 100;
+  letter-spacing: 0.3px;
 }
 
 #header nav a:first-child {
-    margin-left:0;
+  margin-left:0;
 }
 
 .logo {
-    color: white;
-    font-weight:bold;
+  color: white;
+  font-weight:bold;
 }
 
 .logo h1 {
-    margin:0;
+  margin:0;
 }
 
 .logo span {
-    font-size:18px;
+  font-size:18px;
 }
 
 #search input[type="text"],
 #search button {
-    float:left;
-    height:37px;
+  float:left;
+  height:37px;
 }
 
 #search input[type="text"] {
-    width:478px;
-    box-sizing:border-box;
+  width:478px;
+  box-sizing:border-box;
 }
 
 #search input::-webkit-input-placeholder,
 #search input::-moz-placeholder,
 #search input::-ms-input-placeholder {
-    color: #A5A7A9;
+  color: #A5A7A9;
 }
 
 #search button {
-    width:137px;
-    background-color:#404247;
-    color:#FAEBE2;
-    border:0;
+  width:137px;
+  background-color:#404247;
+  color:#FAEBE2;
+  border:0;
 }
 
 #search button {
-    font-size:17px;
+  font-size:17px;
 }
 
 nav a,
 button,
 input[type="text"] { 
-    font-size:17px;
+  font-size:17px;
 }
 
 button {
-    font-style:italic;
+  font-style:italic;
 }
 
 
 /* Modal Styles */
 
 .fade.in.modal {
-    z-index: 1050;
+  z-index: 1050;
 }
 
 .modal-backdrop {
@@ -233,120 +233,154 @@ button {
   z-index: 1049;
 }
 
+.legend-layer-toggles { 
+  width: 110px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0px 16px;
+}
+
+.legend-layer-toggles > div {
+  display: block;
+  width: 50px;
+  vertical-align: top;
+  margin-bottom: 31px;
+}
+
+.legend-layer-toggles h4 {
+  display:inline-block;
+  font-size:12px;
+  margin:0;
+}
+
+
 /* Tour Styles */
 
 .shepherd-step.shepherd-theme-arrows {
     z-index:99999999; // Always on top!
     max-width:400px !important; // Really don't like the CSS in this library
-}
+  }
 
-/* Query Styles */
+  /* Query Styles */
 
-#queryContent {
-    position:absolute;
-    padding: 6px 19px;
-    bottom:178px;
-    -webkit-transition: bottom 650ms ease-in;
-    width:100%;
-    border: 10px solid #324ca8;
+  #queryContent {
+    padding: 6px;
+    font-size:12px;
     .metrics {
-        text-align:center;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        li {
-            display:inline-block;
-            width: 32.33%;
-            span, label { display:block; }
-        }
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      li {
+        display: block;
+        padding: 5px;
+        font-size: 14px;
+        text-align: center
+      }
     }
     p { text-align: center; }
-}
+  }
 
-#queryToggle span {
-    text-align: center;
-    margin: 10px auto;
-    display: block;
-}
+  /* Legend Styles */
 
-.active-query #queryContent {
-    bottom:270px;
-}
-
-/* Legend Styles */
-
-
-
-
-#legend {
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    background:#FFF;
-    border-radius:5px;
-    min-width:531px;
-    height:300px;
+  #legend {
     position:absolute;
     bottom:50px;
+    width:320px;
+    margin:0;
+    padding:0;
     right:50px;
     z-index:1048;
-}
+    background-color: #D7D5D1;
+  }
 
-#legend > div, .legend-panel { height: 100%}
+  #legend .legend-wrapper  {
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    max-height:40px;
+    -webkit-transition: max-height 150ms ease-in;
+    -moz-transition: max-height 150ms ease-in;
+    transition: max-height 150ms ease-in;
+  }
 
-.legend-panel > div {
+  #legend .legend-wrapper.active {
+    max-height:500px;
+  }
+
+  #legend-toggle {
+    height: 20px;
+    width: 130px;
+    background: #324ca8;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    cursor: pointer;
+    display:block;
+    margin:0 auto;
+    margin-top:-20px;
+  }
+
+  #legend-toggle span {
+    -webkit-transition: transform 300ms ease-in;
+    -moz-transition: transform 300ms ease-in;
+    transition: transform 300ms ease-in;
+    text-align: center;
+    display: block;
+  }
+
+  #legend-toggle.active span {
+    transform: rotate(180deg);
+  }
+
+  .legend-wrapper, .legend-panel { height: 100%}
+
+  .legend-panel > div {
     padding:10px 0;
-}
+  }
 
-#legend .legend-panel {
-  display: block;
-  padding: 10px 12px;
-  font-size: 12px;
-  line-height: 1.4;
-  box-shadow: none;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  color: #fff;
-  background-color:#324ca8; 
-  text-shadow: -1px 1px #000000;
-  border: none;
-}
+  #legend .legend-panel {
+    display: block;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: none;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    color: #fff;
+    background-color:#324ca8; 
+    text-shadow: -1px 1px #000000;
+    border: none;
+  }
 
-#legend .legend-panel h3 {
+  #legend .legend-panel h3 {
     display:inline-block;
-}
+  }
 
-.legend-data { 
-  background-color:#D7D5D1;
-  padding:13px 6px;
-}
+  .legend-data { 
+    width: 200px;
+    display: inline-block;
+  }
 
-.legend h4 {
+  .legend h4 {
     margin: 0 0 5px;
     color: #777;
-}
+  }
 
-.floodRange, .apRange, .epRange { 
+  .floodRange, .apRange, .epRange { 
     margin:0;
     padding:0;
     height:100%;
     list-style-type:none;
     font-size:11px;
-}
+    width: 95px;
+    display:inline-block;
+    vertical-align: top;
+  }
 
-.apRange {
-    padding:22px 0;
-}
+  .floodRange {
+    width: 155px;
+    margin-top: 15px;
+  }
 
-.epRange {
-    padding:18px 0;
-}
-
-.epRange svg {
-    height: 90px;
-}
-
-.floodRange li > div {
+  .floodRange li > div {
     width:30px;
     height:20px;
     margin:0;
@@ -356,187 +390,198 @@ button {
     box-sizing:border-box;
     display:inline-block;
     opacity:0.5;
-}
+  }
 
-.floodRange li > span { 
+  .floodRange li > span { 
     vertical-align:top;
     margin-left:3px;
-}
+  }
 
-/* Overwrite bootstrap */
+  /* Overwrite bootstrap */
 
-.tooltip { 
+  .tooltip { 
     opacity:1;
-}
+  }
 
-.tooltip.top .tooltip-arrow,
-.tooltip.top .tooltip-inner {
+  .tooltip.top .tooltip-arrow,
+  .tooltip.top .tooltip-inner {
     border-top-color:#FFF;
     color:#222;
-}
+  }
 
-.tooltip-inner { 
+  .tooltip-inner { 
     border-radius:0;
     background:#FFF;
     text-shadow:none;
-}
+  }
 
-/* Floods */
+  /* Floods */
 
-.year-100 > div {
+  .year-100 > div {
     background-color:#ba3a3a;
-}
+  }
 
-.year-500 > div { 
+  .year-500 > div { 
     background-color:#CF9294;
-}
+  }
 
-/* Average Precipitation */
+  /* Average Precipitation */
 
-.apRange > div {
-    display:inline-block;
+  .ap-values > div {
+    display: inline-block;
     vertical-align: top;
-    background:white;
-    height:24px;
-    width:24px;
-}
+    height: 12px;
+    width: 45px;
+  }
 
-.apRange i {
-    width: 24px;
-    height: 24px;
-    display:inline-block;
+  .ap-values div i {
+    width: 12px;
+    height: 16px;
+    display: inline-block;
     opacity: 0.4;
-}
+  }
 
-.apRange span { 
-    display: block;
-    text-align: center;
-    font-size: 11px;
+  .ap-values div span { 
+    display: inline-block;
+    font-size: 10px;
+    vertical-align: top;
     color: #222;
-    background-color:#D7D5D1;
-}
+    padding-left: 2px;
+  }
 
-.apRange > div.bottom-line{
-    margin-top: 4px;
-    border-top: 1px solid #222;
-    font-size: 11px;
-    text-align: center;
-    width: 318px;
-    background: #D7D5D1;
-    display: block;
+  .ap-values { 
+    display: inline-block;
+    vertical-align: top;
+    width: 50px;
+    padding-left: 10px;
+  }
+
+  .apRange > div.ap-arrow{
+      margin-top: 2px;
+  border-right: 2px solid #777;
+  font-size: 11px;
+  width: 1px;
+  display: inline-block;
+  height: 206px;
+  }
+
+  .ap-text {
+    -webkit-transform: rotate(-90deg);
+    width: 17px;
+    white-space: nowrap;
+    display: inline-block;
     position: relative;
-    top: 19px;
-}
+    bottom: 24px;
+  }
 
-.bottom-line:after{
+  .ap-arrow:after{
     content: "";
     display: block;
-    border-top: 5px solid transparent;
-    border-left: 11px solid #222;
-    border-bottom: 5px solid transparent;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 10px solid #222;
     width: 0;
-    background-color:#6496c8
-    height: 0;
     float: right;
     position: relative;
-    bottom: 5px;
-    left: 1px;
-}
+    bottom: 0px;
+    left: 6px;
+    height: 0;
+  }
 
-/* Extreme Precipitation Styles */
+  /* Extreme Precipitation Styles */
 
-.dots {
+  .dots {
     fill-opacity:1;
     stroke-opacity:0;
     fill: transparent;
-}
+  }
 
-.extreme-severe.dots {
+  .extreme-severe.dots {
     fill:url(#extreme-severe);
-}
+  }
 
-.high-extreme.dots {
+  .high-extreme.dots {
     fill:url(#high-extreme);
-}
+  }
 
-.mid-high.dots {
+  .mid-high.dots {
     fill:url(#mid-high);
-}
+  }
 
-.low-mid.dots {
+  .low-mid.dots {
     fill:url(#low-mid);
-}
+  }
 
-.legend {
+  .legend {
     fill: black;
-}
+  }
 
-rect text {
-    font-size:11px;
-}
+  .epRange text {
+    font-size:10px;
+  }
 
-line.arrow {
+  line.arrow {
     stroke: #222;
     stroke-width: 1px;
-}
-marker#arrow {
+  }
+  marker#arrow {
     fill: #222;
-}
+  }
 
-.link-label {
+  .link-label {
     font-family: sans-serif;
     font-size: 11px;
-}
+  }
 
-/* Toggle Switches for legend */
+  /* Toggle Switches for legend */
 
-.onoffswitch {
-    position: relative; width: 74px;
+  .onoffswitch {
+    position: relative; width: 44px;
     -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-}
-.onoffswitch-checkbox {
+  }
+  .onoffswitch-checkbox {
     display: none;
-}
-.onoffswitch-label {
+  }
+  .onoffswitch-label {
     display: block; overflow: hidden; cursor: pointer;
-}
-.onoffswitch-inner {
+  }
+  .onoffswitch-inner {
     display: block; width: 200%; margin-left: -100%;
     -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
     -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
-}
-.onoffswitch-inner:before, .onoffswitch-inner:after {
+  }
+  .onoffswitch-inner:before, .onoffswitch-inner:after {
     display: block; float: left; width: 50%; height: 22px; padding: 0; line-height: 22px;
     font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
-}
-.onoffswitch-inner:before {
+  }
+  .onoffswitch-inner:before {
     content: "ON";
     padding-left: 10px;
     background-color: #A4A5A9; 
     color: #FFFFFF;
-}
-.onoffswitch-inner:after {
+  }
+  .onoffswitch-inner:after {
     content: "OFF";
     padding-right: 10px;
     background-color: #B8B8BA; 
     color: #FFFFFF;
     text-align: right;
-}
-.onoffswitch-switch {
+  }
+  .onoffswitch-switch {
     display: block; width: 13px; margin: 4.5px;
     background: #FFFFFF;
     border: 2px solid #999999; border-radius: 20px;
     position: absolute; top: 0; bottom: 0; right: 48px;
     -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
     -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  }
+  .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
     margin-left: 0;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+  }
+  .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
     right: 0px; 
-}
+  }
 
 
 /* ==========================================================================
@@ -547,43 +592,43 @@ marker#arrow {
  * Image replacement
  */
 
-.ir {
-    background-color: transparent;
-    border: 0;
-    overflow: hidden;
-    /* IE 6/7 fallback */
-    *text-indent: -9999px;
+ .ir {
+  background-color: transparent;
+  border: 0;
+  overflow: hidden;
+  /* IE 6/7 fallback */
+  *text-indent: -9999px;
 }
 
 .ir:before {
-    content: "";
-    display: block;
-    width: 0;
-    height: 150%;
+  content: "";
+  display: block;
+  width: 0;
+  height: 150%;
 }
 
 /*
  * Hide from both screenreaders and browsers: h5bp.com/u
  */
 
-.hidden {
-    display: none !important;
-    visibility: hidden;
+ .hidden {
+  display: none !important;
+  visibility: hidden;
 }
 
 /*
  * Hide only visually, but have it available for screenreaders: h5bp.com/v
  */
 
-.visuallyhidden {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
+ .visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
 
 /*
@@ -591,22 +636,22 @@ marker#arrow {
  * when navigated to via the keyboard: h5bp.com/p
  */
 
-.visuallyhidden.focusable:active,
-.visuallyhidden.focusable:focus {
-    clip: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    position: static;
-    width: auto;
+ .visuallyhidden.focusable:active,
+ .visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
 }
 
 /*
  * Hide visually and from screenreaders, but maintain layout
  */
 
-.invisible {
-    visibility: hidden;
+ .invisible {
+  visibility: hidden;
 }
 
 /*
@@ -621,14 +666,14 @@ marker#arrow {
  *    `:before` to contain the top-margins of child elements.
  */
 
-.clearfix:before,
-.clearfix:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+ .clearfix:before,
+ .clearfix:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
 }
 
 .clearfix:after {
-    clear: both;
+  clear: both;
 }
 
 /*
@@ -636,8 +681,8 @@ marker#arrow {
  * Include this rule to trigger hasLayout and contain floats.
  */
 
-.clearfix {
-    *zoom: 1;
+ .clearfix {
+  *zoom: 1;
 }
 
 /* ==========================================================================
@@ -646,87 +691,87 @@ marker#arrow {
    Modify as content requires.
    ========================================================================== */
 
-@media all and (min-width: 1024px) {
+   @media all and (min-width: 1024px) {
     #header nav {
-        clear:none;    
+      clear:none;    
     }
-}
+  }
 
-@media print,
-       (-o-min-device-pixel-ratio: 5/4),
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 120dpi) {
+  @media print,
+  (-o-min-device-pixel-ratio: 5/4),
+  (-webkit-min-device-pixel-ratio: 1.25),
+  (min-resolution: 120dpi) {
     /* Style adjustments for high resolution devices */
-}
+  }
 
 /* ==========================================================================
    Print styles.
    Inlined to avoid required HTTP connection: h5bp.com/r
    ========================================================================== */
 
-@media print {
+   @media print {
     * {
-        background: transparent !important;
-        color: #000 !important; /* Black prints faster: h5bp.com/s */
-        box-shadow: none !important;
-        text-shadow: none !important;
+      background: transparent !important;
+      color: #000 !important; /* Black prints faster: h5bp.com/s */
+      box-shadow: none !important;
+      text-shadow: none !important;
     }
 
     a,
     a:visited {
-        text-decoration: underline;
+      text-decoration: underline;
     }
 
     a[href]:after {
-        content: " (" attr(href) ")";
+      content: " (" attr(href) ")";
     }
 
     abbr[title]:after {
-        content: " (" attr(title) ")";
+      content: " (" attr(title) ")";
     }
 
     /*
      * Don't show links for images, or javascript/internal links
      */
 
-    .ir a:after,
-    a[href^="javascript:"]:after,
-    a[href^="#"]:after {
-        content: "";
+     .ir a:after,
+     a[href^="javascript:"]:after,
+     a[href^="#"]:after {
+      content: "";
     }
 
     pre,
     blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid;
+      border: 1px solid #999;
+      page-break-inside: avoid;
     }
 
     thead {
-        display: table-header-group; /* h5bp.com/t */
+      display: table-header-group; /* h5bp.com/t */
     }
 
     tr,
     img {
-        page-break-inside: avoid;
+      page-break-inside: avoid;
     }
 
     img {
-        max-width: 100% !important;
+      max-width: 100% !important;
     }
 
     @page {
-        margin: 0.5cm;
+      margin: 0.5cm;
     }
 
     p,
     h2,
     h3 {
-        orphans: 3;
-        widows: 3;
+      orphans: 3;
+      widows: 3;
     }
 
     h2,
     h3 {
-        page-break-after: avoid;
+      page-break-after: avoid;
     }
-}
+  }

@@ -190,6 +190,23 @@ button {
   height: 100%;
   z-index: 1049;
 }
+.legend-layer-toggles {
+  width: 110px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0px 16px;
+}
+.legend-layer-toggles > div {
+  display: block;
+  width: 50px;
+  vertical-align: top;
+  margin-bottom: 31px;
+}
+.legend-layer-toggles h4 {
+  display: inline-block;
+  font-size: 12px;
+  margin: 0;
+}
 /* Tour Styles */
 .shepherd-step.shepherd-theme-arrows {
   z-index: 99999999;
@@ -197,52 +214,66 @@ button {
 }
 /* Query Styles */
 #queryContent {
-  position: absolute;
-  padding: 6px 19px;
-  bottom: 178px;
-  -webkit-transition: bottom 650ms ease-in;
-  width: 100%;
-  border: 10px solid #324ca8;
+  padding: 6px;
+  font-size: 12px;
 }
 #queryContent .metrics {
-  text-align: center;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 #queryContent .metrics li {
-  display: inline-block;
-  width: 32.33%;
-}
-#queryContent .metrics li span,
-#queryContent .metrics li label {
   display: block;
+  padding: 5px;
+  font-size: 14px;
+  text-align: center;
 }
 #queryContent p {
   text-align: center;
 }
-#queryToggle span {
-  text-align: center;
-  margin: 10px auto;
-  display: block;
-}
-.active-query #queryContent {
-  bottom: 270px;
-}
 /* Legend Styles */
 #legend {
-  font: 14px/16px Arial, Helvetica, sans-serif;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  background: #FFF;
-  border-radius: 5px;
-  min-width: 531px;
-  height: 300px;
   position: absolute;
   bottom: 50px;
+  width: 320px;
+  margin: 0;
+  padding: 0;
   right: 50px;
   z-index: 1048;
+  background-color: #D7D5D1;
 }
-#legend > div,
+#legend .legend-wrapper {
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  max-height: 40px;
+  -webkit-transition: max-height 150ms ease-in;
+  -moz-transition: max-height 150ms ease-in;
+  transition: max-height 150ms ease-in;
+}
+#legend .legend-wrapper.active {
+  max-height: 500px;
+}
+#legend-toggle {
+  height: 20px;
+  width: 130px;
+  background: #324ca8;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+  margin-top: -20px;
+}
+#legend-toggle span {
+  -webkit-transition: transform 300ms ease-in;
+  -moz-transition: transform 300ms ease-in;
+  transition: transform 300ms ease-in;
+  text-align: center;
+  display: block;
+}
+#legend-toggle.active span {
+  transform: rotate(180deg);
+}
+.legend-wrapper,
 .legend-panel {
   height: 100%;
 }
@@ -267,8 +298,8 @@ button {
   display: inline-block;
 }
 .legend-data {
-  background-color: #D7D5D1;
-  padding: 13px 6px;
+  width: 200px;
+  display: inline-block;
 }
 .legend h4 {
   margin: 0 0 5px;
@@ -282,15 +313,13 @@ button {
   height: 100%;
   list-style-type: none;
   font-size: 11px;
+  width: 95px;
+  display: inline-block;
+  vertical-align: top;
 }
-.apRange {
-  padding: 22px 0;
-}
-.epRange {
-  padding: 18px 0;
-}
-.epRange svg {
-  height: 90px;
+.floodRange {
+  width: 155px;
+  margin-top: 15px;
 }
 .floodRange li > div {
   width: 30px;
@@ -329,50 +358,59 @@ button {
   background-color: #CF9294;
 }
 /* Average Precipitation */
-.apRange > div {
+.ap-values > div {
   display: inline-block;
   vertical-align: top;
-  background: white;
-  height: 24px;
-  width: 24px;
+  height: 12px;
+  width: 45px;
 }
-.apRange i {
-  width: 24px;
-  height: 24px;
+.ap-values div i {
+  width: 12px;
+  height: 16px;
   display: inline-block;
   opacity: 0.4;
 }
-.apRange span {
-  display: block;
-  text-align: center;
-  font-size: 11px;
+.ap-values div span {
+  display: inline-block;
+  font-size: 10px;
+  vertical-align: top;
   color: #222;
-  background-color: #D7D5D1;
+  padding-left: 2px;
 }
-.apRange > div.bottom-line {
-  margin-top: 4px;
-  border-top: 1px solid #222;
+.ap-values {
+  display: inline-block;
+  vertical-align: top;
+  width: 50px;
+  padding-left: 10px;
+}
+.apRange > div.ap-arrow {
+  margin-top: 2px;
+  border-right: 2px solid #777;
   font-size: 11px;
-  text-align: center;
-  width: 318px;
-  background: #D7D5D1;
-  display: block;
-  position: relative;
-  top: 19px;
+  width: 1px;
+  display: inline-block;
+  height: 206px;
 }
-.bottom-line:after {
+.ap-text {
+  -webkit-transform: rotate(-90deg);
+  width: 17px;
+  white-space: nowrap;
+  display: inline-block;
+  position: relative;
+  bottom: 24px;
+}
+.ap-arrow:after {
   content: "";
   display: block;
-  border-top: 5px solid transparent;
-  border-left: 11px solid #222;
-  border-bottom: 5px solid transparent;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid #222;
   width: 0;
-  background-color: #6496c8
-    height: 0;
   float: right;
   position: relative;
-  bottom: 5px;
-  left: 1px;
+  bottom: 0px;
+  left: 6px;
+  height: 0;
 }
 /* Extreme Precipitation Styles */
 .dots {
@@ -395,8 +433,8 @@ button {
 .legend {
   fill: black;
 }
-rect text {
-  font-size: 11px;
+.epRange text {
+  font-size: 10px;
 }
 line.arrow {
   stroke: #222;
@@ -412,7 +450,7 @@ marker#arrow {
 /* Toggle Switches for legend */
 .onoffswitch {
   position: relative;
-  width: 74px;
+  width: 44px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

@@ -84,10 +84,9 @@
 
   Query = Backbone.Model.extend({
     defaults: {
-      ap: 0,
-      ep: 0,
-      flood: 0,
-      overall_risk: 'unknown'
+      ap: "",
+      ep: "",
+      overall_risk: 'Search or right click anywhere on the map to learn more about a region.'
     },
     url: '/get_queries/'
   });
@@ -198,8 +197,10 @@
         });
       },
       resetMapAfterTour: function() {
-        if ($('.active-query')) {
-          $('.active-query').removeClass('active-query');
+        if ($('.active')) {
+          $('.active').removeClass('active').promise().done(function() {
+            return $('.legend-wrapper').addClass('invisible');
+          });
         }
         app.map.setZoom(6);
         app.map.addLayer(floods, 1);
@@ -212,8 +213,10 @@
       },
       resetMapData: function() {
         var i, layer, len, ref;
-        if ($('.active-query')) {
-          $('.active-query').removeClass('active-query');
+        if ($('.active')) {
+          $('.active').removeClass('active').promise().done(function() {
+            return $('.legend-wrapper').addClass('invisible');
+          });
         }
         ref = [window.ap, window.ep, window.floods];
         for (i = 0, len = ref.length; i < len; i++) {
@@ -228,11 +231,12 @@
         app.map.setZoom(6);
         this.resetMapData();
         $('#welcomeModal').modal('hide');
+        $('#legend-toggle').trigger('click');
         $('#apLayer-switch').trigger('click');
         this.tour.addStep('ap-step', {
           title: 'Annual Precipitation',
           text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow by the 2040-2070 period. More annual precipitation means more water going into rivers, lakes and snowbanks, a key risk factor for bigger floods. These projections come from the National Oceanic and Atmospheric Administration (2014).',
-          attachTo: '#apLegendContainer top',
+          attachTo: '#apToggle top',
           buttons: [
             {
               text: 'Next',
@@ -246,7 +250,7 @@
         this.tour.addStep('ep-step', {
           title: 'Storm Frequency',
           text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often by the 2040-2070 period. More storm frequency means more rapid surges of water into rivers and lakes, a key risk factor for more frequent flooding. These projections also come from the National Oceanic and Atmospheric Administration (2014).',
-          attachTo: '#epLegendContainer top',
+          attachTo: '#stormsToggle top',
           buttons: [
             {
               text: 'Next',
@@ -260,7 +264,7 @@
         this.tour.addStep('flood-step', {
           title: 'Flood Zones',
           text: 'The Flood Zones show the areas that already are at major risk for flooding, based on where floods have historically reached. If floods become larger and more frequent, many neighboring areas to these historical flood zones are likely to start experience flooding. This information comes from the Federal Emergency Management Administration (2014).',
-          attachTo: '#floodsLegendContainer top',
+          attachTo: '#floodZonesToggle top',
           buttons: [
             {
               text: 'Next',
@@ -276,7 +280,6 @@
             {
               text: 'Next',
               action: function() {
-                $('#queryToggle').trigger('click');
                 return setTimeout(function() {
                   return tour.next();
                 }, 450);
@@ -287,7 +290,7 @@
         this.tour.addStep('query-step', {
           title: 'Query',
           text: 'Right click anywhere on the map to see the numbers for that specific place, or take a tour of some communities at high risk for worsened flooding.',
-          attachTo: '#queryContent left',
+          attachTo: '#query left',
           buttons: [
             {
               text: 'Take a Tour',
@@ -310,7 +313,7 @@
         this.tour.addStep('map-lambeau', {
           title: 'Green Bay, WI',
           text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.',
-          attachTo: '|#queryContent top',
+          attachTo: '#legend-toggle top',
           buttons: [
             {
               text: 'Continue',
@@ -333,7 +336,7 @@
         this.tour.addStep('map-dane', {
           title: 'Madison, WI Airport',
           text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.',
-          attachTo: '|#queryContent top',
+          attachTo: '#legend-toggle top',
           buttons: [
             {
               text: 'Continue',
@@ -356,7 +359,7 @@
         this.tour.addStep('map-lansing', {
           title: 'Lansing, MI',
           text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.',
-          attachTo: '|#queryContent top',
+          attachTo: '#legend-toggle top',
           buttons: [
             {
               text: 'Continue',
@@ -379,7 +382,7 @@
         this.tour.addStep('map-quadcities', {
           title: 'Quad Cities Nuclear Generating Station',
           text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.',
-          attachTo: '|#queryContent top',
+          attachTo: '#legend-toggle top',
           buttons: [
             {
               text: 'Stop Tour',
@@ -404,9 +407,6 @@
           return this.reposition();
         },
         'click #closeModal': function(e) {
-          if ($('.active-query')) {
-            $('.active-query').removeClass('active-query');
-          }
           app.map.addLayer(floods, 1);
           $('#floods-switch').prop('checked', true);
           app.map.addLayer(ap, 2);
@@ -444,6 +444,9 @@
         self = this;
         app.map.on('contextmenu', function(e) {
           var latLng;
+          if (!$('.legend-wrapper').hasClass('active')) {
+            $('#legend-toggle').trigger('click');
+          }
           latLng = [e.latlng.lat, e.latlng.lng];
           return app.layout.views['map'].setAddress(latLng, app.map.getZoom());
         });
@@ -500,13 +503,17 @@
         return layer;
       },
       renderTemplate: function() {
-        var ap, base, baseURL, ep, floods, labels, labelsURL, map;
+        var ap, base, baseURL, bounds, ep, floods, labels, labelsURL, map, northEast, southWest;
         baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
         labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
+          southWest = L.latLng(36.77409249464195, -96.85546875000001);
+          northEast = L.latLng(50.078294547389454, -81.91406250000001);
+          bounds = L.latLngBounds(southWest, northEast);
           map = app.map = new L.Map('map', {
-            zoomControl: false
-          }).setView([43.05358653605547, -89.2815113067627], 6);
+            zoomControl: false,
+            zoom: 6
+          }).fitBounds(bounds);
         }
         map.renderer = L.svg({
           pane: 'tilePane'
@@ -544,11 +551,6 @@
     });
     QueryView = app.QueryView = Backbone.View.extend({
       template: "#queryTemplate",
-      events: {
-        "click #queryToggle": function(e) {
-          return app.layout.views['#legend'].$el.toggleClass('active-query');
-        }
-      },
       initialize: function() {
         this.model = new Query();
         return this.listenTo(this.model, "change", this.render);
@@ -559,8 +561,7 @@
         };
       },
       getQuery: function(lnglat) {
-        var self, spinner;
-        spinner = app.createSpinner("#queryContent");
+        var self;
         self = this;
         return this.model.fetch({
           data: {
@@ -569,16 +570,11 @@
           },
           type: 'POST',
           success: function(model, response) {
-            setTimeout(function() {
-              return app.layout.views['#legend'].$el.addClass('active-query');
+            return setTimeout(function() {
+              if (!$('.legend-wrapper').hasClass('active')) {
+                return $('#legend-toggle').trigger('click');
+              }
             }, 100);
-            return spinner.stop();
-          },
-          error: function(model, response) {
-            return spinner.stop();
-          },
-          complete: function(model, response) {
-            return spinner.stop();
           }
         });
       }
@@ -588,6 +584,17 @@
       events: {
         "click #legend": function(e) {
           return e.stopPropagation();
+        },
+        "click #legend-toggle": function(e) {
+          if ($('.legend-wrapper').hasClass('active')) {
+            return $('.legend-wrapper, #legend-toggle').removeClass('active').promise().done(function() {
+              return $('.legend-wrapper').addClass('invisible');
+            });
+          } else {
+            return $('.legend-wrapper, #legend-toggle').addClass('active').promise().done(function() {
+              return $('.legend-wrapper').removeClass('invisible');
+            });
+          }
         },
         "click .onoffswitch-checkbox": function(e) {
           var current_ap, current_ep, layer, map, name;
@@ -627,16 +634,18 @@
         self = this;
         apGrades = _.range(0, 13, 1);
         labels = [];
-        $(apGrades).each(function(index) {
+        self.$el.find(".apRange").append("<span class='ap-text'>Increasing Average Precipitation</span>");
+        self.$el.find(".apRange").append("<div class='ap-arrow'></div>");
+        self.$el.find(".apRange").append("<div class='ap-values'></div>");
+        $($(apGrades).get().reverse()).each(function(index) {
           var apValue, textNode;
           apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + "\"></i></div>");
           if (index % 4 === 0) {
             textNode = "<span>+" + this + "%</span>";
             apValue.append(textNode);
           }
-          return self.$el.find(".apRange").append(apValue);
+          return self.$el.find(".ap-values").append(apValue);
         });
-        self.$el.find(".apRange").append("<div class='bottom-line'>increasing annual precipitation</div>");
         self.$el.appendTo(layout.$el.find('#legend'));
         if ($.cookie('welcomed')) {
           $('#floods-switch').prop('checked', true);

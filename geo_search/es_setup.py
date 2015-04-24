@@ -46,6 +46,23 @@ def make_noaa_avg_precip_index(es_url):
     resp = requests.put(url, data=body)
     print resp.json()
 
+def make_noaa_ex_precip_index(es_url):
+    url = os.path.join(es_url, "noaa_ex_precip")
+    body = """{
+    "mappings" : {
+        "region" : {
+            "properties": {
+                "DN": {"type": "integer"},
+                "location": {"type": "geo_shape"}
+            }
+        }
+    }
+    }
+    """
+    print "creating noaa_ex_precip"
+    resp = requests.put(url, data=body)
+    print resp.json()
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -54,6 +71,7 @@ def main():
     args = parser.parse_args()
     make_fema_floods_index(args.es_url)
     make_noaa_avg_precip_index(args.es_url)
+    make_noaa_ex_precip_index(args.es_url)
 
 
 

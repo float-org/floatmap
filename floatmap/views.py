@@ -64,18 +64,23 @@ def get_queries(request):
     lat = float(request.POST['lat'])
 
     ap_query = get_query('noaa_avg_precip', lng, lat)
+    ep_query = get_query('noaa_ext_precip', lng, lat)
     
-    # TODO: Probably going to need to distinguish from errors and places with 0% change in precipitation at some point?
+
     if ap_query == 0:
-        ap_query = "No Data Yet"
-    #ep_query
-    #flood_query
+        ap_query = "No average precipitation data yet"
+    else: 
+        ap_query = "%s%% increase in average precipitation" % ap_query
+
+    if ep_query == 0:
+        ep_query = "No storm frequency data yet"
+    else: 
+        ep_query = "%s%% increase in storm frequency" % ep_query
     
     queries = {
-        "ap": ap_query
+        "ap": ap_query,
+        "ep": ep_query
     }
-
-    
 
     return HttpResponse(json.dumps(queries))
 

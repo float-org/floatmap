@@ -30,7 +30,23 @@ def index_noaa_avg_precip(noaa_geojson_file_path, es_url):
             url = os.path.join(
                 es_url, "noaa_avg_precip", "region", str(uuid.uuid4()))
             r = requests.put(url, data=json.dumps(doc))
-            print r.json()
+            print r.json()  
+            
+def index_noaa_ex_precip(noaa_geojson_file_path, es_url):
+    # Note: ogr2ogr puts all the data in one object
+    # This method of loading only works for small files like noaa
+    with open(noaa_geojson_file_path, "r") as f:
+        geo = json.load(f)
+        for feat in geo["features"]:
+            doc = dict()
+            doc["DN"] = feat["properties"]["DN"]
+            doc["location"] = feat["geometry"]
+            doc["location"]["type"] = doc["location"]["type"].lower()
+            # Generate a random uuid for the doc
+            url = os.path.join(
+                es_url, "noaa_ex_precip", "region", str(uuid.uuid4()))
+            r = requests.put(url, data=json.dumps(doc))
+            print r.json()            
 
 def main():
     parser = argparse.ArgumentParser()
@@ -39,7 +55,7 @@ def main():
     parser.add_argument('--noaa_file', dest='noaa_file', required=True,
                         help="the NOAA average precipitation file")
     args = parser.parse_args()
-    index_noaa_avg_precip(args.noaa_file, args.es_url)
+    index_noaa_ex_precip(args.noaa_file, args.es_url)
 
 
 if __name__ == '__main__':

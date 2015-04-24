@@ -507,15 +507,14 @@
         baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
         labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
-          southWest = L.latLng(36.77409249464195, -96.85546875000001);
-          northEast = L.latLng(50.078294547389454, -81.91406250000001);
+          southWest = L.latLng(50.65294336725709, -96.98730468750001);
+          northEast = L.latLng(37.19533058280065, -81.34277343750001);
           bounds = L.latLngBounds(southWest, northEast);
           map = app.map = new L.Map('map', {
             maxBounds: bounds,
             minZoom: 5,
             maxZoom: 15
-          });
-          map.fitBounds(bounds);
+          }).fitBounds(bounds).setZoom(6);
         }
         map.renderer = L.svg({
           pane: 'tilePane'

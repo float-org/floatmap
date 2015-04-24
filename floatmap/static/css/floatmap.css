@@ -169,7 +169,7 @@ header a:hover {
   color: #A5A7A9;
 }
 #search button {
-  width: 137px;
+  width: 50px;
   background-color: #404247;
   color: #FAEBE2;
   border: 0;
@@ -198,6 +198,7 @@ button {
   color: #FFF;
   border: 1px solid transparent !important;
 }
+.modal-body .panel,
 .modal-body,
 .modal-footer {
   background: #D7D5D1;

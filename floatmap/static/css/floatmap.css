@@ -179,6 +179,7 @@ header a:hover {
   background-color: #a4a5a9;
   color: #FAEBE2;
   border: 0;
+  top: 0;
 }
 #search button {
   font-size: 17px;

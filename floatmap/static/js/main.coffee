@@ -488,7 +488,7 @@ This information comes from the Federal Emergency Management Administration (201
         southWest = L.latLng(36.77409249464195, -96.85546875000001)
         northEast = L.latLng(50.078294547389454, -81.91406250000001)
         bounds = L.latLngBounds(southWest, northEast);
-        map = app.map = new L.Map('map', {zoomControl: false, zoom: 6}).fitBounds(bounds)
+        map = app.map = new L.Map('map', {zoomControl: false, zoom: 6, attributionControl: false}).fitBounds(bounds)
       
       # Create new SVG renderer and add to Tile pane, so we can work with GeoJSON like other layers
       map.renderer = L.svg({pane:'tilePane'}).addTo(map)

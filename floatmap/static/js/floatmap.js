@@ -512,7 +512,8 @@
           bounds = L.latLngBounds(southWest, northEast);
           map = app.map = new L.Map('map', {
             zoomControl: false,
-            zoom: 6
+            zoom: 6,
+            attributionControl: false
           }).fitBounds(bounds);
         }
         map.renderer = L.svg({

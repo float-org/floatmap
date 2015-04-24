@@ -587,13 +587,15 @@
         },
         "click #legend-toggle": function(e) {
           if ($('.legend-wrapper').hasClass('active')) {
-            return $('.legend-wrapper, #legend-toggle').removeClass('active').promise().done(function() {
-              return $('.legend-wrapper').addClass('invisible');
-            });
+            $('.legend-wrapper').addClass('invisible');
+            return setTimeout(function() {
+              return $('.legend-wrapper, #legend-toggle').removeClass('active');
+            }, 1);
           } else {
-            return $('.legend-wrapper, #legend-toggle').addClass('active').promise().done(function() {
+            $('.legend-wrapper, #legend-toggle').addClass('active');
+            return setTimeout(function() {
               return $('.legend-wrapper').removeClass('invisible');
-            });
+            }, 150);
           }
         },
         "click .onoffswitch-checkbox": function(e) {

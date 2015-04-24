@@ -512,7 +512,6 @@ This information comes from the Federal Emergency Management Administration (201
         this.addLayer floods, 1
         this.addLayer ap, 2
         this.addLayer ep, 3
-      
       this.addLayer labels, 4
         
       # Then we add zoom controls and finally set off event listeners
@@ -553,11 +552,15 @@ This information comes from the Federal Emergency Management Administration (201
 
       "click #legend-toggle": (e) -> 
         if $('.legend-wrapper').hasClass('active') # i.e. if panel is open
-          $('.legend-wrapper, #legend-toggle').removeClass('active').promise().done () ->
-            $('.legend-wrapper').addClass('invisible')     
+          $('.legend-wrapper').addClass('invisible') 
+          setTimeout () ->  
+            $('.legend-wrapper, #legend-toggle').removeClass('active')
+          , 1
         else 
-          $('.legend-wrapper, #legend-toggle').addClass('active').promise().done () ->
+          $('.legend-wrapper, #legend-toggle').addClass('active')
+          setTimeout () ->
             $('.legend-wrapper').removeClass('invisible')
+          , 150
             
         
       "click .onoffswitch-checkbox": (e) ->

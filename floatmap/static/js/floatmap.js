@@ -503,18 +503,21 @@
         return layer;
       },
       renderTemplate: function() {
-        var ap, base, baseURL, bounds, ep, floods, labels, labelsURL, map, northEast, southWest;
+        var ap, base, baseURL, bounds, center, ep, floods, labels, labelsURL, map, northEast, southWest;
         baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
         labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
-          southWest = L.latLng(50.65294336725709, -96.98730468750001);
-          northEast = L.latLng(37.19533058280065, -81.34277343750001);
+          southWest = L.latLng(35.85343961959182, -96.1083984375);
+          northEast = L.latLng(51.12057809796008, -79.40917968750001);
+          center = L.latLng(44.2205730390537, -88);
           bounds = L.latLngBounds(southWest, northEast);
           map = app.map = new L.Map('map', {
             maxBounds: bounds,
             minZoom: 5,
-            maxZoom: 15
-          }).fitBounds(bounds).setZoom(6);
+            maxZoom: 15,
+            zoom: 6,
+            center: center
+          });
         }
         map.renderer = L.svg({
           pane: 'tilePane'

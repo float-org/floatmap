@@ -485,10 +485,11 @@ This information comes from the Federal Emergency Management Administration (201
 
       # Instantiate map if we haven't
       if not app.map
-        southWest = L.latLng(50.65294336725709, -96.98730468750001)
-        northEast = L.latLng(37.19533058280065, -81.34277343750001)
+        southWest = L.latLng(35.85343961959182, -96.1083984375)
+        northEast = L.latLng(51.12057809796008, -79.40917968750001)
+        center = L.latLng(44.2205730390537, -88)
         bounds = L.latLngBounds(southWest, northEast);
-        map = app.map = new L.Map('map', {maxBounds: bounds, minZoom: 5, maxZoom: 15}).fitBounds(bounds).setZoom(6)
+        map = app.map = new L.Map('map', {maxBounds: bounds, minZoom: 5, maxZoom: 15, zoom: 6, center: center})
 
       
       # Create new SVG renderer and add to Tile pane, so we can work with GeoJSON like other layers

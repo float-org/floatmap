@@ -488,7 +488,9 @@ This information comes from the Federal Emergency Management Administration (201
         southWest = L.latLng(36.77409249464195, -96.85546875000001)
         northEast = L.latLng(50.078294547389454, -81.91406250000001)
         bounds = L.latLngBounds(southWest, northEast);
-        map = app.map = new L.Map('map', {zoomControl: false, zoom: 6, attributionControl: false}).fitBounds(bounds)
+        map = app.map = new L.Map('map', {maxBounds: bounds, minZoom: 5, maxZoom: 15})
+
+        map.fitBounds(bounds)
       
       # Create new SVG renderer and add to Tile pane, so we can work with GeoJSON like other layers
       map.renderer = L.svg({pane:'tilePane'}).addTo(map)
@@ -498,9 +500,9 @@ This information comes from the Federal Emergency Management Administration (201
       # TODO: Determine a better way to have a more precise set of bounds
       
       # Create our layers
-      base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
-      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', maxZoom: 15, minZoom: 5, errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
-      labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane', maxZoom: 15, minZoom: 5})
+      base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane'})
+      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
+      labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane'})
       
       ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap')
       ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep')

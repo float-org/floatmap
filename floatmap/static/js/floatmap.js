@@ -511,29 +511,24 @@
           northEast = L.latLng(50.078294547389454, -81.91406250000001);
           bounds = L.latLngBounds(southWest, northEast);
           map = app.map = new L.Map('map', {
-            zoomControl: false,
-            zoom: 6,
-            attributionControl: false
-          }).fitBounds(bounds);
+            maxBounds: bounds,
+            minZoom: 5,
+            maxZoom: 15
+          });
+          map.fitBounds(bounds);
         }
         map.renderer = L.svg({
           pane: 'tilePane'
         }).addTo(map);
         base = window.base = app.layers['base'] = L.tileLayer(baseURL, {
-          pane: 'tilePane',
-          maxZoom: 15,
-          minZoom: 5
+          pane: 'tilePane'
         });
         floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
           pane: 'tilePane',
-          maxZoom: 15,
-          minZoom: 5,
           errorTileUrl: 'http://i.imgur.com/aZejCgY.png'
         });
         labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {
-          pane: 'tilePane',
-          maxZoom: 15,
-          minZoom: 5
+          pane: 'tilePane'
         });
         ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap');
         ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep');

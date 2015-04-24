@@ -288,7 +288,7 @@
           ]
         });
         this.tour.addStep('query-step', {
-          title: 'Query',
+          title: 'Inspect',
           text: 'Right click anywhere on the map to see the numbers for that specific place, or take a tour of some communities at high risk for worsened flooding.',
           attachTo: '#query left',
           buttons: [
@@ -572,7 +572,8 @@
           success: function(model, response) {
             return setTimeout(function() {
               if (!$('.legend-wrapper').hasClass('active')) {
-                return $('#legend-toggle').trigger('click');
+                $('#legend-toggle').trigger('click');
+                return $('#query');
               }
             }, 100);
           }
@@ -655,7 +656,7 @@
           $('#epLayer-switch').prop('checked', true);
         }
         return $("[data-toggle=tooltip]").tooltip({
-          placement: 'right'
+          placement: 'left'
         });
       }
     });

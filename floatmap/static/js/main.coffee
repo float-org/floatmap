@@ -287,7 +287,7 @@ This information comes from the Federal Emergency Management Administration (201
       # Display query step
       # TODO: Not totally in love w/ the animation here - play around with it some more.
       this.tour.addStep 'query-step',
-        title: 'Query'
+        title: 'Inspect'
         text: 'Right click anywhere on the map to see the numbers for that specific place, or take a tour of some communities at high risk for worsened flooding.'
         attachTo: '#query left'
         buttons: [
@@ -542,6 +542,7 @@ This information comes from the Federal Emergency Management Administration (201
           setTimeout () ->
             if not $('.legend-wrapper').hasClass('active')
               $('#legend-toggle').trigger('click')
+              $('#query')
           , 100
 
   LegendView = app.LegendView = Backbone.View.extend
@@ -618,7 +619,7 @@ This information comes from the Federal Emergency Management Administration (201
         $('#apLayer-switch').prop('checked',true)
         $('#epLayer-switch').prop('checked',true)
 
-      $("[data-toggle=tooltip]").tooltip({ placement: 'right'})
+      $("[data-toggle=tooltip]").tooltip({ placement: 'left'})
 
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"

@@ -69,6 +69,9 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+body {
+  -webkit-font-smoothing: antialiased;
+}
 /* My dumb hacks */
 svg.leaflet-zoom-animated {
   z-index: 4;
@@ -190,6 +193,16 @@ button {
   height: 100%;
   z-index: 1049;
 }
+.modal-header {
+  background: #324ca8;
+  color: #FFF;
+  border: 1px solid transparent !important;
+}
+.modal-body,
+.modal-footer {
+  background: #D7D5D1;
+  border: 1px solid transparent !important;
+}
 .legend-layer-toggles {
   width: 110px;
   display: inline-block;
@@ -269,6 +282,20 @@ button {
   transition: transform 300ms ease-in;
   text-align: center;
   display: block;
+  color: #FFF;
+}
+#legend-toggle:after {
+  content: "Click the arrow to expand.";
+  display: block;
+  font-size: 17px;
+  text-align: center;
+  white-space: nowrap;
+  top: 10px;
+  position: relative;
+  right: 33px;
+}
+#legend-toggle.active:after {
+  content: "";
 }
 #legend-toggle.active span {
   transform: rotate(180deg);
@@ -337,18 +364,25 @@ button {
   margin-left: 3px;
 }
 /* Overwrite bootstrap */
-.tooltip {
-  opacity: 1;
+.tooltip.in {
+  opacity: 1 !important;
 }
 .tooltip.top .tooltip-arrow,
 .tooltip.top .tooltip-inner {
   border-top-color: #FFF;
   color: #222;
 }
-.tooltip-inner {
-  border-radius: 0;
-  background: #FFF;
-  text-shadow: none;
+#legend .tooltip-inner {
+  max-width: 200px;
+  padding: 3px 8px;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  background-color: #FFF;
+  border-radius: 4px;
+  color: #000;
+  font-size: 15px;
+  padding: 15px 20px;
 }
 /* Floods */
 .year-100 > div {

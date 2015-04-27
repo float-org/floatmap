@@ -86,8 +86,15 @@ html {
    ========================================================================== */
 
 
+/* Variables */
+
+@blue: #0082CC;
+@mapGrey: #E4E1DD;
+@darkGrey: #4C4B4A;
+
 body {
     -webkit-font-smoothing: antialiased; 
+    overflow:hidden; // Disable scrollbar
 }
 
    /* My dumb hacks */
@@ -142,7 +149,7 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 
 #header {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
-  background: #234a9b; /* Old browsers */
+  background: @blue; /* Old browsers */
   display:block;
   height: 75px;
   padding: 18px;
@@ -205,13 +212,13 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 } 
 
 .btn.btn-default:hover {
-  background-color: #a4a5a9;
+  background-color: @darkGrey;
   color:#FFF;
   border-radius:0;
 }
 
 .btn.btn-primary {
-  background-color: #234a9b;
+  background-color: @blue;
   color:#FFF;
 }
 
@@ -223,7 +230,7 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 
 #search button {
   width:50px;
-  background-color:#a4a5a9;
+  background-color:@darkGrey;
   color:#FAEBE2;
   border:0;
   top: 0;
@@ -323,12 +330,12 @@ button {
   #legend {
     position:absolute;
     bottom:50px;
-    width:320px;
+    width:350px;
     margin:0;
     padding:0;
     right:50px;
     z-index:1048;
-    background-color: #B8B8BA;
+    background-color: @mapGrey; /* Map background */
   }
 
   #legend .legend-wrapper  {
@@ -346,7 +353,7 @@ button {
   #legend-toggle {
     height: 20px;
     width: 130px;
-    background: #234a9b;
+    background: @blue;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
     cursor: pointer;
@@ -399,7 +406,7 @@ button {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     color: #fff;
-    background-color:#234a9b; 
+    background-color:@blue; 
     text-shadow: -1px 1px #231f20;
     border: none;
   }
@@ -424,14 +431,13 @@ button {
     height:100%;
     list-style-type:none;
     font-size:11px;
-    width: 95px;
     display:inline-block;
     vertical-align: top;
+    height:96px;
   }
 
-  .floodRange {
-    width: 155px;
-    margin-top: 15px;
+  .epRange { 
+    width:190px;
   }
 
   .floodRange li > div {
@@ -493,11 +499,11 @@ button {
     display: inline-block;
     vertical-align: top;
     height: 12px;
-    width: 45px;
+    width: 15px;
   }
 
   .ap-values div i {
-    width: 12px;
+    width: 15px;
     height: 16px;
     display: inline-block;
     opacity: 0.4;
@@ -508,44 +514,45 @@ button {
     font-size: 10px;
     vertical-align: top;
     color: #231f20;
-    padding-left: 2px;
+    position: relative;
+    right: 4px;
+    bottom: 4px;
   }
 
   .ap-values { 
     display: inline-block;
     vertical-align: top;
-    width: 50px;
-    padding-left: 10px;
+    width: 200px;
   }
 
   .apRange > div.ap-arrow{
-      margin-top: 2px;
-  border-right: 2px solid #777;
-  font-size: 11px;
-  width: 1px;
-  display: inline-block;
-  height: 206px;
+    border-top: 2px solid #777;
+    font-size: 11px;
+    width: 1px;
+    display: inline-block;
+    width: 190px;
+    margin-top: 17px;
   }
 
   .ap-text {
-    -webkit-transform: rotate(-90deg);
     width: 17px;
     white-space: nowrap;
     display: inline-block;
     position: relative;
-    bottom: 24px;
+    bottom: 16px;
+    font-size: 10px;
   }
 
   .ap-arrow:after{
     content: "";
     display: block;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 10px solid #231f20;
+    border-bottom: 5px solid transparent;
+    border-left: 10px solid #231f20;
+    border-top: 5px solid transparent;
     width: 0;
     float: right;
     position: relative;
-    bottom: 0px;
+    bottom: 6px;
     left: 6px;
     height: 0;
   }
@@ -595,10 +602,90 @@ button {
     font-size: 11px;
   }
 
+  /**
+ * iOS 6 style switch checkboxes
+ * by Lea Verou http://lea.verou.me
+ */
+
+:root input[type="checkbox"] { /* :root here acting as a filter for older browsers */
+  position: absolute;
+  opacity: 0;
+}
+
+:root input[type="checkbox"].ios-switch + div {
+  display: inline-block;
+  vertical-align: middle;
+  width: 3em; height: 1em;
+  border: 1px solid rgba(0,0,0,.3);
+  border-radius: 999px;
+  background: white;
+  background-image: linear-gradient(rgba(0,0,0,.1), transparent),
+                    linear-gradient(90deg, hsl(210, 90%, 60%) 50%, transparent 50%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  background-origin: border-box;
+  background-clip: border-box;
+  overflow: hidden;
+  transition-duration: .4s;
+  transition-property: padding, width, background-position, text-indent;
+  box-shadow: 0 .1em .1em rgba(0,0,0,.2) inset,
+              0 .45em 0 .1em rgba(0,0,0,.05) inset;
+  font-size: 150%; /* change this and see how they adjust! */
+}
+
+:root input[type="checkbox"].ios-switch:checked + div {
+  padding-left: 2em;
+  background-position: 0 0;
+}
+
+:root input[type="checkbox"].ios-switch + div:before {
+  content: 'On';
+  float: left;
+  width: 1.65em; height: 1.65em;
+  margin: -.1em;
+  border: 1px solid rgba(0,0,0,.35);
+  border-radius: inherit;
+  background: white;
+  background-image: linear-gradient(rgba(0,0,0,.2), transparent);
+  box-shadow: 0 .1em .1em .1em hsla(0,0%,100%,.8) inset,
+              0 0 .5em rgba(0,0,0,.3);
+  color: white;
+  text-shadow: 0 -1px 1px rgba(0,0,0,.3);
+  text-indent: -2.5em;
+}
+
+:root input[type="checkbox"].ios-switch:active + div:before {
+  background-color: #eee;
+}
+
+:root input[type="checkbox"].ios-switch:focus + div {
+  box-shadow: 0 .1em .1em rgba(0,0,0,.2) inset,
+              0 .45em 0 .1em rgba(0,0,0,.05) inset,
+              0 0 .4em 1px rgba(255,0,0,.5);
+}
+
+:root input[type="checkbox"].ios-switch + div:before,
+:root input[type="checkbox"].ios-switch + div:after {
+  font: bold 65%/1.4 sans-serif;
+  text-transform: uppercase;
+}
+
+:root input[type="checkbox"].ios-switch + div:after {
+  content: 'Off';
+  float: left;
+  text-indent: .5em;
+  color: rgba(0,0,0,.45);
+  text-shadow: none;
+
+}
+
+
+/* Switch code ends here, from now on it’s just bling for the demo page */
+
   /* Toggle Switches for legend */
 
   .onoffswitch {
-    position: relative; width: 44px;
+    position: relative; width: 65px;
     -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
   }
   .onoffswitch-checkbox {
@@ -620,7 +707,7 @@ button {
   .onoffswitch-inner:before {
     content: "ON";
     padding-left: 10px;
-    background-color: #A4A5A9; 
+    background-color: @darkGrey; 
     color: #FFFFFF;
   }
   .onoffswitch-inner:after {

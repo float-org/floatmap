@@ -566,10 +566,10 @@ This information comes from the Federal Emergency Management Administration (201
           , 150
             
         
-      "click .onoffswitch-checkbox": (e) ->
+      "click .switch-container": (e) ->
         e.stopPropagation()
         map = app.map
-        name = $(e.currentTarget).data('layer')
+        name = $(e.currentTarget).find('.ios-switch').data('layer')
         layer = app.layers[name]
         current_ap = app.layers['apLayer']
         current_ep = app.layers['epLayer']
@@ -577,7 +577,9 @@ This information comes from the Federal Emergency Management Administration (201
         # This is super gross and only has to be this complicated because GeoJSON layers
         # do not seem to respect zIndex, even though you can set a zIndex on them when 
         # adding them to the map.  Grrrrr.
-        if $(e.currentTarget).is(':checked')
+        
+
+        if $(e.currentTarget).find('.ios-switch').is(':checked')
           if layer == current_ap
             if map.hasLayer(current_ep)
                 map.removeLayer current_ap
@@ -601,18 +603,26 @@ This information comes from the Federal Emergency Management Administration (201
       self = this
       apGrades = _.range(0,13,1)  
       labels = []
+
+      # Create toggle switches oyyyy
+
+      switches = document.querySelectorAll('input[type="checkbox"].ios-switch')
+
+      for i in switches 
+        div = document.createElement('div')
+        div.className = 'switch'
+        i.parentNode.insertBefore(div, i.nextSibling)
       
       # ToDo: Worth transferring this HTML to the template at some point?
-      self.$el.find(".apRange").append "<span class='ap-text'>Increasing Average Precipitation</span>"
-      self.$el.find(".apRange").append "<div class='ap-arrow'></div>"
       self.$el.find(".apRange").append "<div class='ap-values'></div>"
-      $($(apGrades).get().reverse()).each (index) ->
+      $(apGrades).each (index) ->
         apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + "\"></i></div>")
         if index % 4 is 0
           textNode = "<span>+" + this + "%</span>"
           apValue.append textNode
         self.$el.find(".ap-values").append apValue
-        
+      self.$el.find(".apRange").append "<div class='ap-arrow'></div>"
+      self.$el.find(".apRange").append "<span class='ap-text'>Increasing Average Precipitation</span>"
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
 

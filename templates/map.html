@@ -38,36 +38,18 @@
 
             <div class='legend-layer-toggles'>
               <div id="apToggle">
-                <h4>Average Precipitation</h4>
-                <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)'></span>
-                <div class="onoffswitch">
-                  <input type="checkbox" name="apLayer-switch" class="onoffswitch-checkbox" data-layer="apLayer" id="apLayer-switch">
-                  <label class="onoffswitch-label" for="apLayer-switch">
-                    <span class="onoffswitch-inner"></span>
-                  </label>
-                </div>    
+                <label class="switch-container">Average Precipitation <input type="checkbox" name="apLayer-switch" class="ios-switch" data-layer="apLayer" id="apLayer-switch" /></label>
+                <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)'></span>    
               </div>
 
               <div id="stormsToggle">
-                <h4>Storm Frequency</h4>
+                <label class="switch-container">Storm Frequency <input type="checkbox" name="epLayer-switch" class="ios-switch" data-layer="epLayer" id="epLayer-switch" /></label>
                 <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)'></span>
-                <div class="onoffswitch">
-                  <input type="checkbox" name="epLayer-switch" class="onoffswitch-checkbox" data-layer="epLayer" id="epLayer-switch">
-                  <label class="onoffswitch-label" for="epLayer-switch">
-                    <span class="onoffswitch-inner"></span>
-                  </label>
-                </div>   
               </div>
 
             <div id="floodZonesToggle">
-              <h4>Flood Zones</h4>
+              <label class="switch-container">Flood Zones <input type="checkbox" name="floods-switch" class="ios-switch" data-layer="floods" id="floods-switch" /></label>
               <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)'></span>
-              <div class="onoffswitch">
-                <input type="checkbox" name="floods-switch" class="onoffswitch-checkbox" data-layer="floods" id="floods-switch" >
-                <label class="onoffswitch-label" for="floods-switch">
-                  <span class="onoffswitch-inner"></span>
-                </label>
-              </div>  
             </div>           
           </div>  
  
@@ -78,21 +60,20 @@
               <div class='apRange'></div>
 
               <div class='epRange'>
-                <svg width="80" height="208">
+                <svg width="205" height="85">
+                  <rect x="0" y="0" width="50" height="23" class="low-mid dots"></rect>
+                  <rect x="50" y="0" width="50" height="23" class="mid-high dots"></rect>
+                  <rect x="100" y="0" width="50" height="23" class="high-extreme dots"></rect>
+                  <rect x="150" y="0" width="50" height="23" class="extreme-severe dots"></rect>
                   <defs>
-                  <marker id="arrow" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="10" markerHeight="10" orient="auto"><path d="M10,-5L0,0L10,5"></path></marker>
+                   <marker id="arrow" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,-5L10,0L0,5"></path></marker>
                   </defs>
-                  <text x="-170" y="13" transform="rotate(-90)" style="font-size: 11px;">Increasing storm frequency</text>
-                  <line x1="20" y1="12" x2="20" y2="206" class="link arrow" marker-start="url(#arrow)"></line>
-                  <rect x="28" y="0" width="20" height="54" class="extreme-severe dots"></rect>
-                  <rect x="28" y="53" width="20" height="52" class="high-extreme dots"></rect>
-                  <rect x="28" y="105" width="20" height="52" class="mid-high dots"></rect>
-                  <rect x="28" y="157" width="20" height="52" class="low-mid dots"></rect>
-                  <text x="47" y="204">+12%</text>
-                  <text x="47" y="137">+26%</text>
-                  <text x="47" y="77">+40%</text>
-                  <text x="47" y="10">+54%</text>
-
+                  <text x="1" y="37">+12%</text>
+                  <text x="56" y="37">+26%</text>
+                  <text x="121" y="37">+40%</text>
+                  <text x="177" y="37">+54%</text>
+                  <line x1="0" y1="45" x2="195" y2="45" class="link arrow" marker-end="url(#arrow)"></line>
+                  <text x="0" y="55">Increasing Storm Frequency</text>
                 </svg>
               </div>
            

@@ -212,15 +212,15 @@
         return tour.complete();
       },
       resetMapData: function() {
-        var i, layer, len, ref;
+        var j, layer, len, ref;
         if ($('.active')) {
           $('.active').removeClass('active').promise().done(function() {
             return $('.legend-wrapper').addClass('invisible');
           });
         }
         ref = [window.ap, window.ep, window.floods];
-        for (i = 0, len = ref.length; i < len; i++) {
-          layer = ref[i];
+        for (j = 0, len = ref.length; j < len; j++) {
+          layer = ref[j];
           app.map.removeLayer(layer);
         }
         $('#floods-switch').prop('checked', false);
@@ -597,15 +597,15 @@
             }, 150);
           }
         },
-        "click .onoffswitch-checkbox": function(e) {
+        "click .switch-container": function(e) {
           var current_ap, current_ep, layer, map, name;
           e.stopPropagation();
           map = app.map;
-          name = $(e.currentTarget).data('layer');
+          name = $(e.currentTarget).find('.ios-switch').data('layer');
           layer = app.layers[name];
           current_ap = app.layers['apLayer'];
           current_ep = app.layers['epLayer'];
-          if ($(e.currentTarget).is(':checked')) {
+          if ($(e.currentTarget).find('.ios-switch').is(':checked')) {
             if (layer === current_ap) {
               if (map.hasLayer(current_ep)) {
                 map.removeLayer(current_ap);
@@ -631,14 +631,19 @@
         '#query': new QueryView()
       },
       afterRender: function() {
-        var apGrades, labels, self;
+        var apGrades, div, i, j, labels, len, self, switches;
         self = this;
         apGrades = _.range(0, 13, 1);
         labels = [];
-        self.$el.find(".apRange").append("<span class='ap-text'>Increasing Average Precipitation</span>");
-        self.$el.find(".apRange").append("<div class='ap-arrow'></div>");
+        switches = document.querySelectorAll('input[type="checkbox"].ios-switch');
+        for (j = 0, len = switches.length; j < len; j++) {
+          i = switches[j];
+          div = document.createElement('div');
+          div.className = 'switch';
+          i.parentNode.insertBefore(div, i.nextSibling);
+        }
         self.$el.find(".apRange").append("<div class='ap-values'></div>");
-        $($(apGrades).get().reverse()).each(function(index) {
+        $(apGrades).each(function(index) {
           var apValue, textNode;
           apValue = $("<div><i style=\"background:" + app.getColor("ap", this) + "\"></i></div>");
           if (index % 4 === 0) {
@@ -647,6 +652,8 @@
           }
           return self.$el.find(".ap-values").append(apValue);
         });
+        self.$el.find(".apRange").append("<div class='ap-arrow'></div>");
+        self.$el.find(".apRange").append("<span class='ap-text'>Increasing Average Precipitation</span>");
         self.$el.appendTo(layout.$el.find('#legend'));
         if ($.cookie('welcomed')) {
           $('#floods-switch').prop('checked', true);

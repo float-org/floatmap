@@ -226,14 +226,14 @@ button {
   overflow: scroll;
 }
 .legend-layer-toggles {
-  width: 110px;
+  width: 132px;
   display: inline-block;
   vertical-align: top;
   padding: 0px 16px;
 }
 .legend-layer-toggles > div {
   display: block;
-  width: 50px;
+  width: 103px;
   vertical-align: top;
   margin-bottom: 31px;
 }
@@ -367,8 +367,12 @@ button {
   vertical-align: top;
   height: 96px;
 }
+.floodRange {
+  margin-top: -4px;
+}
 .epRange {
   width: 190px;
+  margin-top: -6px;
 }
 .floodRange li > div {
   width: 30px;

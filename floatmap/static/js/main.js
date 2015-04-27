@@ -516,7 +516,8 @@
             minZoom: 5,
             maxZoom: 15,
             zoom: 6,
-            center: center
+            center: center,
+            attributionControl: false
           });
         }
         map.renderer = L.svg({

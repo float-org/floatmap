@@ -113,7 +113,7 @@ $ ->
   app.getColor = (type, d) ->
     if type == 'ap'
       rainbow = new Rainbow
-      rainbow.setSpectrum '#94FFDB', '#324ca8' # Probably just need to set once
+      rainbow.setSpectrum '#94FFDB', '#0082cc' # Probably just need to set once
       rainbow.setNumberRange 0, 12
       '#' + rainbow.colourAt(d)
 

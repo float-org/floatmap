@@ -118,7 +118,7 @@
       var rainbow;
       if (type === 'ap') {
         rainbow = new Rainbow;
-        rainbow.setSpectrum('#94FFDB', '#324ca8');
+        rainbow.setSpectrum('#94FFDB', '#0082cc');
         rainbow.setNumberRange(0, 12);
         return '#' + rainbow.colourAt(d);
       }

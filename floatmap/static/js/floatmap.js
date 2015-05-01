@@ -118,7 +118,7 @@
       var rainbow;
       if (type === 'ap') {
         rainbow = new Rainbow;
-        rainbow.setSpectrum('#94FFDB', '#0082cc');
+        rainbow.setSpectrum('#94FFDB', '#0003FF');
         rainbow.setNumberRange(0, 12);
         return '#' + rainbow.colourAt(d);
       }
@@ -499,11 +499,20 @@
               }
             }
           });
+        } else {
+          layer = app.layers[type] = L.geoJson(data, {
+            renderer: app.map.renderer,
+            style: function(feature, layer) {
+              return {
+                className: "no-data-yet"
+              };
+            }
+          });
         }
         return layer;
       },
       renderTemplate: function() {
-        var ap, base, baseURL, bounds, center, ep, floods, labels, labelsURL, map, northEast, southWest;
+        var ap, base, baseURL, bounds, canada, center, ep, floods, labels, labelsURL, map, mexico, northEast, southWest, usNoData;
         baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
         labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
@@ -535,13 +544,19 @@
         });
         ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap');
         ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep');
+        usNoData = window.usNoData = this.makeGeoJSONLayer(window.usNoDataData, 'usNoData');
+        canada = window.canada = this.makeGeoJSONLayer(window.canadaData, 'usNoData');
+        mexico = window.mexico = this.makeGeoJSONLayer(window.mexicoData, 'usNoData');
         this.addLayer(base, 0);
         if ($.cookie('welcomed')) {
-          this.addLayer(floods, 1);
-          this.addLayer(ap, 2);
-          this.addLayer(ep, 3);
+          this.addLayer(floods, 2);
+          this.addLayer(ap, 3);
+          this.addLayer(ep, 4);
         }
-        this.addLayer(labels, 4);
+        this.addLayer(labels, 5);
+        this.addLayer(usNoData, 6);
+        this.addLayer(canada, 6);
+        this.addLayer(mexico, 6);
         map.addControl(L.control.zoom({
           position: "bottomleft"
         }));
@@ -572,7 +587,10 @@
             return setTimeout(function() {
               if (!$('.legend-wrapper').hasClass('active')) {
                 $('#legend-toggle').trigger('click');
-                return $('#query');
+              }
+              if ($('#query').hasClass('hidden')) {
+                $('#query').removeClass('hidden');
+                return $('#queryContent').addClass('active');
               }
             }, 100);
           }

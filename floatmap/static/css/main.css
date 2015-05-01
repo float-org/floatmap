@@ -102,6 +102,12 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 .ap {
   fill-opacity: 0.5;
 }
+.no-data-yet {
+  fill: #4c4b4a;
+  stroke: #4c4b4a;
+  stroke-opacity: 0.7;
+  fill-opacity: 0.7;
+}
 /* Header Styles */
 .logo,
 header {
@@ -116,7 +122,7 @@ header a:hover {
 #header {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8');
   /* for IE */
-  background: #0082cc;
+  background: #141f3d;
   /* Old browsers */
   display: block;
   height: 75px;
@@ -176,7 +182,7 @@ header a:hover {
   border-radius: 0;
 }
 .btn.btn-primary {
-  background-color: #0082cc;
+  background-color: #141f3d;
   color: #FFF;
 }
 #search input::-webkit-input-placeholder,
@@ -226,24 +232,26 @@ button {
   overflow: scroll;
 }
 .legend-layer-toggles {
-  width: 132px;
+  width: 156px;
   display: inline-block;
   vertical-align: top;
-  padding: 15px 16px 16px 0;
-  min-height: 293px;
+  padding: 15px 8px 16px 8px;
+  min-height: 250px;
   background: #4c4b4a;
   color: #FAEBE2;
 }
 .legend-layer-toggles > div {
   display: block;
-  width: 103px;
+  width: 141px;
   vertical-align: top;
-  margin-bottom: 31px;
+  height: 81px;
 }
-.legend-layer-toggles h4 {
-  display: inline-block;
-  font-size: 12px;
-  margin: 0;
+.legend-layer-toggles > div:last-child {
+  height: 58px;
+}
+.legend-layer-toggles label {
+  font-weight: 100;
+  font-size: 13px;
 }
 /* Tour Styles */
 .shepherd-step.shepherd-theme-arrows {
@@ -273,13 +281,14 @@ button {
 #legend {
   position: absolute;
   bottom: 50px;
-  width: 350px;
+  width: 370px;
   margin: 0;
   padding: 0;
   right: 50px;
   z-index: 1048;
   background-color: #e4e1dd;
-  /* Map background */
+  border: 1px solid #999;
+  border-color: rgba(0, 0, 0, 0.4);
 }
 #legend .legend-wrapper {
   font: 14px/16px Arial, Helvetica, sans-serif;
@@ -289,12 +298,12 @@ button {
   transition: max-height 150ms ease-in;
 }
 #legend .legend-wrapper.active {
-  max-height: 500px;
+  max-height: 282px;
 }
 #legend-toggle {
   height: 20px;
   width: 130px;
-  background: #0082cc;
+  background: #141f3d;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   cursor: pointer;
@@ -311,14 +320,15 @@ button {
   color: #FFF;
 }
 #legend-toggle:after {
-  content: "Click the arrow to expand.";
+  content: "Click the arrow to expand the legend.";
   display: block;
-  font-size: 17px;
+  font-size: 16px;
   text-align: center;
   white-space: nowrap;
-  top: 10px;
   position: relative;
-  right: 33px;
+  right: 61px;
+  top: 13px;
+  font-weight: 300;
 }
 #legend-toggle.active:after {
   content: "";
@@ -343,7 +353,7 @@ button {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   color: #fff;
-  background-color: #0082cc;
+  background-color: #141f3d;
   text-shadow: -1px 1px #231f20;
   border: none;
 }
@@ -370,7 +380,7 @@ button {
   font-size: 11px;
   display: inline-block;
   vertical-align: top;
-  height: 96px;
+  height: 87px;
 }
 .floodRange {
   margin-top: -4px;
@@ -521,6 +531,7 @@ marker#arrow {
   /* :root here acting as a filter for older browsers */
   position: absolute;
   opacity: 0;
+  margin-top: 3px;
 }
 :root input[type="checkbox"].ios-switch + div {
   display: inline-block;
@@ -529,8 +540,7 @@ marker#arrow {
   height: 1em;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 999px;
-  background: white;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.1), transparent), linear-gradient(90deg, #3d99f5 50%, transparent 50%);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), transparent), linear-gradient(90deg, #141f3d 50%, #ffffff 50%);
   background-size: 200% 100%;
   background-position: 100% 0;
   background-origin: border-box;

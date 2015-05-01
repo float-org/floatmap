@@ -88,7 +88,8 @@ html {
 
 /* Variables */
 
-@blue: #0082CC;
+// @blue: #0082CC;
+@blue: #141F3D;
 @mapGrey: #E4E1DD;
 @darkGrey: #4C4B4A;
 
@@ -133,6 +134,13 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 
 .ap {
   fill-opacity: 0.5;
+}
+
+.no-data-yet {
+  fill: #4c4b4a;
+  stroke: #4c4b4a;
+  stroke-opacity:0.7;
+  fill-opacity: 0.7;
 }
 
 
@@ -279,26 +287,28 @@ button {
 }
 
 .legend-layer-toggles { 
-  width: 132px;
+  width: 156px;
   display: inline-block;
   vertical-align: top;
-  padding: 15px 16px 16px 0;
-  min-height: 293px;
-  background: @darkGrey;
-  color:#FAEBE2;
+  padding: 15px 8px 16px 8px;
+  min-height: 250px;
+  background: #4c4b4a;
+  color: #FAEBE2;
 }
 
 .legend-layer-toggles > div {
   display: block;
-  width: 103px;
+  width: 141px;
   vertical-align: top;
-  margin-bottom: 31px;
+  height:81px;
+  &:last-child { 
+    height:58px;
+  }
 }
 
-.legend-layer-toggles h4 {
-  display:inline-block;
-  font-size:12px;
-  margin:0;
+.legend-layer-toggles label {
+  font-weight: 100;
+  font-size: 13px;
 }
 
 
@@ -310,6 +320,7 @@ button {
   }
 
   /* Query Styles */
+
 
   #queryContent {
     padding: 6px;
@@ -331,14 +342,16 @@ button {
   /* Legend Styles */
 
   #legend {
-    position:absolute;
-    bottom:50px;
-    width:350px;
-    margin:0;
-    padding:0;
-    right:50px;
-    z-index:1048;
-    background-color: @mapGrey; /* Map background */
+    position: absolute;
+    bottom: 50px;
+    width: 370px;
+    margin: 0;
+    padding: 0;
+    right: 50px;
+    z-index: 1048;
+    background-color: #e4e1dd;
+    border: 1px solid #999;
+    border-color: rgba(0,0,0,.4);
   }
 
   #legend .legend-wrapper  {
@@ -350,7 +363,7 @@ button {
   }
 
   #legend .legend-wrapper.active {
-    max-height:500px;
+    max-height: 282px;
   }
 
   #legend-toggle {
@@ -375,14 +388,15 @@ button {
   }
 
   #legend-toggle:after {
-    content: "Click the arrow to expand.";
+    content: "Click the arrow to expand the legend.";
     display: block;
-    font-size: 17px;
+    font-size: 16px;
     text-align: center;
     white-space: nowrap;
-    top: 10px;
     position: relative;
-    right: 33px;;
+    right: 61px;
+    top: 13px;
+    font-weight: 300;
   }
 
   #legend-toggle.active:after {
@@ -438,7 +452,7 @@ button {
     font-size:11px;
     display:inline-block;
     vertical-align: top;
-    height:96px;
+    height:87px;
   }
 
   .floodRange { 
@@ -620,6 +634,7 @@ button {
 :root input[type="checkbox"] { /* :root here acting as a filter for older browsers */
   position: absolute;
   opacity: 0;
+  margin-top:3px;
 }
 
 :root input[type="checkbox"].ios-switch + div {
@@ -628,9 +643,8 @@ button {
   width: 3em; height: 1em;
   border: 1px solid rgba(0,0,0,.3);
   border-radius: 999px;
-  background: white;
   background-image: linear-gradient(rgba(0,0,0,.1), transparent),
-                    linear-gradient(90deg, hsl(210, 90%, 60%) 50%, transparent 50%);
+                    linear-gradient(90deg, @blue 50%, #FFF 50%);
   background-size: 200% 100%;
   background-position: 100% 0;
   background-origin: border-box;

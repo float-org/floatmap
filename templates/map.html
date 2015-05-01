@@ -32,9 +32,9 @@
       <script id="mapTemplate" type="template"></script>
 
       <script id="legendTemplate" type="template">   
-          <div id="legend-toggle"><span class="glyphicon glyphicon-arrow-up"></span></div>
-          <div class="legend-wrapper invisible">
-            <div id="query"></div>  
+          <div id="legend-toggle" class="active"><span class="glyphicon glyphicon-arrow-up"></span></div>
+          <div class="legend-wrapper active">
+            <div id="query" class="hidden"></div>  
 
             <div class='legend-layer-toggles'>
               <div id="apToggle">
@@ -91,8 +91,9 @@
       </script>
 
       <script id="queryTemplate" type="template">
-        <div id="queryContent">
+        <div id="queryContent" class="">
           <ul class="metrics">
+            <h4>Flooding Risk Factors at This Location</h4>
             <li><span><%= query.ap %></span></li>
             <li><span><%= query.ep %></span></li>
           </ul>
@@ -219,6 +220,9 @@
   <script>
     window.epData = $.parseJSON({{epData|safe}});
     window.apData = $.parseJSON({{apData|safe}});
+    window.mexicoData = $.parseJSON({{mexicoData|safe}});
+    window.canadaData = $.parseJSON({{canadaData|safe}});
+    window.usNoDataData = $.parseJSON({{usNoDataData|safe}});
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
   <script src="{{STATIC_URL}}js/floatmap.js"></script>

@@ -113,7 +113,7 @@ $ ->
   app.getColor = (type, d) ->
     if type == 'ap'
       rainbow = new Rainbow
-      rainbow.setSpectrum '#94FFDB', '#0082cc' # Probably just need to set once
+      rainbow.setSpectrum '#94FFDB', '#0003FF' # Probably just need to set once
       rainbow.setNumberRange 0, 12
       '#' + rainbow.colourAt(d)
 
@@ -474,6 +474,12 @@ This information comes from the Federal Emergency Management Administration (201
             else
               return true
 
+      else
+        layer = app.layers[type] = L.geoJson data,
+          renderer: app.map.renderer
+          style: (feature, layer) ->
+            className: "no-data-yet"
+
       layer
 
     renderTemplate: () -> 
@@ -506,15 +512,22 @@ This information comes from the Federal Emergency Management Administration (201
       
       ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap')
       ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep')
-      
+      usNoData = window.usNoData = this.makeGeoJSONLayer(window.usNoDataData, 'usNoData')
+      canada = window.canada = this.makeGeoJSONLayer(window.canadaData, 'usNoData')
+      mexico = window.mexico = this.makeGeoJSONLayer(window.mexicoData, 'usNoData')
+
       # ...and then append them to the map, in order!
-      # TODO: Why doesn't zindex work with GeoJSON layers?
+      # TODO: Why doesn't zindex work with GeoJSON layers?  
       this.addLayer base, 0
       if $.cookie('welcomed')
-        this.addLayer floods, 1
-        this.addLayer ap, 2
-        this.addLayer ep, 3
-      this.addLayer labels, 4
+        this.addLayer floods, 2
+        this.addLayer ap, 3
+        this.addLayer ep, 4
+      this.addLayer labels, 5
+      this.addLayer usNoData, 6
+      this.addLayer canada, 6
+      this.addLayer mexico, 6
+      
         
       # Then we add zoom controls and finally set off event listeners
       map.addControl L.control.zoom(position: "bottomleft")
@@ -544,7 +557,9 @@ This information comes from the Federal Emergency Management Administration (201
           setTimeout () ->
             if not $('.legend-wrapper').hasClass('active')
               $('#legend-toggle').trigger('click')
-              $('#query')
+            if $('#query').hasClass('hidden')
+              $('#query').removeClass('hidden')
+              $('#queryContent').addClass('active')
           , 100
 
   LegendView = app.LegendView = Backbone.View.extend

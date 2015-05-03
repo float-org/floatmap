@@ -20,15 +20,9 @@
   <meta property="og:image" content="http://placehold.it/250x250" />
   {%endblock%}
   {% block extra_css %}{%endblock%}
-  <script src="http://leaflet-cdn.s3.amazonaws.com/build/master/leaflet-src.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.layoutmanager/0.9.6/backbone.layoutmanager.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js"></script>
 </head>
 <body>
-  <script>
+ <!-- <script>
   //FB JS SDK BBQ
   window.fbAsyncInit = function() {
     FB.init({
@@ -46,49 +40,15 @@
    fjs.parentNode.insertBefore(js, fjs);
  }(document, 'script', 'facebook-jssdk'));
   </script>
+  -->
 
   <main id="main">
   {% block content%}{%endblock%}
   </main>
 
-<!--   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
-    <defs>
-      <pattern id="tiny-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="16" height="16" patternTransform="rotate(45)">
-        <circle cx="9" cy="9" r="2" fill-opacity="1" stroke-opacity="0" fill="#ffca24" />
-      </pattern>
-      <pattern id="small-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="16" height="16" patternTransform="rotate(45)">
-        <circle cx="9" cy="9" r="2" fill-opacity="1" stroke-opacity="0" fill="#ff9324"   />
-      </pattern>
-      <pattern id="large-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="16" height="16" patternTransform="rotate(45)">
-        <circle cx="9" cy="9" r="2" fill-opacity="1" stroke-opacity="0" fill="#ff5b24"  />
-      </pattern>
-      <pattern id="huge-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="16" height="16" patternTransform="rotate(45)">
-        <circle cx="9" cy="9" r="2" fill-opacity="1" stroke-opacity="0" fill="#ff2424" />
-      </pattern>
-    </defs>
-  </svg>​ -->
 
-<!-- Diagonal stripes -->
-<!--   <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
-    <defs>
-      <pattern id="tiny-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="8" patternTransform="rotate(30)">
-        <rect x="0" y="0" width="2" height="8" fill-opacity="1" stroke-opacity="0" fill="#ffca24" />
-      </pattern>
-      <pattern id="small-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="8" patternTransform="rotate(30)">
-        <rect x="0" y="0" width="2" height="8" fill-opacity="1" stroke-opacity="0" fill="#ff9324"   />
-      </pattern>
-      <pattern id="large-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="8" patternTransform="rotate(30)">
-        <rect x="0" y="0" width="2" height="8" fill-opacity="1" stroke-opacity="0" fill="#ff5b24"  />
-      </pattern>
-      <pattern id="huge-dots" patternUnits="userSpaceOnUse" x="0" y="0" width="8" height="8" patternTransform="rotate(30)">
-        <rect x="0" y="0" width="2" height="8" fill-opacity="1" stroke-opacity="0" fill="#ff2424" />
-      </pattern>
-    </defs>
-  </svg>​ -->
-
-
-
-    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
+  <!-- Our beautiful Storm Frequency patterns -->
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0" width="0">
     <defs>
       <pattern id="low-mid" patternUnits="userSpaceOnUse" x="0" y="0" width="12" height="12" patternTransform="rotate(45)">
         <circle cx="3" cy="3" r="2" fill-opacity="1" stroke-opacity="0" fill="#ffca24" />
@@ -104,7 +64,6 @@
       </pattern>
     </defs>
   </svg>​
-
 
   {% block extra_js %}{%endblock%}
 </body>

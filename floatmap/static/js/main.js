@@ -444,6 +444,7 @@
         self = this;
         app.map.on('contextmenu', function(e) {
           var latLng;
+          console.log(e);
           if (!$('.legend-wrapper').hasClass('active')) {
             $('#legend-toggle').trigger('click');
           }
@@ -590,7 +591,7 @@
               }
               if ($('#query').hasClass('hidden')) {
                 $('#query').removeClass('hidden');
-                return $('#queryContent').addClass('active');
+                return $('#query').addClass('active');
               }
             }, 100);
           }

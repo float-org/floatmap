@@ -428,6 +428,7 @@ This information comes from the Federal Emergency Management Administration (201
 
       # When a user right clicks, trigger a query in Elasticsearch for the coords at the click.
       app.map.on 'contextmenu', (e) ->
+        console.log e
         if not $('.legend-wrapper').hasClass('active')
           $('#legend-toggle').trigger('click')
         latLng = [e.latlng.lat, e.latlng.lng]
@@ -559,7 +560,7 @@ This information comes from the Federal Emergency Management Administration (201
               $('#legend-toggle').trigger('click')
             if $('#query').hasClass('hidden')
               $('#query').removeClass('hidden')
-              $('#queryContent').addClass('active')
+              $('#query').addClass('active')
           , 100
 
   LegendView = app.LegendView = Backbone.View.extend

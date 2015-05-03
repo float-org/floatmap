@@ -354,16 +354,29 @@ button {
     border-color: rgba(0,0,0,.4);
   }
 
-  #legend .legend-wrapper  {
+  #legend .legend-wrapper {
     font: 14px/16px Arial, Helvetica, sans-serif;
     max-height:40px;
-    -webkit-transition: max-height 150ms ease-in;
-    -moz-transition: max-height 150ms ease-in;
-    transition: max-height 150ms ease-in;
+    overflow:hidden;
+    -webkit-transition: max-height 300ms ease-in;
+    -moz-transition: max-height 300ms ease-in;
+    transition: max-height 300ms ease-in;
+  }
+
+  #query {
+    max-height:0;
+    overflow:hidden;
+    -webkit-transition: max-height 300ms ease-in;
+    -moz-transition: max-height 300ms ease-in;
+    transition: max-height 300ms ease-in;
   }
 
   #legend .legend-wrapper.active {
     max-height: 282px;
+  }
+ 
+  #query.active {
+    max-height: 60px;
   }
 
   #legend-toggle {

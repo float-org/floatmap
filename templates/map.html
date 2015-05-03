@@ -217,6 +217,8 @@
 
   
   {% block extra_js %} 
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  <script src="{{STATIC_URL}}js/floatmap.js"></script>
   <script>
     window.epData = $.parseJSON({{epData|safe}});
     window.apData = $.parseJSON({{apData|safe}});
@@ -224,6 +226,4 @@
     window.canadaData = $.parseJSON({{canadaData|safe}});
     window.usNoDataData = $.parseJSON({{usNoDataData|safe}});
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-  <script src="{{STATIC_URL}}js/floatmap.js"></script>
   {% endblock %}

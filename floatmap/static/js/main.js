@@ -8,93 +8,18 @@
  */
 
 (function() {
-  var GeoCollection, GeoModel, Query;
-
-  GeoModel = L.GeoModel = Backbone.Model.extend({
-    keepId: false,
-    set: function(key, val, options) {
-      var _attrs, args, attrs, geometry;
-      args = void 0;
-      attrs = void 0;
-      _attrs = void 0;
-      geometry = void 0;
-      args = arguments;
-      if (typeof key === 'object') {
-        attrs = key;
-        options = val;
-      }
-      if (attrs && attrs['type'] && attrs['type'] === 'Feature') {
-        _attrs = _.clone(attrs['properties']) || {};
-        geometry = _.clone(attrs['geometry']) || null;
-        if (geometry) {
-          geometry.coordinates = geometry['coordinates'].slice();
-        }
-        _attrs['geometry'] = geometry;
-        if (attrs[this.idAttribute]) {
-          _attrs[this.idAttribute] = attrs[this.idAttribute];
-        }
-        args = [_attrs, options];
-      }
-      return Backbone.Model.prototype.set.apply(this, args);
-    },
-    toJSON: function(options) {
-      var attrs, geometry, json, props;
-      attrs = void 0;
-      props = void 0;
-      geometry = void 0;
-      options = options || {};
-      attrs = _.clone(this.attributes);
-      props = _.omit(attrs, 'geometry');
-      if (options.cid) {
-        props.cid = this.cid;
-      }
-      geometry = _.clone(attrs['geometry']) || null;
-      if (geometry) {
-        geometry.coordinates = geometry['coordinates'].slice();
-      }
-      json = {
-        type: 'Feature',
-        geometry: geometry,
-        properties: props
-      };
-      if (this.keepId) {
-        json[this.idAttribute] = this.id;
-      }
-      return json;
-    }
-  });
-
-  GeoCollection = L.GeoCollection = Backbone.Collection.extend({
-    model: GeoModel,
-    reset: function(models, options) {
-      if (models && !_.isArray(models) && models.features) {
-        models = models.features;
-      }
-      return Backbone.Collection.prototype.reset.apply(this, [models, options]);
-    },
-    toJSON: function(options) {
-      var features;
-      features = Backbone.Collection.prototype.toJSON.apply(this, arguments);
-      return {
-        type: 'FeatureCollection',
-        features: features
-      };
-    }
-  });
+  var Query;
 
   Query = Backbone.Model.extend({
     defaults: {
       ap: "",
-      ep: "",
-      overall_risk: 'Search or right click anywhere on the map to learn more about a region.'
-    },
-    url: '/get_queries/'
+      ep: ""
+    }
   });
 
   $(function() {
-    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, WelcomeView, app, layers, layout;
+    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, WelcomeView, app, layout;
     app = window.app = window.app || {};
-    layers = app.layers = [];
     app.getPattern = function(type, d) {
       var pattern;
       if (type === 'ep') {
@@ -148,12 +73,6 @@
     };
     Backbone.Layout.configure({
       manage: true
-    });
-    app.AvgPrecipCollection = GeoCollection.extend({
-      url: 'static/ap/noaa_avg_precip.geojson'
-    });
-    app.ExtPrecipCollection = GeoCollection.extend({
-      url: 'static/ep/noaa_ex_precip.geojson'
     });
     HeaderView = app.HeaderView = Backbone.View.extend({
       template: "#headerTemplate",
@@ -439,17 +358,28 @@
     MapView = app.MapView = Backbone.View.extend({
       template: "#mapTemplate",
       el: false,
+      initialize: function() {
+        var gjLayers, layers;
+        layers = app.layers = {};
+        return gjLayers = app.gjLayers = {};
+      },
+      propertyTable: function(o) {
+        var k, t;
+        t = '<table>';
+        for (k in o) {
+          t += '<tr><th>' + k + '</th><td>' + o[k] + '</td></tr>';
+        }
+        t += '</table>';
+        return t;
+      },
       setEvents: function() {
         var self;
         self = this;
         app.map.on('contextmenu', function(e) {
-          var latLng;
-          console.log(e);
           if (!$('.legend-wrapper').hasClass('active')) {
             $('#legend-toggle').trigger('click');
           }
-          latLng = [e.latlng.lat, e.latlng.lng];
-          return app.layout.views['map'].setAddress(latLng, app.map.getZoom());
+          return app.layout.views['#legend'].views['#query'].handleQuery(e.latlng);
         });
         app.map.on('zoomstart', function(e) {
           return self.previousZoom = app.map.getZoom();
@@ -469,13 +399,13 @@
         var lnglat;
         app.map.setView(latlng, zoom);
         lnglat = [latlng[1], latlng[0]];
-        return app.layout.views['#legend'].views['#query'].getQuery(lnglat);
+        return app.layout.views['#legend'].views['#query'].handleQuery(lnglat);
       },
       makeGeoJSONLayer: function(data, type) {
         var layer, self;
         self = this;
         if (type === 'ap') {
-          layer = app.layers['apLayer'] = L.geoJson(data, {
+          layer = app.layers['apLayer'] = app.gjLayers['apLayer'] = L.geoJson(data, {
             renderer: app.map.renderer,
             style: function(feature, layer) {
               return {
@@ -485,7 +415,7 @@
             }
           });
         } else if (type === 'ep') {
-          layer = app.layers['epLayer'] = L.geoJson(data, {
+          layer = app.layers['epLayer'] = app.gjLayers['epLayer'] = L.geoJson(data, {
             renderer: app.map.renderer,
             style: function(feature, layer) {
               return {
@@ -575,27 +505,47 @@
           query: this.model.attributes
         };
       },
-      getQuery: function(lnglat) {
-        var self;
-        self = this;
-        return this.model.fetch({
-          data: {
-            lng: lnglat[0],
-            lat: lnglat[1]
-          },
-          type: 'POST',
-          success: function(model, response) {
-            return setTimeout(function() {
-              if (!$('.legend-wrapper').hasClass('active')) {
-                $('#legend-toggle').trigger('click');
-              }
-              if ($('#query').hasClass('hidden')) {
-                $('#query').removeClass('hidden');
-                return $('#query').addClass('active');
-              }
-            }, 100);
+      handleQuery: function(lnglat) {
+        var i, match;
+        i = 0;
+        while (i < _.size(app.gjLayers)) {
+          match = leafletPip.pointInLayer(lnglat, app.gjLayers[Object.keys(app.gjLayers)[i]], false);
+          if (Object.keys(app.gjLayers)[i] === 'apLayer') {
+            if (match.length) {
+              this.model.set({
+                'ap': match[0].feature.properties.DN + '%↑ Annual Precipitation'
+              });
+            } else {
+              this.model.set({
+                'ap': 'No average precipitation data yet.'
+              });
+            }
           }
-        });
+          if (Object.keys(app.gjLayers)[i] === 'epLayer') {
+            if (match.length) {
+              this.model.set({
+                'ep': match[0].feature.properties.DN + '%↑ Storm Frequency'
+              });
+            } else {
+              this.model.set({
+                'ep': 'No storm frequency data yet.'
+              });
+            }
+          }
+          i++;
+        }
+      },
+      afterRender: function() {
+        if (JSON.stringify(this.model.defaults) !== JSON.stringify(this.model.attributes)) {
+          if (!$('.legend-wrapper').hasClass('active')) {
+            $('#legend-toggle').trigger('click');
+          }
+          return setTimeout(function() {
+            if (!$('#query').hasClass('active')) {
+              return $('#query').addClass('active');
+            }
+          }, 200);
+        }
       }
     });
     LegendView = app.LegendView = Backbone.View.extend({

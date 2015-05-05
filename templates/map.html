@@ -34,7 +34,7 @@
       <script id="legendTemplate" type="template">   
           <div id="legend-toggle" class="active"><span class="glyphicon glyphicon-arrow-up"></span></div>
           <div class="legend-wrapper active">
-            <div id="query" class="hidden"></div>  
+            <div id="query"></div>  
 
             <div class='legend-layer-toggles'>
               <div id="apToggle">
@@ -91,9 +91,9 @@
       </script>
 
       <script id="queryTemplate" type="template">
-        <div id="queryContent" class="">
+        <div id="queryContent">
+          <h4>Flooding Risk Factors at This Location</h4>
           <ul class="metrics">
-            <h4>Flooding Risk Factors at This Location</h4>
             <li><span><%= query.ap %></span></li>
             <li><span><%= query.ep %></span></li>
           </ul>
@@ -225,5 +225,8 @@
     window.mexicoData = $.parseJSON({{mexicoData|safe}});
     window.canadaData = $.parseJSON({{canadaData|safe}});
     window.usNoDataData = $.parseJSON({{usNoDataData|safe}});
+
+
+
   </script>
   {% endblock %}

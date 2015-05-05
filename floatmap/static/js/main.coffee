@@ -6,89 +6,15 @@
   - Test popup w/ Elasticsearch
 ###
 
-GeoModel = L.GeoModel = Backbone.Model.extend(
-  keepId: false
-  set: (key, val, options) ->
-    args = undefined
-    attrs = undefined
-    _attrs = undefined
-    geometry = undefined
-    args = arguments
-    # Handle both `"key", value` and `{key: value}` -style arguments.
-    if typeof key == 'object'
-      attrs = key
-      options = val
-    # Handle GeoJSON argument.
-    if attrs and attrs['type'] and attrs['type'] == 'Feature'
-      _attrs = _.clone(attrs['properties']) or {}
-      # Clone the geometry attribute.
-      geometry = _.clone(attrs['geometry']) or null
-      if geometry
-        geometry.coordinates = geometry['coordinates'].slice()
-      _attrs['geometry'] = geometry
-      if attrs[@idAttribute]
-        _attrs[@idAttribute] = attrs[@idAttribute]
-      args = [
-        _attrs
-        options
-      ]
-    Backbone.Model::set.apply this, args
-
-  toJSON: (options) ->
-    attrs = undefined
-    props = undefined
-    geometry = undefined
-    options = options or {}
-    attrs = _.clone(@attributes)
-    props = _.omit(attrs, 'geometry')
-    # Add model cid to internal use.
-    if options.cid
-      props.cid = @cid
-    # Clone the geometry attribute.
-    geometry = _.clone(attrs['geometry']) or null
-    if geometry
-      geometry.coordinates = geometry['coordinates'].slice()
-    json = 
-      type: 'Feature'
-      geometry: geometry
-      properties: props
-    if @keepId
-      json[@idAttribute] = @id
-    json)
-
-GeoCollection = L.GeoCollection = Backbone.Collection.extend(
-  model: GeoModel
-  reset: (models, options) ->
-    # Accpets FeatureCollection GeoJSON as `models` param.
-    if models and !_.isArray(models) and models.features
-      models = models.features
-    Backbone.Collection::reset.apply this, [
-      models
-      options
-    ]
-  toJSON: (options) ->
-    features = Backbone.Collection::toJSON.apply(this, arguments)
-    {
-      type: 'FeatureCollection'
-      features: features
-    })
-
 Query = Backbone.Model.extend
   defaults:
     ap: ""
     ep: ""
-    overall_risk: 'Search or right click anywhere on the map to learn more about a region.'
-
-  url: '/get_queries/'
 
 $ ->
 
   # App namespace
   app = window.app = ( window.app || {} )
-
-  # Our layers object, which will contain all of the data layers
-  # TODO: This seems like something Leaflet should be able to handle but I don't know...
-  layers = app.layers = []
 
   # Accepts a data type and a data value (e.g NOAA Ext. Precipitation DN value)
   # Returns a class which corresponds to one of four SVG patterns, which inherit styles from CSS
@@ -144,14 +70,6 @@ $ ->
   # Option so that all created views are managed by LayoutManager (i.e. they behave like Layout)
   Backbone.Layout.configure
     manage: true
-
-  # Create a new collection for Average Precip data
-  app.AvgPrecipCollection = GeoCollection.extend
-    url: 'static/ap/noaa_avg_precip.geojson',
-
-  # Create a new collection for Extreme Precip data
-  app.ExtPrecipCollection = GeoCollection.extend
-    url: 'static/ep/noaa_ex_precip.geojson',
 
   # Header View handles behavior for the header, including search and nav.
   HeaderView = app.HeaderView = Backbone.View.extend
@@ -419,6 +337,19 @@ This information comes from the Federal Emergency Management Administration (201
     template: "#mapTemplate"
     el: false
 
+    initialize: () ->
+      # Our layers object, which will contain all of the data layers
+      # TODO: This seems like something Leaflet should be able to handle but I don't know...
+      layers = app.layers = {}
+      gjLayers = app.gjLayers = {}
+
+    propertyTable: (o) ->
+      t = '<table>'
+      for k of o
+        t += '<tr><th>' + k + '</th><td>' + o[k] + '</td></tr>'    
+      t += '</table>'
+      t
+
     setEvents: () ->
       # For Debugging
       # app.map.on 'click', (e) ->
@@ -428,11 +359,9 @@ This information comes from the Federal Emergency Management Administration (201
 
       # When a user right clicks, trigger a query in Elasticsearch for the coords at the click.
       app.map.on 'contextmenu', (e) ->
-        console.log e
         if not $('.legend-wrapper').hasClass('active')
           $('#legend-toggle').trigger('click')
-        latLng = [e.latlng.lat, e.latlng.lng]
-        app.layout.views['map'].setAddress(latLng, app.map.getZoom())
+        app.layout.views['#legend'].views['#query'].handleQuery(e.latlng)
 
       # When zoom begins, get the current zoom and cache for later.
       app.map.on 'zoomstart', (e) ->
@@ -451,21 +380,21 @@ This information comes from the Federal Emergency Management Administration (201
       app.map.setView(latlng, zoom)
       # Note that GeoJSON expects Longitude first (as x) and Latitude second (as y), so we have to switch the order
       lnglat = [latlng[1], latlng[0]]
-      app.layout.views['#legend'].views['#query'].getQuery(lnglat)
+      app.layout.views['#legend'].views['#query'].handleQuery(lnglat)
 
     # Based on data type, creates geoJSON layer
     # and styles appropriately, based on features
     makeGeoJSONLayer: (data, type) ->
       self = this
       if type == 'ap'
-        layer = app.layers['apLayer'] = L.geoJson data,
+        layer = app.layers['apLayer'] = app.gjLayers['apLayer'] = L.geoJson data,
           renderer: app.map.renderer,
           style: (feature, layer) ->
             className: 'ap'
             color: app.getColor("ap", feature.properties.DN)
         
       else if type == 'ep'
-        layer = app.layers['epLayer'] = L.geoJson data,
+        layer = app.layers['epLayer'] = app.gjLayers['epLayer'] = L.geoJson data,
           renderer: app.map.renderer,
           style: (feature, layer) ->
             className: app.getPattern("ep", feature.properties.DN) + " ep"
@@ -545,23 +474,35 @@ This information comes from the Federal Emergency Management Administration (201
     serialize: () ->
       { query: this.model.attributes }
 
-    getQuery: (lnglat) ->
-      self = this   
-
-      this.model.fetch
-        data: {
-          lng:lnglat[0],
-          lat:lnglat[1]
-        },
-        type: 'POST',
-        success: (model, response) -> 
-          setTimeout () ->
-            if not $('.legend-wrapper').hasClass('active')
-              $('#legend-toggle').trigger('click')
-            if $('#query').hasClass('hidden')
-              $('#query').removeClass('hidden')
-              $('#query').addClass('active')
-          , 100
+    handleQuery: (lnglat) ->
+      # look through each layer in order and see if the clicked point,
+      # e.latlng, overlaps with one of the shapes in it.
+      i = 0
+      while i < _.size(app.gjLayers)
+        match = leafletPip.pointInLayer(lnglat, app.gjLayers[Object.keys(app.gjLayers)[i]], false)
+        # if there's overlap, add some content to the popup: the layer name
+        # and a table of attributes
+        if Object.keys(app.gjLayers)[i] == 'apLayer'
+          if match.length
+            this.model.set({'ap': match[0].feature.properties.DN + '%↑ Annual Precipitation'})
+          else 
+            this.model.set({'ap': 'No average precipitation data yet.'})
+        if Object.keys(app.gjLayers)[i] == 'epLayer'
+          if match.length
+            this.model.set({'ep': match[0].feature.properties.DN + '%↑ Storm Frequency'})
+          else
+            this.model.set({'ep': 'No storm frequency data yet.'})         
+        i++
+      return
+ 
+    afterRender: () ->
+      if JSON.stringify(this.model.defaults) != JSON.stringify(this.model.attributes)
+        if not $('.legend-wrapper').hasClass('active')
+          $('#legend-toggle').trigger('click')
+        setTimeout () ->
+          if not $('#query').hasClass('active')
+            $('#query').addClass('active')
+        , 200
 
   LegendView = app.LegendView = Backbone.View.extend
     template: "#legendTemplate" 

@@ -236,7 +236,7 @@ button {
   display: inline-block;
   vertical-align: top;
   padding: 15px 8px 16px 8px;
-  min-height: 250px;
+  min-height: 266px;
   background: #4c4b4a;
   color: #FAEBE2;
 }
@@ -250,7 +250,7 @@ button {
   height: 58px;
 }
 .legend-layer-toggles label {
-  font-weight: 100;
+  font-weight: 400;
   font-size: 13px;
 }
 /* Tour Styles */
@@ -260,22 +260,23 @@ button {
 }
 /* Query Styles */
 #queryContent {
-  padding: 6px;
-  font-size: 12px;
+  padding: 10px 6px;
+}
+#queryContent h4 {
+  font-size: 15px;
+  margin: 0;
 }
 #queryContent .metrics {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding-top: 8px;
+  padding-left: 0;
 }
 #queryContent .metrics li {
-  display: block;
-  padding: 5px;
-  font-size: 14px;
-  text-align: center;
-}
-#queryContent p {
-  text-align: center;
+  font-size: 21px;
+  text-align: left;
+  font-weight: 200;
+  line-height: 26px;
 }
 /* Legend Styles */
 #legend {
@@ -291,7 +292,7 @@ button {
   border-color: rgba(0, 0, 0, 0.4);
 }
 #legend .legend-wrapper {
-  font: 14px/16px Arial, Helvetica, sans-serif;
+  font: 14px/16px Helvetica Neue, sans-serif;
   max-height: 40px;
   overflow: hidden;
   -webkit-transition: max-height 300ms ease-in;
@@ -306,10 +307,10 @@ button {
   transition: max-height 300ms ease-in;
 }
 #legend .legend-wrapper.active {
-  max-height: 282px;
+  max-height: 331px;
 }
 #query.active {
-  max-height: 60px;
+  max-height: 100px;
 }
 #legend-toggle {
   height: 20px;

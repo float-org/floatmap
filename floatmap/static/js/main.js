@@ -151,6 +151,7 @@
         this.resetMapData();
         $('#welcomeModal').modal('hide');
         $('#legend-toggle').trigger('click');
+        L.Icon.Default.imagePath = "../static/img";
         $('#apLayer-switch').trigger('click');
         this.tour.addStep('ap-step', {
           title: 'Annual Precipitation',
@@ -362,15 +363,6 @@
         var gjLayers, layers;
         layers = app.layers = {};
         return gjLayers = app.gjLayers = {};
-      },
-      propertyTable: function(o) {
-        var k, t;
-        t = '<table>';
-        for (k in o) {
-          t += '<tr><th>' + k + '</th><td>' + o[k] + '</td></tr>';
-        }
-        t += '</table>';
-        return t;
       },
       setEvents: function() {
         var self;

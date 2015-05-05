@@ -146,6 +146,8 @@ $ ->
       $('#welcomeModal').modal('hide')
       $('#legend-toggle').trigger('click')
 
+      L.Icon.Default.imagePath = "../static/img"
+
       # Display average precipitation layer - this sort of thing happens in tour step action methods hereafter
       $('#apLayer-switch').trigger('click')
 
@@ -342,13 +344,6 @@ This information comes from the Federal Emergency Management Administration (201
       # TODO: This seems like something Leaflet should be able to handle but I don't know...
       layers = app.layers = {}
       gjLayers = app.gjLayers = {}
-
-    propertyTable: (o) ->
-      t = '<table>'
-      for k of o
-        t += '<tr><th>' + k + '</th><td>' + o[k] + '</td></tr>'    
-      t += '</table>'
-      t
 
     setEvents: () ->
       # For Debugging

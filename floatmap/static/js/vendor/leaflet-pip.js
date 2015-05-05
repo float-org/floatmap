@@ -13,14 +13,12 @@ var leafletPip = {
 
         layer.eachLayer(function(l) {
             if (first && results.length) return;
-            console.log(l);
             if ((l instanceof L.FeatureGroup ||
                  l instanceof L.Polygon) &&
                 gju.pointInPolygon({
                     type: 'Point',
                     coordinates: p
                 }, l.toGeoJSON().geometry)) {
-                console.log('did it');
                 results.push(l);
             }
         });

@@ -13,7 +13,7 @@ def map(request):
     epFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/noaa_ex_precip.geojson'))
     apFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/noaa_avg_precip.geojson'))
     mexicoFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/mexico.geojson'))
-    canadaFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/canada.geojson'))
+    canadaFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/canada_compressed.geojson'))
     usNoDataFile = open(os.path.join(settings.BASE_DIR, 'geo_search/data/US_no_data.geojson'))
     context = {
         'epData': json.dumps(epFile.read()),

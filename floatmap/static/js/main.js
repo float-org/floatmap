@@ -18,7 +18,7 @@
   });
 
   $(function() {
-    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, WelcomeView, app, layout;
+    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, ShareView, WelcomeView, app, layout;
     app = window.app = window.app || {};
     app.getPattern = function(type, d) {
       var pattern;
@@ -627,6 +627,9 @@
         });
       }
     });
+    ShareView = app.ShareView = Backbone.View.extend({
+      template: "#shareTemplate"
+    });
     FloatLayout = app.FloatLayout = Backbone.Layout.extend({
       template: "#floatLayout",
       initialize: function() {
@@ -640,7 +643,8 @@
       views: {
         '#header': new HeaderView(),
         'map': new MapView(),
-        '#legend': new LegendView()
+        '#legend': new LegendView(),
+        '#share': new ShareView()
       }
     });
     layout = app.layout = new FloatLayout();

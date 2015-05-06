@@ -319,6 +319,9 @@ button {
     max-width:400px !important; // Really don't like the CSS in this library
   }
 
+.shepherd-element.shepherd-theme-arrows .shepherd-content footer .shepherd-buttons li .shepherd-button { 
+  background: #141f3d !important;
+}
   /* Query Styles */
 
 
@@ -335,6 +338,53 @@ button {
         text-align: left;
         font-weight: 200;
         line-height: 26px;
+      }
+    }
+  }
+
+  #share {
+    position: absolute;
+    bottom: 10px;
+    width: 150px;
+    margin: 0;
+    padding: 0;
+    left: 50px;
+    z-index: 1048;
+    background-color: #e4e1dd;
+    border: 1px solid #999;
+    border-color: rgba(0,0,0,.4);
+    height: 54px;
+    & > div {
+      vertical-align: middle;
+      height: 100%;
+      display: inline-block;
+      margin-top: 5px;
+      margin-left: 5px;
+    }
+    h5 { 
+      margin:0;
+      font-size:14px;
+      display:inline-block;
+      vertical-align: middle;
+    }
+    #shareContent { 
+      display:inline-block;
+    }
+    .button {
+      background-color: #4c4b4a;
+      background-repeat: no-repeat;
+      width:40px;
+      height:40px;
+      border-radius:9999;
+      display:inline-block;
+      vertical-align: middle;
+      &.fb {
+        background-image: url('../img/s-icons_social_media_icons_white_color_transparent_background_32x32_0000_facebook.png');
+      }
+      &.tw {
+        background-image: url('../img/s-icons_social_media_icons_white_color_transparent_background_32x32_0002_twitter.png');
+        background-position-x: 4px;
+        background-position-y: 2px;
       }
     }
   }

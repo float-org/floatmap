@@ -585,6 +585,9 @@ This information comes from the Federal Emergency Management Administration (201
 
       $("[data-toggle=tooltip]").tooltip({ placement: 'left'})
 
+  ShareView = app.ShareView = Backbone.View.extend
+    template: "#shareTemplate" 
+
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"
     initialize: () ->
@@ -599,6 +602,7 @@ This information comes from the Federal Emergency Management Administration (201
       '#header': new HeaderView()
       'map': new MapView()
       '#legend': new LegendView()
+      '#share': new ShareView()
 
   layout = app.layout = new FloatLayout()
   layout.$el.appendTo('#main')

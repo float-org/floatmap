@@ -173,7 +173,7 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
   padding-right:20px;
   box-sizing:border-box;
   -moz-box-sizing:border-box;
-  clear:both;
+  clear:none;
   padding-top:5px;
 }
 
@@ -366,12 +366,15 @@ button {
       font-size:14px;
       display:inline-block;
       vertical-align: middle;
+      position: relative;
+      left: 2px;
     }
     #shareContent { 
       display:inline-block;
+      margin-left: 6px;
     }
     .button {
-      background-color: #4c4b4a;
+      background-color: @blue;
       background-repeat: no-repeat;
       width:40px;
       height:40px;
@@ -414,11 +417,18 @@ button {
   }
 
   #query {
-    max-height:0;
+    max-height: 31px;
     overflow:hidden;
     -webkit-transition: max-height 300ms ease-in;
     -moz-transition: max-height 300ms ease-in;
     transition: max-height 300ms ease-in;
+    &:before { 
+      content: "Right click on the map to see flood risks for a specific location.";
+      display: block;
+      text-align:center;
+      font-size: 12px;
+      padding: 8px 0;
+    }
   }
 
   #legend .legend-wrapper.active {
@@ -427,10 +437,14 @@ button {
  
   #query.active {
     max-height: 100px;
+    &:before {
+      content: "";
+      display:none;
+    }
   }
 
   #legend-toggle {
-    height: 20px;
+    height: 22px;
     width: 130px;
     background: @blue;
     border-top-left-radius: 3px;
@@ -438,7 +452,8 @@ button {
     cursor: pointer;
     display:block;
     margin:0 auto;
-    margin-top:-20px;
+    margin-top: -22px;
+    padding: 3px 0 0 0;
   }
 
   #legend-toggle span {
@@ -928,9 +943,21 @@ button {
    Modify as content requires.
    ========================================================================== */
 
-   @media all and (min-width: 1024px) {
-    #header nav {
-      clear:none;    
+   @media all and (max-width: 768px) {
+
+    /* overwrite bootstrap-responsive.css */
+    body { padding:0 !important; }
+
+    #legend {
+      bottom:55px;
+      left:0;
+      width:100%;
+    }
+
+    #share {
+      bottom:0;
+      left:0;
+      width:100%
     }
   }
 

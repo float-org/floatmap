@@ -139,7 +139,7 @@ header a:hover {
   padding-right: 20px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  clear: both;
+  clear: none;
   padding-top: 5px;
 }
 #header nav a {
@@ -306,12 +306,15 @@ button {
   font-size: 14px;
   display: inline-block;
   vertical-align: middle;
+  position: relative;
+  left: 2px;
 }
 #share #shareContent {
   display: inline-block;
+  margin-left: 6px;
 }
 #share .button {
-  background-color: #4c4b4a;
+  background-color: #141f3d;
   background-repeat: no-repeat;
   width: 40px;
   height: 40px;
@@ -349,11 +352,18 @@ button {
   transition: max-height 300ms ease-in;
 }
 #query {
-  max-height: 0;
+  max-height: 31px;
   overflow: hidden;
   -webkit-transition: max-height 300ms ease-in;
   -moz-transition: max-height 300ms ease-in;
   transition: max-height 300ms ease-in;
+}
+#query:before {
+  content: "Right click on the map to see flood risks for a specific location.";
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  padding: 8px 0;
 }
 #legend .legend-wrapper.active {
   max-height: 331px;
@@ -361,8 +371,12 @@ button {
 #query.active {
   max-height: 100px;
 }
+#query.active:before {
+  content: "";
+  display: none;
+}
 #legend-toggle {
-  height: 20px;
+  height: 22px;
   width: 130px;
   background: #141f3d;
   border-top-left-radius: 3px;
@@ -370,7 +384,8 @@ button {
   cursor: pointer;
   display: block;
   margin: 0 auto;
-  margin-top: -20px;
+  margin-top: -22px;
+  padding: 3px 0 0 0;
 }
 #legend-toggle span {
   -webkit-transition: transform 300ms ease-in;
@@ -819,9 +834,20 @@ marker#arrow {
    These examples override the primary ('mobile first') styles.
    Modify as content requires.
    ========================================================================== */
-@media all and (min-width: 1024px) {
-  #header nav {
-    clear: none;
+@media all and (max-width: 768px) {
+  /* overwrite bootstrap-responsive.css */
+  body {
+    padding: 0 !important;
+  }
+  #legend {
+    bottom: 55px;
+    left: 0;
+    width: 100%;
+  }
+  #share {
+    bottom: 0;
+    left: 0;
+    width: 100%;
   }
 }
 @media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {

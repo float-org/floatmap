@@ -109,6 +109,8 @@ $ ->
       # Remove existing instance of Shepherd Tour
       # TODO: Still have zombie view problem, which I *thought* LayoutManager helped with...
       if window.tour
+        if app.map.marker
+          app.map.removeLayer(app.map.marker)
         window.tour.complete()
       window.tour = this.tour = new Shepherd.Tour
         defaults: 
@@ -116,6 +118,8 @@ $ ->
           scrollTo: true
 
     resetMapAfterTour: () ->
+      if app.map.marker
+        app.map.removeLayer(app.map.marker)
       if $('.active')
         $('.active').removeClass('active').promise().done () ->
           $('.legend-wrapper').addClass('invisible')
@@ -194,7 +198,7 @@ This information comes from the Federal Emergency Management Administration (201
       # Display search step
       this.tour.addStep 'search-step',
         title: 'Search'
-        text: 'Use the search bar to see the risks for a specific location. Try using the search bar now to find a location you care about in the Midwest.'
+        text: 'Search for a specific address, city or landmark. Try using the search bar now to find a location you care about in the Midwest.'
         attachTo: '.search-input bottom'
         buttons: [
           text: 'Next'
@@ -214,7 +218,7 @@ This information comes from the Federal Emergency Management Administration (201
           text: 'Take a Tour'
           action: () -> 
             latlng = [44.519, -88.019]
-            app.map.setView(latlng, 13)
+            app.layout.views['map'].setAddress(latlng, 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
@@ -229,12 +233,12 @@ This information comes from the Federal Emergency Management Administration (201
         title: 'Green Bay, WI'
         text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, 
         with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.'
-        attachTo: '#legend-toggle top'
+        attachTo: '.leaflet-marker-icon left'
         buttons: [
           text: 'Continue'
           action: () ->
             latlng = [43.1397, -89.3375]
-            app.map.setView(latlng, 13)
+            app.layout.views['map'].setAddress(latlng, 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
@@ -247,12 +251,12 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-dane',
         title: 'Madison, WI Airport'
         text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.'
-        attachTo: '#legend-toggle top'
+        attachTo: '.leaflet-marker-icon left'
         buttons: [
           text: 'Continue'
           action: () ->
             latlng = [42.732072157891224, -84.50576305389404]
-            app.map.setView([42.73591782230738, -84.48997020721437], 13)
+            app.layout.views['map'].setAddress([42.73591782230738, -84.48997020721437], 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
@@ -265,15 +269,16 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-lansing',
         title: 'Lansing, MI'
         text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.'
-        attachTo: '#legend-toggle top'
+        attachTo: '.leaflet-marker-icon left'
         buttons: [
           text: 'Continue'
           action: () ->
             latlng = [41.726, -90.310]
-            app.map.setView([41.7348457153312, -90.310], 13)
+            app.layout.views['map'].setAddress([41.7348457153312, -90.310], 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
             marker = app.map.marker = L.marker(latlng).addTo(app.map)
+            
             tour.next()
         , 
           text: 'Stop Tour'
@@ -283,7 +288,7 @@ This information comes from the Federal Emergency Management Administration (201
       this.tour.addStep 'map-quadcities',
         title: 'Quad Cities Nuclear Generating Station'
         text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.'
-        attachTo: '#legend-toggle top'
+        attachTo: '.leaflet-marker-icon bottom'
         buttons: [
           text: 'Stop Tour'
           action: this.resetMapAfterTour

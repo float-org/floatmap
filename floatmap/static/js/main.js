@@ -393,11 +393,11 @@
         lnglat = [latlng[1], latlng[0]];
         return app.layout.views['#legend'].views['#query'].handleQuery(lnglat);
       },
-      makeGeoJSONLayer: function(data, type) {
-        var layer, self;
+      makegeoJsonLayer: function(data, type) {
+        var config, layer, self;
         self = this;
         if (type === 'ap') {
-          layer = app.layers['apLayer'] = app.gjLayers['apLayer'] = L.geoJson(data, {
+          return layer = app.layers['apLayer'] = app.gjLayers['apLayer'] = L.geoJson(data, {
             renderer: app.map.renderer,
             style: function(feature, layer) {
               return {
@@ -407,7 +407,7 @@
             }
           });
         } else if (type === 'ep') {
-          layer = app.layers['epLayer'] = app.gjLayers['epLayer'] = L.geoJson(data, {
+          return layer = app.layers['epLayer'] = app.gjLayers['epLayer'] = L.geoJson(data, {
             renderer: app.map.renderer,
             style: function(feature, layer) {
               return {
@@ -423,7 +423,7 @@
             }
           });
         } else {
-          layer = app.layers[type] = L.geoJson(data, {
+          config = L.geoJson(null, {
             renderer: app.map.renderer,
             style: function(feature, layer) {
               return {
@@ -431,16 +431,16 @@
               };
             }
           });
+          return layer = app.layers[type] = omnivore.topojson(data, null, config);
         }
-        return layer;
       },
       renderTemplate: function() {
         var ap, base, baseURL, bounds, canada, center, ep, floods, labels, labelsURL, map, mexico, northEast, southWest, usNoData;
         baseURL = '//{s}.tiles.mapbox.com/v3/floatmap.2ce887fe/{z}/{x}/{y}.png';
         labelsURL = '//{s}.tiles.mapbox.com/v3/floatmap.2b5f6c80/{z}/{x}/{y}.png';
         if (!app.map) {
-          southWest = L.latLng(35.85343961959182, -96.1083984375);
-          northEast = L.latLng(51.12057809796008, -79.40917968750001);
+          southWest = L.latLng(30.85343961959182, -123.1083984375);
+          northEast = L.latLng(56.12057809796008, -60.40917968750001);
           center = L.latLng(44.2205730390537, -88);
           bounds = L.latLngBounds(southWest, northEast);
           map = app.map = new L.Map('map', {
@@ -465,11 +465,11 @@
         labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {
           pane: 'tilePane'
         });
-        ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap');
-        ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep');
-        usNoData = window.usNoData = this.makeGeoJSONLayer(window.usNoDataData, 'usNoData');
-        canada = window.canada = this.makeGeoJSONLayer(window.canadaData, 'usNoData');
-        mexico = window.mexico = this.makeGeoJSONLayer(window.mexicoData, 'usNoData');
+        ap = window.ap = this.makegeoJsonLayer(window.apData, 'ap');
+        ep = window.ep = this.makegeoJsonLayer(window.epData, 'ep');
+        usNoData = window.usNoData = this.makegeoJsonLayer("static/layers/US_no_data_topo.geojson", 'usNoData');
+        canada = window.canada = this.makegeoJsonLayer("static/layers/canada_topo.geojson", 'canada');
+        mexico = window.mexico = this.makegeoJsonLayer("static/layers/mexico_topo.geojson", 'mexico');
         this.addLayer(base, 0);
         if ($.cookie('welcomed')) {
           this.addLayer(floods, 2);

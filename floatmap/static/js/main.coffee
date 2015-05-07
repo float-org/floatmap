@@ -373,13 +373,13 @@ This information comes from the Federal Emergency Management Administration (201
 
     setAddress: (latlng, zoom) ->
       app.map.setView(latlng, zoom)
-      # Note that GeoJSON expects Longitude first (as x) and Latitude second (as y), so we have to switch the order
+      # Note that geoJson expects Longitude first (as x) and Latitude second (as y), so we have to switch the order
       lnglat = [latlng[1], latlng[0]]
       app.layout.views['#legend'].views['#query'].handleQuery(lnglat)
 
     # Based on data type, creates geoJSON layer
     # and styles appropriately, based on features
-    makeGeoJSONLayer: (data, type) ->
+    makegeoJsonLayer: (data, type) ->
       self = this
       if type == 'ap'
         layer = app.layers['apLayer'] = app.gjLayers['apLayer'] = L.geoJson data,
@@ -398,14 +398,13 @@ This information comes from the Federal Emergency Management Administration (201
               return false
             else
               return true
-
       else
-        layer = app.layers[type] = L.geoJson data,
+        config = L.geoJson null,
           renderer: app.map.renderer
           style: (feature, layer) ->
             className: "no-data-yet"
 
-      layer
+        layer = app.layers[type] = omnivore.topojson(data, null, config)
 
     renderTemplate: () -> 
       # Path to Base layer (no labels)
@@ -416,14 +415,14 @@ This information comes from the Federal Emergency Management Administration (201
 
       # Instantiate map if we haven't
       if not app.map
-        southWest = L.latLng(35.85343961959182, -96.1083984375)
-        northEast = L.latLng(51.12057809796008, -79.40917968750001)
+        southWest = L.latLng(30.85343961959182, -123.1083984375)
+        northEast = L.latLng(56.12057809796008, -60.40917968750001)
         center = L.latLng(44.2205730390537, -88)
         bounds = L.latLngBounds(southWest, northEast);
         map = app.map = new L.Map('map', {maxBounds: bounds, minZoom: 5, maxZoom: 15, zoom: 6, center: center, attributionControl: false})
 
       
-      # Create new SVG renderer and add to Tile pane, so we can work with GeoJSON like other layers
+      # Create new SVG renderer and add to Tile pane, so we can work with geoJson like other layers
       map.renderer = L.svg({pane:'tilePane'}).addTo(map)
       
       # We're only dealing with the Midwest for now, so bound our 
@@ -435,14 +434,14 @@ This information comes from the Federal Emergency Management Administration (201
       floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
       labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane'})
       
-      ap = window.ap = this.makeGeoJSONLayer(window.apData, 'ap')
-      ep = window.ep = this.makeGeoJSONLayer(window.epData, 'ep')
-      usNoData = window.usNoData = this.makeGeoJSONLayer(window.usNoDataData, 'usNoData')
-      canada = window.canada = this.makeGeoJSONLayer(window.canadaData, 'usNoData')
-      mexico = window.mexico = this.makeGeoJSONLayer(window.mexicoData, 'usNoData')
+      ap = window.ap = this.makegeoJsonLayer(window.apData, 'ap')
+      ep = window.ep = this.makegeoJsonLayer(window.epData, 'ep')
+      usNoData = window.usNoData = this.makegeoJsonLayer("static/layers/US_no_data_topo.geojson", 'usNoData')
+      canada = window.canada = this.makegeoJsonLayer("static/layers/canada_topo.geojson", 'canada')
+      mexico = window.mexico = this.makegeoJsonLayer("static/layers/mexico_topo.geojson", 'mexico')
 
       # ...and then append them to the map, in order!
-      # TODO: Why doesn't zindex work with GeoJSON layers?  
+      # TODO: Why doesn't zindex work with geoJson layers?  
       this.addLayer base, 0
       if $.cookie('welcomed')
         this.addLayer floods, 2
@@ -526,7 +525,7 @@ This information comes from the Federal Emergency Management Administration (201
         current_ap = app.layers['apLayer']
         current_ep = app.layers['epLayer']
 
-        # This is super gross and only has to be this complicated because GeoJSON layers
+        # This is super gross and only has to be this complicated because geoJson layers
         # do not seem to respect zIndex, even though you can set a zIndex on them when 
         # adding them to the map.  Grrrrr.
         

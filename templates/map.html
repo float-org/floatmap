@@ -2,6 +2,7 @@
 {% load static from staticfiles %}
  {% block extra_css %}
   <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
+  <script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
   <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css' />
   <link rel="stylesheet" href="{{STATIC_URL}}css/floatmap.css">
@@ -232,11 +233,5 @@
   <script>
     window.epData = $.parseJSON({{epData|safe}});
     window.apData = $.parseJSON({{apData|safe}});
-    window.mexicoData = $.parseJSON({{mexicoData|safe}});
-    window.canadaData = $.parseJSON({{canadaData|safe}});
-    window.usNoDataData = $.parseJSON({{usNoDataData|safe}});
-
-
-
   </script>
   {% endblock %}

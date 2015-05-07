@@ -52,10 +52,11 @@ module.exports = function(grunt) {
           'floatmap/static/js/vendor/backbone.layoutmanager.min.js',
           'floatmap/static/js/vendor/bootstrap.min.js',
           'floatmap/static/js/vendor/jquery.cookie.js',
-          'floatmap/static/js/vendor/leaflet-dvf.js',
+          'floatmap/static/js/vendor/leaflet-dvf.js',          
           'floatmap/static/js/vendor/rainbowvis.js',
           'floatmap/static/js/vendor/shepherd.min.js',
           'floatmap/static/js/vendor/leaflet-pip.js',
+          'floatmap/static/js/vendor/leaflet-omnivore.js',
           'floatmap/static/js/main.js',
         ],
         dest: 'floatmap/static/js/<%= pkg.name %>.js'

@@ -331,7 +331,7 @@ button {
 #legend {
   position: absolute;
   bottom: 50px;
-  width: 370px;
+  width: 380px;
   margin: 0;
   padding: 0;
   right: 50px;
@@ -616,6 +616,7 @@ marker#arrow {
 :root input[type="checkbox"].ios-switch:checked + div {
   padding-left: 2em;
   background-position: 0 0;
+  margin-top: 3px;
 }
 :root input[type="checkbox"].ios-switch + div:before {
   content: 'On';

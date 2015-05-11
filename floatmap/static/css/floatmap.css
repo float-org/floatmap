@@ -324,11 +324,11 @@ button {
 }
 #share .button.fb {
   background-image: url('../img/s-icons_social_media_icons_white_color_transparent_background_32x32_0000_facebook.png');
+  background-position: 1px 0;
 }
 #share .button.tw {
   background-image: url('../img/s-icons_social_media_icons_white_color_transparent_background_32x32_0002_twitter.png');
-  background-position-x: 4px;
-  background-position-y: 2px;
+  background-position: 4px 2px;
 }
 /* Legend Styles */
 #legend {

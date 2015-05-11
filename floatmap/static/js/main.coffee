@@ -212,7 +212,7 @@ This information comes from the Federal Emergency Management Administration (201
       # TODO: Not totally in love w/ the animation here - play around with it some more.
       this.tour.addStep 'query-step',
         title: 'Inspect'
-        text: 'Right click anywhere on the map to see the numbers for that specific place, or take a tour of some communities at high risk for worsened flooding.'
+        text: '<p>Right click anywhere on the map to inspect the numbers for that specific place.</p><br /><p>Take a tour of some communities at high risk for worsened flooding.</p>'
         attachTo: '#query left'
         buttons: [
           text: 'Take a Tour'
@@ -591,6 +591,14 @@ This information comes from the Federal Emergency Management Administration (201
 
   ShareView = app.ShareView = Backbone.View.extend
     template: "#shareTemplate" 
+    events: 
+      "click #shareContent a": (e) ->
+        e.preventDefault()
+        this.openPopup(e.target.href)
+    
+    openPopup: (url) ->
+      window.open( url, "window", "height = 500, width = 620, resizable = 0" )
+    
 
   FloatLayout = app.FloatLayout = Backbone.Layout.extend
     template: "#floatLayout"

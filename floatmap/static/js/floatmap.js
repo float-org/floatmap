@@ -7922,7 +7922,7 @@ module.exports = leafletPip;
         });
         this.tour.addStep('query-step', {
           title: 'Inspect',
-          text: 'Right click anywhere on the map to see the numbers for that specific place, or take a tour of some communities at high risk for worsened flooding.',
+          text: '<p>Right click anywhere on the map to inspect the numbers for that specific place.</p><br /><p>Take a tour of some communities at high risk for worsened flooding.</p>',
           attachTo: '#query left',
           buttons: [
             {
@@ -8341,7 +8341,16 @@ module.exports = leafletPip;
       }
     });
     ShareView = app.ShareView = Backbone.View.extend({
-      template: "#shareTemplate"
+      template: "#shareTemplate",
+      events: {
+        "click #shareContent a": function(e) {
+          e.preventDefault();
+          return this.openPopup(e.target.href);
+        }
+      },
+      openPopup: function(url) {
+        return window.open(url, "window", "height = 500, width = 620, resizable = 0");
+      }
     });
     FloatLayout = app.FloatLayout = Backbone.Layout.extend({
       template: "#floatLayout",

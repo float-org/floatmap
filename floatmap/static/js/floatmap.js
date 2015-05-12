@@ -8349,7 +8349,7 @@ module.exports = leafletPip;
         }
       },
       openPopup: function(url) {
-        return window.open(url, "window", "height = 500, width = 620, resizable = 0");
+        return window.open(url, "window", "height = 500, width = 559, resizable = 0");
       }
     });
     FloatLayout = app.FloatLayout = Backbone.Layout.extend({

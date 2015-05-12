@@ -152,6 +152,13 @@ header a:hover {
 #header nav a:first-child {
   margin-left: 0;
 }
+.headshot {
+  width: 200px;
+  height: 200px;
+}
+.headshot img {
+  max-width: 100%;
+}
 .logo {
   color: white;
   font-weight: bold;

@@ -464,7 +464,7 @@
         base = window.base = app.layers['base'] = L.tileLayer(baseURL, {
           pane: 'tilePane'
         });
-        floods = window.floods = app.layers['floods'] = L.tileLayer('/static/floatmap/static/nfhl_tiles/{z}/{x}/{y}.png', {
+        floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {
           pane: 'tilePane',
           errorTileUrl: 'http://i.imgur.com/aZejCgY.png'
         });

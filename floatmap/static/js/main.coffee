@@ -436,8 +436,7 @@ This information comes from the Federal Emergency Management Administration (201
       
       # Create our layers
       base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane'})
-      # TODO: This is horrible but I am running out of time and copying >1M tiles to fix a stupid directory seems unproductive.  :-/
-      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/floatmap/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
+      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
       labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane'})
       
       ap = window.ap = this.makegeoJsonLayer(window.apData, 'ap')

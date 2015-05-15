@@ -578,16 +578,16 @@ button {
   fill: transparent;
 }
 .extreme-severe.dots {
-  fill: url(#extreme-severe);
+  fill: url(/#extreme-severe);
 }
 .high-extreme.dots {
-  fill: url(#high-extreme);
+  fill: url(/#high-extreme);
 }
 .mid-high.dots {
-  fill: url(#mid-high);
+  fill: url(/#mid-high);
 }
 .low-mid.dots {
-  fill: url(#low-mid);
+  fill: url(/#low-mid);
 }
 .legend {
   fill: black;

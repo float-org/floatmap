@@ -507,16 +507,14 @@ This information comes from the Federal Emergency Management Administration (201
     template: "#legendTemplate" 
 
     events:
-      "click #legend": (e) -> e.stopPropagation()
-
       "click #legend-toggle": (e) -> 
         if $('.legend-wrapper').hasClass('active') # i.e. if panel is open
           $('.legend-wrapper').addClass('invisible') 
           setTimeout () ->  
-            $('.legend-wrapper, #legend-toggle').removeClass('active')
+            $('.legend-wrapper, #legend-toggle, #legend').removeClass('active')
           , 1
         else 
-          $('.legend-wrapper, #legend-toggle').addClass('active')
+          $('.legend-wrapper, #legend-toggle, #legend').addClass('active')
           setTimeout () ->
             $('.legend-wrapper').removeClass('invisible')
           , 150
@@ -581,6 +579,15 @@ This information comes from the Federal Emergency Management Administration (201
       self.$el.find(".apRange").append "<span class='ap-text'>Increasing Average Precipitation</span>"
       # TODO: Why do I have to do this at all?
       self.$el.appendTo(layout.$el.find('#legend')) 
+
+      $('#legend').on("click", (e) -> 
+        if $('#legend').hasClass('active')
+          return
+        else 
+          $('.legend-wrapper, #legend-toggle, #legend').addClass('active')
+          setTimeout () ->
+            $('.legend-wrapper').removeClass('invisible')
+          , 150)
 
       if $.cookie('welcomed')
         $('#floods-switch').prop('checked',true)

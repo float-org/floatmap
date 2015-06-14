@@ -94,8 +94,9 @@ html {
 @darkGrey: #4C4B4A;
 
 body {
+    padding:0 !important;
+    position:relative;
     -webkit-font-smoothing: antialiased; 
-    overflow:hidden; // Disable scrollbar
 }
 
    /* My dumb hacks */
@@ -156,84 +157,52 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 }
 
 #header {
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8'); /* for IE */
-  background: @blue; /* Old browsers */
   display:block;
-  height: 75px;
   padding: 18px;
   box-sizing: border-box;
-  position:fixed;
+  position:absolute;
   width:100%;
+  background: @blue; /* Old browsers */
   z-index:1049; /* one less than bootstrap modal */
-}
-
-#header nav {
-  color:#FFF;
-  text-align:right;
-  padding-right:20px;
-  box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  clear:none;
-  padding-top:5px;
-}
-
-#header nav a {
-  color: #FFF;
-  font-size: 19px;
-  margin-left: 20px;
-  font-weight: 100;
-  letter-spacing: 0.3px;
-}
-
-#header nav a:first-child {
-  margin-left:0;
-}
-
-.headshot {
-  width:200px;
-  height:200px;
-  img { max-width: 100%; }
-}
-
-.logo {
-  color: white;
-  font-weight:bold;
-}
-
-.logo h1 {
-  margin:0;
-}
-
-.logo span {
-  font-size:18px;
-}
-
-#search input[type="text"],
-#search button {
-  float:left;
-  height:37px;
-}
-
-#search input[type="text"] {
-  width:478px;
-  box-sizing:border-box;
-}
-
-.btn.btn-default {
-  background-color: #B8B8BA;
-  color:#FFF;
-  border-radius:0;
-} 
-
-.btn.btn-default:hover {
-  background-color: @darkGrey;
-  color:#FFF;
-  border-radius:0;
-}
-
-.btn.btn-primary {
-  background-color: @blue;
-  color:#FFF;
+  .navbar.navbar-default {
+    color:#FFF;
+    background-color: @blue; /* Old browsers */
+    border:none;
+    .navbar-collapse {
+      border:none;
+      box-shadow:0 0 0;
+    }
+  }
+  .navbar-brand {
+    color:#FFF;
+    padding:0 15px;
+    h1 { margin:0; }
+  }
+  .navbar-toggle {
+    margin-top:0;
+  }
+  nav li a {
+    color: #FFF;
+    font-size: 20px;
+    margin-left: 20px;
+    font-weight: 100;
+    letter-spacing: 0.3px;
+    padding:8px 0;
+    height:auto;
+  }
+  #search {
+    padding:0;
+    color:#222;
+    input[type="text"],
+    button {
+      float:left;
+      height:37px;
+    }
+    input[type="text"] {
+      width:90%;
+      box-sizing:border-box;
+    }
+  }
 }
 
 #search input::-webkit-input-placeholder,
@@ -242,8 +211,26 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
   color: #A5A7A9;
 }
 
+.btn.btn-default {
+  background-color: #B8B8BA;
+  color:#FFF;
+  border-radius:0;
+  &:hover {
+    background-color: @darkGrey;
+    color:#FFF;
+    border-radius:0;
+  }
+} 
+
+.btn.btn-primary {
+  background-color: @blue;
+  color:#FFF;
+}
+
+
+
 #search button {
-  width:50px;
+  width:10%;
   background-color:@darkGrey;
   color:#FAEBE2;
   border:0;
@@ -259,11 +246,6 @@ button,
 input[type="text"] { 
   font-size:17px;
 }
-
-button {
-  font-style:italic;
-}
-
 
 /* Modal Styles */
 
@@ -290,6 +272,12 @@ button {
 .modal-body {
   max-height: 650px;
   overflow: scroll;
+}
+
+.headshot {
+  width:200px;
+  height:200px;
+  img { max-width: 100%; }
 }
 
 .legend-layer-toggles { 
@@ -350,7 +338,7 @@ button {
 
   #share {
     position: absolute;
-    bottom: 10px;
+    bottom: 30px;
     width: 150px;
     margin: 0;
     padding: 0;
@@ -400,28 +388,100 @@ button {
 
   /* Legend Styles */
 
+
   #legend {
     position: absolute;
-    bottom: 50px;
-    width: 380px;
+    width:50px;
+    bottom:30px;
+    right:20px;
     margin: 0;
-    padding: 0;
-    right: 50px;
+    padding:0;
     z-index: 1048;
     background-color: #e4e1dd;
-    border: 1px solid #999;
+    border-top:1px solid #999;
     border-color: rgba(0,0,0,.4);
+    -webkit-transition: width 300ms ease-in;
+    -moz-transition: width 300ms ease-in;
+    transition: width 300ms ease-in;
+    &:before { 
+      content: "+";
+      position: absolute;
+      left: 16px;
+      top: 1px;
+      font-size: 30px;
+      cursor: pointer;
+    }
+    &.active {
+      width:93%; bottom:100px;
+      &:before { 
+        content:"";
+      }
+    }
+    .legend-panel {
+      display: block;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.4;
+      box-shadow: none;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      color: #fff;
+      background-color:@blue; 
+      text-shadow: -1px 1px #231f20;
+      border: none;
+    }
+    h3 {
+      display:inline-block;
+    }
+    h4 {
+      margin: 0 0 5px;
+      color: #777;
+    }
+    .legend-data { 
+      width: 200px;
+      display: inline-block;
+      padding-top: 15px;
+      padding-left: 5px;
+    }
+    #legend-toggle {
+      display:none;
+      height: 22px;
+      width: 130px;
+      background: #141f3d;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      cursor: pointer;
+      margin:-22px auto 0 auto;
+      padding: 3px 0 0 0;
+      &.active {
+        display:block;
+        span {
+          transform: rotate(180deg);       
+        }
+      }
+      span {
+        -webkit-transition: transform 300ms ease-in;
+        -moz-transition: transform 300ms ease-in;
+        transition: transform 300ms ease-in;
+        text-align:center;
+        display: block;
+        color: #FFF;
+      }
+    }
+    .legend-wrapper {
+      font: 14px/16px Helvetica Neue, sans-serif;
+      max-height:50px;
+      overflow:hidden;
+      -webkit-transition: max-height 300ms ease-in;
+      -moz-transition: max-height 300ms ease-in;
+      transition: max-height 300ms ease-in;
+      &.active {
+        max-height:331px;
+      }
+    }
   }
-
-  #legend .legend-wrapper {
-    font: 14px/16px Helvetica Neue, sans-serif;
-    max-height:40px;
-    overflow:hidden;
-    -webkit-transition: max-height 300ms ease-in;
-    -moz-transition: max-height 300ms ease-in;
-    transition: max-height 300ms ease-in;
-  }
-
+  
   #query {
     max-height: 31px;
     overflow:hidden;
@@ -436,10 +496,6 @@ button {
       padding: 8px 0;
     }
   }
-
-  #legend .legend-wrapper.active {
-    max-height: 331px;
-  }
  
   #query.active {
     max-height: 100px;
@@ -449,83 +505,10 @@ button {
     }
   }
 
-  #legend-toggle {
-    height: 22px;
-    width: 130px;
-    background: @blue;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    cursor: pointer;
-    display:block;
-    margin:0 auto;
-    margin-top: -22px;
-    padding: 3px 0 0 0;
-  }
-
-  #legend-toggle span {
-    -webkit-transition: transform 300ms ease-in;
-    -moz-transition: transform 300ms ease-in;
-    transition: transform 300ms ease-in;
-    text-align: center;
-    display: block;
-    color: #FFF;
-  }
-
-  #legend-toggle:after {
-    content: "Click the arrow to expand the legend.";
-    display: block;
-    font-size: 16px;
-    text-align: center;
-    white-space: nowrap;
-    position: relative;
-    right: 61px;
-    top: 13px;
-    font-weight: 300;
-  }
-
-  #legend-toggle.active:after {
-    content: ""
-  }
-
-  #legend-toggle.active span {
-    transform: rotate(180deg);
-  }
-
   .legend-wrapper, .legend-panel { height: 100%}
 
   .legend-panel > div {
     padding:10px 0;
-  }
-
-  #legend .legend-panel {
-    display: block;
-    padding: 10px 12px;
-    font-size: 12px;
-    line-height: 1.4;
-    box-shadow: none;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    color: #fff;
-    background-color:@blue; 
-    text-shadow: -1px 1px #231f20;
-    border: none;
-  }
-
-  #legend .legend-panel h3 {
-    display:inline-block;
-  }
-
-  .legend-data { 
-    width: 200px;
-    display: inline-block;
-    padding-top: 15px;
-    padding-left: 5px;
-  }
-
-  .legend h4 {
-    margin: 0 0 5px;
-    color: #777;
   }
 
   .floodRange, .apRange, .epRange { 
@@ -949,23 +932,87 @@ button {
    Modify as content requires.
    ========================================================================== */
 
-   @media all and (max-width: 768px) {
-
-    /* overwrite bootstrap-responsive.css */
-    body { padding:0 !important; }
-
+   @media all and (min-width: 768px) {
     #legend {
-      bottom:55px;
-      left:0;
-      width:100%;
+      position: absolute;
+      width:100%; 
+      bottom:30px;
+      right:0;
+      margin: 0;
+      padding:0;
+      max-width:400px;
+      z-index: 1048;
+      background-color: #e4e1dd;
+      border-top:1px solid #999;
+      border-color: rgba(0,0,0,.4);
+      &.active {
+        bottom:30px;
+      }
+      &:before { 
+        content: "";
+        position: absolute;
+      }
     }
 
-    #share {
-      bottom:0;
-      left:0;
-      width:100%
+
+    #legend #legend-toggle {
+      display:block;
+      height: 22px;
+      width: 130px;
+      background: @blue;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      cursor: pointer;
+      display:block;
+      margin:0 auto;
+      margin-top: -22px;
+      padding: 3px 0 0 0;
+      position:relative;
+      top:0;
+      span {
+        -webkit-transition: transform 300ms ease-in;
+        -moz-transition: transform 300ms ease-in;
+        transition: transform 300ms ease-in;
+        text-align: center;
+        display: block;
+        color: #FFF;
+        position:static;
+        transform:rotate(0deg);
+      }
     }
-  }
+
+    #legend .legend-wrapper.active {
+      max-height: 331px;
+    }
+   
+    #query.active {
+      max-height: 100px;
+      &:before {
+        content: "";
+        display:none;
+      }
+    }
+
+    #legend-toggle:after {
+      content: "Click the arrow to expand the legend.";
+      display: block;
+      font-size: 16px;
+      text-align: center;
+      white-space: nowrap;
+      position: relative;
+      right: 61px;
+      top: 13px;
+      font-weight: 300;
+    }
+
+    #legend-toggle.active:after {
+      content: ""
+    }
+
+    #legend-toggle.active span {
+      transform: rotate(180deg);
+    }
+   }
 
   @media print,
   (-o-min-device-pixel-ratio: 5/4),

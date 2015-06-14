@@ -71,8 +71,9 @@ textarea {
    ========================================================================== */
 /* Variables */
 body {
+  padding: 0 !important;
+  position: relative;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
 }
 /* My dumb hacks */
 svg.leaflet-zoom-animated {
@@ -120,63 +121,62 @@ header a:hover {
   text-decoration: none;
 }
 #header {
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8');
-  /* for IE */
-  background: #141f3d;
-  /* Old browsers */
   display: block;
-  height: 75px;
   padding: 18px;
   box-sizing: border-box;
-  position: fixed;
+  position: absolute;
   width: 100%;
+  background: #141f3d;
+  /* Old browsers */
   z-index: 1049;
   /* one less than bootstrap modal */
 }
-#header nav {
+#header .navbar.navbar-default {
   color: #FFF;
-  text-align: right;
-  padding-right: 20px;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  clear: none;
-  padding-top: 5px;
+  background-color: #141f3d;
+  /* Old browsers */
+  border: none;
 }
-#header nav a {
+#header .navbar.navbar-default .navbar-collapse {
+  border: none;
+  box-shadow: 0 0 0;
+}
+#header .navbar-brand {
   color: #FFF;
-  font-size: 19px;
+  padding: 0 15px;
+}
+#header .navbar-brand h1 {
+  margin: 0;
+}
+#header .navbar-toggle {
+  margin-top: 0;
+}
+#header nav li a {
+  color: #FFF;
+  font-size: 20px;
   margin-left: 20px;
   font-weight: 100;
   letter-spacing: 0.3px;
+  padding: 8px 0;
+  height: auto;
 }
-#header nav a:first-child {
-  margin-left: 0;
+#header #search {
+  padding: 0;
+  color: #222;
 }
-.headshot {
-  width: 200px;
-  height: 200px;
-}
-.headshot img {
-  max-width: 100%;
-}
-.logo {
-  color: white;
-  font-weight: bold;
-}
-.logo h1 {
-  margin: 0;
-}
-.logo span {
-  font-size: 18px;
-}
-#search input[type="text"],
-#search button {
+#header #search input[type="text"],
+#header #search button {
   float: left;
   height: 37px;
 }
-#search input[type="text"] {
-  width: 478px;
+#header #search input[type="text"] {
+  width: 90%;
   box-sizing: border-box;
+}
+#search input::-webkit-input-placeholder,
+#search input::-moz-placeholder,
+#search input::-ms-input-placeholder {
+  color: #A5A7A9;
 }
 .btn.btn-default {
   background-color: #B8B8BA;
@@ -192,13 +192,8 @@ header a:hover {
   background-color: #141f3d;
   color: #FFF;
 }
-#search input::-webkit-input-placeholder,
-#search input::-moz-placeholder,
-#search input::-ms-input-placeholder {
-  color: #A5A7A9;
-}
 #search button {
-  width: 50px;
+  width: 10%;
   background-color: #4c4b4a;
   color: #FAEBE2;
   border: 0;
@@ -211,9 +206,6 @@ nav a,
 button,
 input[type="text"] {
   font-size: 17px;
-}
-button {
-  font-style: italic;
 }
 /* Modal Styles */
 .fade.in.modal {
@@ -237,6 +229,13 @@ button {
 .modal-body {
   max-height: 650px;
   overflow: scroll;
+}
+.headshot {
+  width: 200px;
+  height: 200px;
+}
+.headshot img {
+  max-width: 100%;
 }
 .legend-layer-toggles {
   width: 156px;
@@ -290,7 +289,7 @@ button {
 }
 #share {
   position: absolute;
-  bottom: 10px;
+  bottom: 30px;
   width: 150px;
   margin: 0;
   padding: 0;
@@ -340,91 +339,33 @@ button {
 /* Legend Styles */
 #legend {
   position: absolute;
-  bottom: 50px;
-  width: 380px;
+  width: 50px;
+  bottom: 30px;
+  right: 20px;
   margin: 0;
   padding: 0;
-  right: 50px;
   z-index: 1048;
   background-color: #e4e1dd;
-  border: 1px solid #999;
+  border-top: 1px solid #999;
   border-color: rgba(0, 0, 0, 0.4);
+  -webkit-transition: width 300ms ease-in;
+  -moz-transition: width 300ms ease-in;
+  transition: width 300ms ease-in;
 }
-#legend .legend-wrapper {
-  font: 14px/16px Helvetica Neue, sans-serif;
-  max-height: 40px;
-  overflow: hidden;
-  -webkit-transition: max-height 300ms ease-in;
-  -moz-transition: max-height 300ms ease-in;
-  transition: max-height 300ms ease-in;
-}
-#query {
-  max-height: 31px;
-  overflow: hidden;
-  -webkit-transition: max-height 300ms ease-in;
-  -moz-transition: max-height 300ms ease-in;
-  transition: max-height 300ms ease-in;
-}
-#query:before {
-  content: "Right click on the map to see flood risks for a specific location.";
-  display: block;
-  text-align: center;
-  font-size: 12px;
-  padding: 8px 0;
-}
-#legend .legend-wrapper.active {
-  max-height: 331px;
-}
-#query.active {
-  max-height: 100px;
-}
-#query.active:before {
-  content: "";
-  display: none;
-}
-#legend-toggle {
-  height: 22px;
-  width: 130px;
-  background: #141f3d;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+#legend:before {
+  content: "+";
+  position: absolute;
+  left: 16px;
+  top: 1px;
+  font-size: 30px;
   cursor: pointer;
-  display: block;
-  margin: 0 auto;
-  margin-top: -22px;
-  padding: 3px 0 0 0;
 }
-#legend-toggle span {
-  -webkit-transition: transform 300ms ease-in;
-  -moz-transition: transform 300ms ease-in;
-  transition: transform 300ms ease-in;
-  text-align: center;
-  display: block;
-  color: #FFF;
+#legend.active {
+  width: 93%;
+  bottom: 100px;
 }
-#legend-toggle:after {
-  content: "Click the arrow to expand the legend.";
-  display: block;
-  font-size: 16px;
-  text-align: center;
-  white-space: nowrap;
-  position: relative;
-  right: 61px;
-  top: 13px;
-  font-weight: 300;
-}
-#legend-toggle.active:after {
+#legend.active:before {
   content: "";
-}
-#legend-toggle.active span {
-  transform: rotate(180deg);
-}
-.legend-wrapper,
-.legend-panel {
-  height: 100%;
-}
-.legend-panel > div {
-  padding: 10px 0;
 }
 #legend .legend-panel {
   display: block;
@@ -440,18 +381,82 @@ button {
   text-shadow: -1px 1px #231f20;
   border: none;
 }
-#legend .legend-panel h3 {
+#legend h3 {
   display: inline-block;
 }
-.legend-data {
+#legend h4 {
+  margin: 0 0 5px;
+  color: #777;
+}
+#legend .legend-data {
   width: 200px;
   display: inline-block;
   padding-top: 15px;
   padding-left: 5px;
 }
-.legend h4 {
-  margin: 0 0 5px;
-  color: #777;
+#legend #legend-toggle {
+  display: none;
+  height: 22px;
+  width: 130px;
+  background: #141f3d;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  cursor: pointer;
+  margin: -22px auto 0 auto;
+  padding: 3px 0 0 0;
+}
+#legend #legend-toggle.active {
+  display: block;
+}
+#legend #legend-toggle.active span {
+  transform: rotate(180deg);
+}
+#legend #legend-toggle span {
+  -webkit-transition: transform 300ms ease-in;
+  -moz-transition: transform 300ms ease-in;
+  transition: transform 300ms ease-in;
+  text-align: center;
+  display: block;
+  color: #FFF;
+}
+#legend .legend-wrapper {
+  font: 14px/16px Helvetica Neue, sans-serif;
+  max-height: 50px;
+  overflow: hidden;
+  -webkit-transition: max-height 300ms ease-in;
+  -moz-transition: max-height 300ms ease-in;
+  transition: max-height 300ms ease-in;
+}
+#legend .legend-wrapper.active {
+  max-height: 331px;
+}
+#query {
+  max-height: 31px;
+  overflow: hidden;
+  -webkit-transition: max-height 300ms ease-in;
+  -moz-transition: max-height 300ms ease-in;
+  transition: max-height 300ms ease-in;
+}
+#query:before {
+  content: "Right click on the map to see flood risks for a specific location.";
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  padding: 8px 0;
+}
+#query.active {
+  max-height: 100px;
+}
+#query.active:before {
+  content: "";
+  display: none;
+}
+.legend-wrapper,
+.legend-panel {
+  height: 100%;
+}
+.legend-panel > div {
+  padding: 10px 0;
 }
 .floodRange,
 .apRange,
@@ -841,20 +846,77 @@ marker#arrow {
    These examples override the primary ('mobile first') styles.
    Modify as content requires.
    ========================================================================== */
-@media all and (max-width: 768px) {
-  /* overwrite bootstrap-responsive.css */
-  body {
-    padding: 0 !important;
-  }
+@media all and (min-width: 768px) {
   #legend {
-    bottom: 55px;
-    left: 0;
+    position: absolute;
     width: 100%;
+    bottom: 30px;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    max-width: 400px;
+    z-index: 1048;
+    background-color: #e4e1dd;
+    border-top: 1px solid #999;
+    border-color: rgba(0, 0, 0, 0.4);
   }
-  #share {
-    bottom: 0;
-    left: 0;
-    width: 100%;
+  #legend.active {
+    bottom: 30px;
+  }
+  #legend:before {
+    content: "";
+    position: absolute;
+  }
+  #legend #legend-toggle {
+    height: 22px;
+    width: 130px;
+    background: #141f3d;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    margin-top: -22px;
+    padding: 3px 0 0 0;
+    position: relative;
+    top: 0;
+  }
+  #legend #legend-toggle span {
+    -webkit-transition: transform 300ms ease-in;
+    -moz-transition: transform 300ms ease-in;
+    transition: transform 300ms ease-in;
+    text-align: center;
+    display: block;
+    color: #FFF;
+    position: static;
+    transform: rotate(0deg);
+  }
+  #legend .legend-wrapper.active {
+    max-height: 331px;
+  }
+  #query.active {
+    max-height: 100px;
+  }
+  #query.active:before {
+    content: "";
+    display: none;
+  }
+  #legend-toggle:after {
+    content: "Click the arrow to expand the legend.";
+    display: block;
+    font-size: 16px;
+    text-align: center;
+    white-space: nowrap;
+    position: relative;
+    right: 61px;
+    top: 13px;
+    font-weight: 300;
+  }
+  #legend-toggle.active:after {
+    content: "";
+  }
+  #legend-toggle.active span {
+    transform: rotate(180deg);
   }
 }
 @media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
@@ -8360,6 +8422,370 @@ button.close {
     display: none !important;
   }
 }
+;/*
+	jQuery.mmenu CSS
+*/
+/*
+	jQuery.mmenu oncanvas CSS
+*/
+.mm-hidden {
+  display: none !important; }
+
+.mm-wrapper {
+  overflow-x: hidden;
+  position: relative; }
+
+.mm-menu,
+.mm-menu > .mm-panel {
+  margin: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 0; }
+
+.mm-menu {
+  background: inherit;
+  display: block;
+  overflow: hidden;
+  padding: 0; }
+
+.mm-panel {
+  -webkit-transition: -webkit-transform 0.4s ease;
+  -moz-transition: -moz-transform 0.4s ease;
+  -ms-transition: -ms-transform 0.4s ease;
+  -o-transition: -o-transform 0.4s ease;
+  transition: transform 0.4s ease;
+  -webkit-transform: translate3d(100%, 0, 0);
+  -moz-transform: translate3d(100%, 0, 0);
+  -ms-transform: translate3d(100%, 0, 0);
+  -o-transform: translate3d(100%, 0, 0);
+  transform: translate3d(100%, 0, 0); }
+  .mm-panel.mm-opened {
+    -webkit-transform: translate3d(0%, 0, 0);
+    -moz-transform: translate3d(0%, 0, 0);
+    -ms-transform: translate3d(0%, 0, 0);
+    -o-transform: translate3d(0%, 0, 0);
+    transform: translate3d(0%, 0, 0); }
+  .mm-panel.mm-subopened {
+    -webkit-transform: translate3d(-30%, 0, 0);
+    -moz-transform: translate3d(-30%, 0, 0);
+    -ms-transform: translate3d(-30%, 0, 0);
+    -o-transform: translate3d(-30%, 0, 0);
+    transform: translate3d(-30%, 0, 0); }
+  .mm-panel.mm-highest {
+    z-index: 1; }
+
+.mm-menu > .mm-panel {
+  background: inherit;
+  -webkit-overflow-scrolling: touch;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 0 20px; }
+  .mm-menu > .mm-panel.mm-hasnavbar {
+    padding-top: 40px; }
+  .mm-menu > .mm-panel:before, .mm-menu > .mm-panel:after {
+    content: '';
+    display: block;
+    height: 20px; }
+
+.mm-vertical .mm-panel {
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -o-transform: none !important;
+  transform: none !important; }
+
+.mm-vertical .mm-listview .mm-panel,
+.mm-listview .mm-vertical .mm-panel {
+  display: none;
+  padding: 10px 0 10px 10px; }
+  .mm-vertical .mm-listview .mm-panel .mm-listview > li:last-child:after,
+  .mm-listview .mm-vertical .mm-panel .mm-listview > li:last-child:after {
+    border-color: transparent; }
+
+.mm-vertical li.mm-opened > .mm-panel,
+li.mm-vertical.mm-opened > .mm-panel {
+  display: block; }
+
+.mm-vertical .mm-listview > li > .mm-next,
+.mm-listview > li.mm-vertical > .mm-next {
+  height: 40px;
+  bottom: auto; }
+  .mm-vertical .mm-listview > li > .mm-next:after,
+  .mm-listview > li.mm-vertical > .mm-next:after {
+    top: 16px;
+    bottom: auto; }
+.mm-vertical .mm-listview > li.mm-opened > .mm-next:after,
+.mm-listview > li.mm-vertical.mm-opened > .mm-next:after {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg); }
+
+.mm-navbar {
+  border-bottom: 1px solid transparent;
+  text-align: center;
+  line-height: 20px;
+  height: 40px;
+  padding: 0 40px;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+  .mm-navbar > * {
+    display: block;
+    padding: 10px 0; }
+  .mm-navbar a, .mm-navbar a:hover {
+    text-decoration: none; }
+  .mm-navbar .mm-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden; }
+  .mm-navbar .mm-btn {
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    z-index: 1; }
+    .mm-navbar .mm-btn:first-child {
+      padding-left: 20px;
+      left: 0; }
+    .mm-navbar .mm-btn:last-child {
+      padding-right: 20px;
+      right: 0; }
+
+.mm-panel .mm-navbar {
+  display: none; }
+.mm-panel.mm-hasnavbar .mm-navbar {
+  display: block; }
+
+.mm-listview,
+.mm-listview > li {
+  list-style: none;
+  display: block;
+  padding: 0;
+  margin: 0; }
+
+.mm-listview {
+  font: inherit;
+  font-size: 14px; }
+  .mm-listview a,
+  .mm-listview a:hover {
+    text-decoration: none; }
+  .mm-listview > li {
+    position: relative; }
+    .mm-listview > li > a,
+    .mm-listview > li > span {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      color: inherit;
+      line-height: 20px;
+      display: block;
+      padding: 10px 10px 10px 20px;
+      margin: 0; }
+      .mm-listview > li > a.mm-arrow,
+      .mm-listview > li > span.mm-arrow {
+        padding-right: 50px; }
+    .mm-listview > li:not(.mm-divider):after {
+      content: '';
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0; }
+    .mm-listview > li:not(.mm-divider):after {
+      left: 20px; }
+  .mm-listview .mm-next {
+    background: rgba(3, 2, 1, 0);
+    width: 50px;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2; }
+    .mm-listview .mm-next:before {
+      content: '';
+      border-left-width: 1px;
+      border-left-style: solid;
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0; }
+    .mm-listview .mm-next + a,
+    .mm-listview .mm-next + span {
+      margin-right: 50px; }
+    .mm-listview .mm-next.mm-fullsubopen {
+      width: 100%; }
+      .mm-listview .mm-next.mm-fullsubopen:before {
+        border-left: none; }
+      .mm-listview .mm-next.mm-fullsubopen + a,
+      .mm-listview .mm-next.mm-fullsubopen + span {
+        padding-right: 50px;
+        margin-right: 0; }
+
+.mm-menu > .mm-panel > .mm-listview {
+  margin-left: -20px;
+  margin-right: -20px; }
+  .mm-menu > .mm-panel > .mm-listview.mm-first {
+    margin-top: -20px; }
+  .mm-menu > .mm-panel > .mm-listview.mm-last {
+    padding-bottom: 20px; }
+
+.mm-prev:before,
+.mm-next:after,
+.mm-arrow:after {
+  content: '';
+  border: 2px solid transparent;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg); }
+
+.mm-prev:before {
+  border-right: none;
+  border-bottom: none;
+  left: 20px; }
+
+.mm-next:after,
+.mm-arrow:after {
+  border-top: none;
+  border-left: none;
+  right: 20px; }
+
+.mm-divider {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 10px;
+  text-transform: uppercase;
+  text-indent: 20px;
+  line-height: 25px; }
+
+.mm-listview > li.mm-spacer {
+  padding-top: 40px; }
+  .mm-listview > li.mm-spacer > .mm-next {
+    top: 40px; }
+  .mm-listview > li.mm-spacer.mm-divider {
+    padding-top: 25px; }
+
+.mm-menu {
+  background: #f3f3f3;
+  color: rgba(0, 0, 0, 0.7); }
+  .mm-menu .mm-navbar {
+    border-color: rgba(0, 0, 0, 0.1); }
+    .mm-menu .mm-navbar > *,
+    .mm-menu .mm-navbar a {
+      color: rgba(0, 0, 0, 0.3); }
+    .mm-menu .mm-navbar .mm-btn:before,
+    .mm-menu .mm-navbar .mm-btn:after {
+      border-color: rgba(0, 0, 0, 0.3); }
+  .mm-menu .mm-listview > li:after {
+    border-color: rgba(0, 0, 0, 0.1); }
+  .mm-menu .mm-listview > li .mm-prev:before,
+  .mm-menu .mm-listview > li .mm-next:after,
+  .mm-menu .mm-listview > li .mm-arrow:after {
+    border-color: rgba(0, 0, 0, 0.3); }
+  .mm-menu .mm-listview > li .mm-prev:after,
+  .mm-menu .mm-listview > li .mm-next:before {
+    border-color: rgba(0, 0, 0, 0.1); }
+  .mm-menu .mm-listview > li.mm-selected > a:not(.mm-next),
+  .mm-menu .mm-listview > li.mm-selected > span {
+    background: rgba(255, 255, 255, 0.5); }
+  .mm-menu.mm-vertical .mm-listview li.mm-opened > a.mm-next,
+  .mm-menu.mm-vertical .mm-listview li.mm-opened > .mm-panel,
+  .mm-menu .mm-listview li.mm-opened.mm-vertical > a.mm-next,
+  .mm-menu .mm-listview li.mm-opened.mm-vertical > .mm-panel {
+    background: rgba(0, 0, 0, 0.05); }
+  .mm-menu .mm-divider {
+    background: rgba(0, 0, 0, 0.05); }
+
+/*
+	jQuery.mmenu offcanvas addon CSS
+*/
+.mm-page {
+  box-sizing: border-box;
+  position: relative; }
+
+.mm-slideout {
+  -webkit-transition: -webkit-transform 0.4s ease;
+  -ms-transition: -ms-transform 0.4s ease;
+  transition: transform 0.4s ease; }
+
+html.mm-opened {
+  overflow: hidden;
+  position: relative; }
+  html.mm-opened body {
+    overflow: hidden; }
+
+html.mm-background .mm-page {
+  background: inherit; }
+
+#mm-blocker {
+  background: rgba(3, 2, 1, 0);
+  display: none;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999999; }
+
+html.mm-opened #mm-blocker,
+html.mm-blocking #mm-blocker {
+  display: block; }
+
+.mm-menu.mm-offcanvas {
+  display: none;
+  position: fixed; }
+.mm-menu.mm-current {
+  display: block; }
+
+.mm-menu {
+  width: 80%;
+  min-width: 140px;
+  max-width: 440px; }
+
+html.mm-opening .mm-slideout {
+  -webkit-transform: translate(80%, 0);
+  -moz-transform: translate(80%, 0);
+  -ms-transform: translate(80%, 0);
+  -o-transform: translate(80%, 0);
+  transform: translate(80%, 0); }
+
+@media all and (max-width: 175px) {
+  html.mm-opening .mm-slideout {
+    -webkit-transform: translate(140px, 0);
+    -moz-transform: translate(140px, 0);
+    -ms-transform: translate(140px, 0);
+    -o-transform: translate(140px, 0);
+    transform: translate(140px, 0); } }
+@media all and (min-width: 550px) {
+  html.mm-opening .mm-slideout {
+    -webkit-transform: translate(440px, 0);
+    -moz-transform: translate(440px, 0);
+    -ms-transform: translate(440px, 0);
+    -o-transform: translate(440px, 0);
+    transform: translate(440px, 0); } }
 ;/* required styles */
 
 .leaflet-map-pane,

@@ -8256,17 +8256,14 @@ module.exports = leafletPip;
     LegendView = app.LegendView = Backbone.View.extend({
       template: "#legendTemplate",
       events: {
-        "click #legend": function(e) {
-          return e.stopPropagation();
-        },
         "click #legend-toggle": function(e) {
           if ($('.legend-wrapper').hasClass('active')) {
             $('.legend-wrapper').addClass('invisible');
             return setTimeout(function() {
-              return $('.legend-wrapper, #legend-toggle').removeClass('active');
+              return $('.legend-wrapper, #legend-toggle, #legend').removeClass('active');
             }, 1);
           } else {
-            $('.legend-wrapper, #legend-toggle').addClass('active');
+            $('.legend-wrapper, #legend-toggle, #legend').addClass('active');
             return setTimeout(function() {
               return $('.legend-wrapper').removeClass('invisible');
             }, 150);
@@ -8330,6 +8327,16 @@ module.exports = leafletPip;
         self.$el.find(".apRange").append("<div class='ap-arrow'></div>");
         self.$el.find(".apRange").append("<span class='ap-text'>Increasing Average Precipitation</span>");
         self.$el.appendTo(layout.$el.find('#legend'));
+        $('#legend').on("click", function(e) {
+          if ($('#legend').hasClass('active')) {
+
+          } else {
+            $('.legend-wrapper, #legend-toggle, #legend').addClass('active');
+            return setTimeout(function() {
+              return $('.legend-wrapper').removeClass('invisible');
+            }, 150);
+          }
+        });
         if ($.cookie('welcomed')) {
           $('#floods-switch').prop('checked', true);
           $('#apLayer-switch').prop('checked', true);

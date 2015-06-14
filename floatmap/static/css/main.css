@@ -71,8 +71,9 @@ textarea {
    ========================================================================== */
 /* Variables */
 body {
+  padding: 0 !important;
+  position: relative;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
 }
 /* My dumb hacks */
 svg.leaflet-zoom-animated {
@@ -120,63 +121,62 @@ header a:hover {
   text-decoration: none;
 }
 #header {
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#64A7DC', endColorstr='##60A0D8');
-  /* for IE */
-  background: #141f3d;
-  /* Old browsers */
   display: block;
-  height: 75px;
   padding: 18px;
   box-sizing: border-box;
-  position: fixed;
+  position: absolute;
   width: 100%;
+  background: #141f3d;
+  /* Old browsers */
   z-index: 1049;
   /* one less than bootstrap modal */
 }
-#header nav {
+#header .navbar.navbar-default {
   color: #FFF;
-  text-align: right;
-  padding-right: 20px;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  clear: none;
-  padding-top: 5px;
+  background-color: #141f3d;
+  /* Old browsers */
+  border: none;
 }
-#header nav a {
+#header .navbar.navbar-default .navbar-collapse {
+  border: none;
+  box-shadow: 0 0 0;
+}
+#header .navbar-brand {
   color: #FFF;
-  font-size: 19px;
+  padding: 0 15px;
+}
+#header .navbar-brand h1 {
+  margin: 0;
+}
+#header .navbar-toggle {
+  margin-top: 0;
+}
+#header nav li a {
+  color: #FFF;
+  font-size: 20px;
   margin-left: 20px;
   font-weight: 100;
   letter-spacing: 0.3px;
+  padding: 8px 0;
+  height: auto;
 }
-#header nav a:first-child {
-  margin-left: 0;
+#header #search {
+  padding: 0;
+  color: #222;
 }
-.headshot {
-  width: 200px;
-  height: 200px;
-}
-.headshot img {
-  max-width: 100%;
-}
-.logo {
-  color: white;
-  font-weight: bold;
-}
-.logo h1 {
-  margin: 0;
-}
-.logo span {
-  font-size: 18px;
-}
-#search input[type="text"],
-#search button {
+#header #search input[type="text"],
+#header #search button {
   float: left;
   height: 37px;
 }
-#search input[type="text"] {
-  width: 478px;
+#header #search input[type="text"] {
+  width: 90%;
   box-sizing: border-box;
+}
+#search input::-webkit-input-placeholder,
+#search input::-moz-placeholder,
+#search input::-ms-input-placeholder {
+  color: #A5A7A9;
 }
 .btn.btn-default {
   background-color: #B8B8BA;
@@ -192,13 +192,8 @@ header a:hover {
   background-color: #141f3d;
   color: #FFF;
 }
-#search input::-webkit-input-placeholder,
-#search input::-moz-placeholder,
-#search input::-ms-input-placeholder {
-  color: #A5A7A9;
-}
 #search button {
-  width: 50px;
+  width: 10%;
   background-color: #4c4b4a;
   color: #FAEBE2;
   border: 0;
@@ -211,9 +206,6 @@ nav a,
 button,
 input[type="text"] {
   font-size: 17px;
-}
-button {
-  font-style: italic;
 }
 /* Modal Styles */
 .fade.in.modal {
@@ -237,6 +229,13 @@ button {
 .modal-body {
   max-height: 650px;
   overflow: scroll;
+}
+.headshot {
+  width: 200px;
+  height: 200px;
+}
+.headshot img {
+  max-width: 100%;
 }
 .legend-layer-toggles {
   width: 156px;
@@ -290,7 +289,7 @@ button {
 }
 #share {
   position: absolute;
-  bottom: 10px;
+  bottom: 30px;
   width: 150px;
   margin: 0;
   padding: 0;
@@ -340,91 +339,33 @@ button {
 /* Legend Styles */
 #legend {
   position: absolute;
-  bottom: 50px;
-  width: 380px;
+  width: 50px;
+  bottom: 30px;
+  right: 20px;
   margin: 0;
   padding: 0;
-  right: 50px;
   z-index: 1048;
   background-color: #e4e1dd;
-  border: 1px solid #999;
+  border-top: 1px solid #999;
   border-color: rgba(0, 0, 0, 0.4);
+  -webkit-transition: width 300ms ease-in;
+  -moz-transition: width 300ms ease-in;
+  transition: width 300ms ease-in;
 }
-#legend .legend-wrapper {
-  font: 14px/16px Helvetica Neue, sans-serif;
-  max-height: 40px;
-  overflow: hidden;
-  -webkit-transition: max-height 300ms ease-in;
-  -moz-transition: max-height 300ms ease-in;
-  transition: max-height 300ms ease-in;
-}
-#query {
-  max-height: 31px;
-  overflow: hidden;
-  -webkit-transition: max-height 300ms ease-in;
-  -moz-transition: max-height 300ms ease-in;
-  transition: max-height 300ms ease-in;
-}
-#query:before {
-  content: "Right click on the map to see flood risks for a specific location.";
-  display: block;
-  text-align: center;
-  font-size: 12px;
-  padding: 8px 0;
-}
-#legend .legend-wrapper.active {
-  max-height: 331px;
-}
-#query.active {
-  max-height: 100px;
-}
-#query.active:before {
-  content: "";
-  display: none;
-}
-#legend-toggle {
-  height: 22px;
-  width: 130px;
-  background: #141f3d;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+#legend:before {
+  content: "+";
+  position: absolute;
+  left: 16px;
+  top: 1px;
+  font-size: 30px;
   cursor: pointer;
-  display: block;
-  margin: 0 auto;
-  margin-top: -22px;
-  padding: 3px 0 0 0;
 }
-#legend-toggle span {
-  -webkit-transition: transform 300ms ease-in;
-  -moz-transition: transform 300ms ease-in;
-  transition: transform 300ms ease-in;
-  text-align: center;
-  display: block;
-  color: #FFF;
+#legend.active {
+  width: 93%;
+  bottom: 100px;
 }
-#legend-toggle:after {
-  content: "Click the arrow to expand the legend.";
-  display: block;
-  font-size: 16px;
-  text-align: center;
-  white-space: nowrap;
-  position: relative;
-  right: 61px;
-  top: 13px;
-  font-weight: 300;
-}
-#legend-toggle.active:after {
+#legend.active:before {
   content: "";
-}
-#legend-toggle.active span {
-  transform: rotate(180deg);
-}
-.legend-wrapper,
-.legend-panel {
-  height: 100%;
-}
-.legend-panel > div {
-  padding: 10px 0;
 }
 #legend .legend-panel {
   display: block;
@@ -440,18 +381,82 @@ button {
   text-shadow: -1px 1px #231f20;
   border: none;
 }
-#legend .legend-panel h3 {
+#legend h3 {
   display: inline-block;
 }
-.legend-data {
+#legend h4 {
+  margin: 0 0 5px;
+  color: #777;
+}
+#legend .legend-data {
   width: 200px;
   display: inline-block;
   padding-top: 15px;
   padding-left: 5px;
 }
-.legend h4 {
-  margin: 0 0 5px;
-  color: #777;
+#legend #legend-toggle {
+  display: none;
+  height: 22px;
+  width: 130px;
+  background: #141f3d;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  cursor: pointer;
+  margin: -22px auto 0 auto;
+  padding: 3px 0 0 0;
+}
+#legend #legend-toggle.active {
+  display: block;
+}
+#legend #legend-toggle.active span {
+  transform: rotate(180deg);
+}
+#legend #legend-toggle span {
+  -webkit-transition: transform 300ms ease-in;
+  -moz-transition: transform 300ms ease-in;
+  transition: transform 300ms ease-in;
+  text-align: center;
+  display: block;
+  color: #FFF;
+}
+#legend .legend-wrapper {
+  font: 14px/16px Helvetica Neue, sans-serif;
+  max-height: 50px;
+  overflow: hidden;
+  -webkit-transition: max-height 300ms ease-in;
+  -moz-transition: max-height 300ms ease-in;
+  transition: max-height 300ms ease-in;
+}
+#legend .legend-wrapper.active {
+  max-height: 331px;
+}
+#query {
+  max-height: 31px;
+  overflow: hidden;
+  -webkit-transition: max-height 300ms ease-in;
+  -moz-transition: max-height 300ms ease-in;
+  transition: max-height 300ms ease-in;
+}
+#query:before {
+  content: "Right click on the map to see flood risks for a specific location.";
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  padding: 8px 0;
+}
+#query.active {
+  max-height: 100px;
+}
+#query.active:before {
+  content: "";
+  display: none;
+}
+.legend-wrapper,
+.legend-panel {
+  height: 100%;
+}
+.legend-panel > div {
+  padding: 10px 0;
 }
 .floodRange,
 .apRange,
@@ -841,20 +846,77 @@ marker#arrow {
    These examples override the primary ('mobile first') styles.
    Modify as content requires.
    ========================================================================== */
-@media all and (max-width: 768px) {
-  /* overwrite bootstrap-responsive.css */
-  body {
-    padding: 0 !important;
-  }
+@media all and (min-width: 768px) {
   #legend {
-    bottom: 55px;
-    left: 0;
+    position: absolute;
     width: 100%;
+    bottom: 30px;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    max-width: 400px;
+    z-index: 1048;
+    background-color: #e4e1dd;
+    border-top: 1px solid #999;
+    border-color: rgba(0, 0, 0, 0.4);
   }
-  #share {
-    bottom: 0;
-    left: 0;
-    width: 100%;
+  #legend.active {
+    bottom: 30px;
+  }
+  #legend:before {
+    content: "";
+    position: absolute;
+  }
+  #legend #legend-toggle {
+    height: 22px;
+    width: 130px;
+    background: #141f3d;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    margin-top: -22px;
+    padding: 3px 0 0 0;
+    position: relative;
+    top: 0;
+  }
+  #legend #legend-toggle span {
+    -webkit-transition: transform 300ms ease-in;
+    -moz-transition: transform 300ms ease-in;
+    transition: transform 300ms ease-in;
+    text-align: center;
+    display: block;
+    color: #FFF;
+    position: static;
+    transform: rotate(0deg);
+  }
+  #legend .legend-wrapper.active {
+    max-height: 331px;
+  }
+  #query.active {
+    max-height: 100px;
+  }
+  #query.active:before {
+    content: "";
+    display: none;
+  }
+  #legend-toggle:after {
+    content: "Click the arrow to expand the legend.";
+    display: block;
+    font-size: 16px;
+    text-align: center;
+    white-space: nowrap;
+    position: relative;
+    right: 61px;
+    top: 13px;
+    font-weight: 300;
+  }
+  #legend-toggle.active:after {
+    content: "";
+  }
+  #legend-toggle.active span {
+    transform: rotate(180deg);
   }
 }
 @media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {

@@ -168,6 +168,7 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
     color:#FFF;
     background-color: @blue; /* Old browsers */
     border:none;
+    margin:0;
     .navbar-collapse {
       border:none;
       box-shadow:0 0 0;
@@ -937,7 +938,7 @@ input[type="text"] {
       position: absolute;
       width:100%; 
       bottom:30px;
-      right:0;
+      right:20px;
       margin: 0;
       padding:0;
       max-width:400px;
@@ -1011,6 +1012,10 @@ input[type="text"] {
 
     #legend-toggle.active span {
       transform: rotate(180deg);
+    }
+
+    #search input[type="text"] {
+      width:100%;
     }
    }
 

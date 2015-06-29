@@ -282,7 +282,8 @@ input[type="text"] {
 }
 
 .legend-layer-toggles { 
-  width: 156px;
+  max-width: 156px;
+  width:30%;
   display: inline-block;
   vertical-align: top;
   padding: 15px 8px 16px 8px;
@@ -293,7 +294,8 @@ input[type="text"] {
 
 .legend-layer-toggles > div {
   display: block;
-  width: 141px;
+  width:100%;
+  max-width: 141px;
   vertical-align: top;
   height:81px;
   &:last-child { 
@@ -303,7 +305,7 @@ input[type="text"] {
 
 .legend-layer-toggles label {
   font-weight: 400;
-  font-size: 13px;
+  font-size: 10px;
 }
 
 
@@ -440,7 +442,7 @@ input[type="text"] {
       color: #777;
     }
     .legend-data { 
-      width: 200px;
+      width: 66%;
       display: inline-block;
       padding-top: 15px;
       padding-left: 5px;
@@ -513,6 +515,7 @@ input[type="text"] {
   }
 
   .floodRange, .apRange, .epRange { 
+    width:100%;
     margin:0;
     padding:0;
     height:100%;
@@ -591,12 +594,12 @@ input[type="text"] {
     display: inline-block;
     vertical-align: top;
     height: 12px;
-    width: 15px;
+    width:7.6%;
   }
 
   .ap-values div i {
-    width: 15px;
-    height: 16px;
+    width:100%;
+    height: 15px;
     display: inline-block;
     opacity: 0.4;
   }
@@ -614,7 +617,7 @@ input[type="text"] {
   .ap-values { 
     display: inline-block;
     vertical-align: top;
-    width: 200px;
+    width:100%;
   }
 
   .apRange > div.ap-arrow{
@@ -622,7 +625,7 @@ input[type="text"] {
     font-size: 11px;
     width: 1px;
     display: inline-block;
-    width: 190px;
+    width:100%;
     margin-top: 17px;
   }
 
@@ -726,6 +729,7 @@ input[type="text"] {
 }
 
 :root input[type="checkbox"].ios-switch:checked + div {
+  font-size:17px;
   padding-left: 2em;
   background-position: 0 0;
   margin-top:3px;

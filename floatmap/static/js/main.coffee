@@ -13,6 +13,11 @@ Query = Backbone.Model.extend
 
 $ ->
 
+  defaultIcon = L.icon
+    iconUrl: 'static/img/marker-icon.png'
+    shadowUrl: 'static/img/marker-shadow.png'
+  
+
   # App namespace
   app = window.app = ( window.app || {} )
 
@@ -84,6 +89,9 @@ $ ->
       g.geocode { address: address }, (results, status) ->
         latLng = [ results[0].geometry.location.lat(), results[0].geometry.location.lng() ]
         app.layout.views['map'].setAddress(latLng, 15)
+        if app.map.marker
+          app.map.removeLayer(app.map.marker)
+        marker = app.map.marker = L.marker(latLng, { icon: defaultIcon }).addTo(app.map)
 
     events: 
       "submit #search": (e) ->
@@ -221,7 +229,7 @@ This information comes from the Federal Emergency Management Administration (201
             app.layout.views['map'].setAddress(latlng, 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
-            marker = app.map.marker = L.marker(latlng).addTo(app.map)
+            marker = app.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(app.map)
             tour.next()
         , 
           text: 'Stop Tour'
@@ -241,7 +249,7 @@ This information comes from the Federal Emergency Management Administration (201
             app.layout.views['map'].setAddress(latlng, 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
-            marker = app.map.marker = L.marker(latlng).addTo(app.map)
+            marker = app.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(app.map)
             tour.next()
         , 
           text: 'Stop Tour'
@@ -259,7 +267,7 @@ This information comes from the Federal Emergency Management Administration (201
             app.layout.views['map'].setAddress([42.73591782230738, -84.48997020721437], 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
-            marker = app.map.marker = L.marker(latlng).addTo(app.map)
+            marker = app.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(app.map)
             tour.next()
         , 
           text: 'Stop Tour'
@@ -277,7 +285,7 @@ This information comes from the Federal Emergency Management Administration (201
             app.layout.views['map'].setAddress([41.7348457153312, -90.310], 13)
             if app.map.marker
               app.map.removeLayer(app.map.marker)
-            marker = app.map.marker = L.marker(latlng).addTo(app.map)
+            marker = app.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(app.map)
             
             tour.next()
         , 

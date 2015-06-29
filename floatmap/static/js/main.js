@@ -18,7 +18,11 @@
   });
 
   $(function() {
-    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, ShareView, WelcomeView, app, layout;
+    var DataTourView, FloatLayout, HeaderView, LegendView, MapView, QueryView, ShareView, WelcomeView, app, defaultIcon, layout;
+    defaultIcon = L.icon({
+      iconUrl: 'static/img/marker-icon.png',
+      shadowUrl: 'static/img/marker-shadow.png'
+    });
     app = window.app = window.app || {};
     app.getPattern = function(type, d) {
       var pattern;
@@ -82,9 +86,15 @@
         return g.geocode({
           address: address
         }, function(results, status) {
-          var latLng;
+          var latLng, marker;
           latLng = [results[0].geometry.location.lat(), results[0].geometry.location.lng()];
-          return app.layout.views['map'].setAddress(latLng, 15);
+          app.layout.views['map'].setAddress(latLng, 15);
+          if (app.map.marker) {
+            app.map.removeLayer(app.map.marker);
+          }
+          return marker = app.map.marker = L.marker(latLng, {
+            icon: defaultIcon
+          }).addTo(app.map);
         });
       },
       events: {
@@ -227,7 +237,9 @@
                 if (app.map.marker) {
                   app.map.removeLayer(app.map.marker);
                 }
-                marker = app.map.marker = L.marker(latlng).addTo(app.map);
+                marker = app.map.marker = L.marker(latlng, {
+                  icon: defaultIcon
+                }).addTo(app.map);
                 return tour.next();
               }
             }, {
@@ -250,7 +262,9 @@
                 if (app.map.marker) {
                   app.map.removeLayer(app.map.marker);
                 }
-                marker = app.map.marker = L.marker(latlng).addTo(app.map);
+                marker = app.map.marker = L.marker(latlng, {
+                  icon: defaultIcon
+                }).addTo(app.map);
                 return tour.next();
               }
             }, {
@@ -273,7 +287,9 @@
                 if (app.map.marker) {
                   app.map.removeLayer(app.map.marker);
                 }
-                marker = app.map.marker = L.marker(latlng).addTo(app.map);
+                marker = app.map.marker = L.marker(latlng, {
+                  icon: defaultIcon
+                }).addTo(app.map);
                 return tour.next();
               }
             }, {
@@ -296,7 +312,9 @@
                 if (app.map.marker) {
                   app.map.removeLayer(app.map.marker);
                 }
-                marker = app.map.marker = L.marker(latlng).addTo(app.map);
+                marker = app.map.marker = L.marker(latlng, {
+                  icon: defaultIcon
+                }).addTo(app.map);
                 return tour.next();
               }
             }, {

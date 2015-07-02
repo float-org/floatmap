@@ -172,6 +172,12 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
     .navbar-collapse {
       border:none;
       box-shadow:0 0 0;
+      form {
+        margin:10px 0;
+      }
+      .nav.navbar-nav.navbar-right {
+        clear:both;
+      }
     }
   }
   .navbar-brand {
@@ -191,7 +197,8 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
     padding:8px 0;
     height:auto;
   }
-  #search {
+  #search,
+  #searchMobile {
     padding:0;
     color:#222;
     input[type="text"],
@@ -208,7 +215,10 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 
 #search input::-webkit-input-placeholder,
 #search input::-moz-placeholder,
-#search input::-ms-input-placeholder {
+#search input::-ms-input-placeholder
+#searchMobile input::-webkit-input-placeholder,
+#searchMobile input::-moz-placeholder,
+#searchMobile input::-ms-input-placeholder {
   color: #A5A7A9;
 }
 
@@ -230,15 +240,13 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
 
 
 
-#search button {
+#search button,
+#searchMobile button, {
   width:10%;
   background-color:@darkGrey;
   color:#FAEBE2;
   border:0;
   top: 0;
-}
-
-#search button {
   font-size:17px;
 }
 
@@ -286,8 +294,7 @@ input[type="text"] {
   width:30%;
   display: inline-block;
   vertical-align: top;
-  padding: 15px 8px 16px 8px;
-  min-height: 266px;
+  padding: 10px 8px 16px 8px;
   background: #4c4b4a;
   color: #FAEBE2;
 }
@@ -297,7 +304,7 @@ input[type="text"] {
   width:100%;
   max-width: 141px;
   vertical-align: top;
-  height:81px;
+  height:63px;
   &:last-child { 
     height:58px;
   }
@@ -323,18 +330,17 @@ input[type="text"] {
 
 
   #queryContent {
-    padding: 10px 6px;
-    h4 { font-size: 15px; margin: 0; }
+    padding: 7px 6px;
+    h4 { font-size: 12px; margin: 0; }
     .metrics {
       list-style: none;
       margin: 0;
-      padding-top: 8px;
       padding-left: 0;
       li {
-        font-size: 21px;
+        font-size: 15px;
         text-align: left;
         font-weight: 200;
-        line-height: 26px;
+        line-height: 20px;
       }
     }
   }
@@ -415,7 +421,9 @@ input[type="text"] {
       cursor: pointer;
     }
     &.active {
-      width:93%; bottom:100px;
+      width:93%; 
+      bottom:100px; 
+      max-width:320px;
       &:before { 
         content:"";
       }
@@ -444,8 +452,8 @@ input[type="text"] {
     .legend-data { 
       width: 66%;
       display: inline-block;
-      padding-top: 15px;
-      padding-left: 5px;
+      padding-top: 10px;
+      padding-left:0;
     }
     #legend-toggle {
       display:none;
@@ -480,13 +488,13 @@ input[type="text"] {
       -moz-transition: max-height 300ms ease-in;
       transition: max-height 300ms ease-in;
       &.active {
-        max-height:331px;
+        max-height:261px;
       }
     }
   }
   
   #query {
-    max-height: 31px;
+    max-height: 50px;
     overflow:hidden;
     -webkit-transition: max-height 300ms ease-in;
     -moz-transition: max-height 300ms ease-in;
@@ -501,7 +509,7 @@ input[type="text"] {
   }
  
   #query.active {
-    max-height: 100px;
+    max-height: 70px;
     &:before {
       content: "";
       display:none;
@@ -523,7 +531,7 @@ input[type="text"] {
     font-size:11px;
     display:inline-block;
     vertical-align: top;
-    height:87px;
+    height:69px;
   }
 
   .floodRange { 
@@ -937,7 +945,25 @@ input[type="text"] {
    Modify as content requires.
    ========================================================================== */
 
+   @media all and (min-width: 380px) {
+    #query {
+      max-height:45px;
+    }
+    #query.active {
+      max-height: 100px;
+    }
+   }
+
    @media all and (min-width: 768px) {
+
+    #searchMobile { 
+      display:none;
+    }
+
+    #header .navbar.navbar-default .navbar-collapse .nav.navbar-nav.navbar-right {
+      clear:none;
+    }
+
     #legend {
       position: absolute;
       width:100%; 
@@ -945,7 +971,7 @@ input[type="text"] {
       right:20px;
       margin: 0;
       padding:0;
-      max-width:400px;
+      max-width:320px;
       z-index: 1048;
       background-color: #e4e1dd;
       border-top:1px solid #999;
@@ -957,8 +983,54 @@ input[type="text"] {
         content: "";
         position: absolute;
       }
+      .legend-data {
+        width:63%;
+        padding-left:5px;
+      }
     }
 
+    .floodRange, .apRange, .epRange { 
+      width:100%;
+      margin:0;
+      padding:0;
+      height:100%;
+      list-style-type:none;
+      font-size:11px;
+      display:inline-block;
+      vertical-align: top;
+      height:87px;
+    }
+
+    .legend-layer-toggles { 
+      max-width: 156px;
+      width:33%;
+      display: inline-block;
+      vertical-align: top;
+      padding: 15px 8px 16px 8px;
+      min-height: 276px;
+      background: #4c4b4a;
+      color: #FAEBE2;
+    }
+
+    :root input[type="checkbox"].ios-switch:checked + div {
+      font-size: 20px;
+    }
+
+    .legend-layer-toggles label {
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    .legend-layer-toggles > div {
+      display: block;
+      width:100%;
+      max-width: 141px;
+      vertical-align: top;
+      height:81px;
+      &:last-child { 
+        height:58px;
+      }
+    }
 
     #legend #legend-toggle {
       display:block;
@@ -969,6 +1041,7 @@ input[type="text"] {
       border-top-right-radius: 3px;
       cursor: pointer;
       display:block;
+      font-size:15px;
       margin:0 auto;
       margin-top: -22px;
       padding: 3px 0 0 0;
@@ -998,6 +1071,24 @@ input[type="text"] {
       }
     }
 
+  
+    #queryContent {
+      padding: 10px 6px;
+      h4 { font-size: 15px; margin: 0; }
+      .metrics {
+        list-style: none;
+        margin: 0;
+        padding-top: 8px;
+        padding-left: 0;
+        li {
+          font-size: 21px;
+          text-align: left;
+          font-weight: 200;
+          line-height: 26px;
+        }
+      }
+    }
+
     #legend-toggle:after {
       content: "Click the arrow to expand the legend.";
       display: block;
@@ -1018,7 +1109,8 @@ input[type="text"] {
       transform: rotate(180deg);
     }
 
-    #search input[type="text"] {
+    #search input[type="text"],
+    #searchButton input[type="text"]  {
       width:100%;
     }
    }

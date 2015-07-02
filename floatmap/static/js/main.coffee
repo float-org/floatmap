@@ -92,9 +92,16 @@ $ ->
         if app.map.marker
           app.map.removeLayer(app.map.marker)
         marker = app.map.marker = L.marker(latLng, { icon: defaultIcon }).addTo(app.map)
+        if $("button.navbar-toggle").is(":visible")
+           $("button.navbar-toggle").trigger("click")
 
     events: 
       "submit #search": (e) ->
+        e.preventDefault()
+        address = $(e.target).find('.search-input').val()
+        this.getAddress address
+
+      "submit #searchMobile": (e) ->
         e.preventDefault()
         address = $(e.target).find('.search-input').val()
         this.getAddress address

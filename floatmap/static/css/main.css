@@ -142,6 +142,12 @@ header a:hover {
   border: none;
   box-shadow: 0 0 0;
 }
+#header .navbar.navbar-default .navbar-collapse form {
+  margin: 10px 0;
+}
+#header .navbar.navbar-default .navbar-collapse .nav.navbar-nav.navbar-right {
+  clear: both;
+}
 #header .navbar-brand {
   color: #FFF;
   padding: 0 15px;
@@ -161,22 +167,28 @@ header a:hover {
   padding: 8px 0;
   height: auto;
 }
-#header #search {
+#header #search,
+#header #searchMobile {
   padding: 0;
   color: #222;
 }
 #header #search input[type="text"],
-#header #search button {
+#header #searchMobile input[type="text"],
+#header #search button,
+#header #searchMobile button {
   float: left;
   height: 37px;
 }
-#header #search input[type="text"] {
+#header #search input[type="text"],
+#header #searchMobile input[type="text"] {
   width: 90%;
   box-sizing: border-box;
 }
 #search input::-webkit-input-placeholder,
 #search input::-moz-placeholder,
-#search input::-ms-input-placeholder {
+#search input::-ms-input-placeholder #searchMobile input::-webkit-input-placeholder,
+#searchMobile input::-moz-placeholder,
+#searchMobile input::-ms-input-placeholder {
   color: #A5A7A9;
 }
 .btn.btn-default {
@@ -193,14 +205,13 @@ header a:hover {
   background-color: #141f3d;
   color: #FFF;
 }
-#search button {
+#search button,
+#searchMobile button {
   width: 10%;
   background-color: #4c4b4a;
   color: #FAEBE2;
   border: 0;
   top: 0;
-}
-#search button {
   font-size: 17px;
 }
 nav a,
@@ -243,8 +254,7 @@ input[type="text"] {
   width: 30%;
   display: inline-block;
   vertical-align: top;
-  padding: 15px 8px 16px 8px;
-  min-height: 266px;
+  padding: 10px 8px 16px 8px;
   background: #4c4b4a;
   color: #FAEBE2;
 }
@@ -253,7 +263,7 @@ input[type="text"] {
   width: 100%;
   max-width: 141px;
   vertical-align: top;
-  height: 81px;
+  height: 63px;
 }
 .legend-layer-toggles > div:last-child {
   height: 58px;
@@ -272,23 +282,22 @@ input[type="text"] {
 }
 /* Query Styles */
 #queryContent {
-  padding: 10px 6px;
+  padding: 7px 6px;
 }
 #queryContent h4 {
-  font-size: 15px;
+  font-size: 12px;
   margin: 0;
 }
 #queryContent .metrics {
   list-style: none;
   margin: 0;
-  padding-top: 8px;
   padding-left: 0;
 }
 #queryContent .metrics li {
-  font-size: 21px;
+  font-size: 15px;
   text-align: left;
   font-weight: 200;
-  line-height: 26px;
+  line-height: 20px;
 }
 #share {
   position: absolute;
@@ -366,6 +375,7 @@ input[type="text"] {
 #legend.active {
   width: 93%;
   bottom: 100px;
+  max-width: 320px;
 }
 #legend.active:before {
   content: "";
@@ -394,8 +404,8 @@ input[type="text"] {
 #legend .legend-data {
   width: 66%;
   display: inline-block;
-  padding-top: 15px;
-  padding-left: 5px;
+  padding-top: 10px;
+  padding-left: 0;
 }
 #legend #legend-toggle {
   display: none;
@@ -431,10 +441,10 @@ input[type="text"] {
   transition: max-height 300ms ease-in;
 }
 #legend .legend-wrapper.active {
-  max-height: 331px;
+  max-height: 261px;
 }
 #query {
-  max-height: 31px;
+  max-height: 50px;
   overflow: hidden;
   -webkit-transition: max-height 300ms ease-in;
   -moz-transition: max-height 300ms ease-in;
@@ -448,7 +458,7 @@ input[type="text"] {
   padding: 8px 0;
 }
 #query.active {
-  max-height: 100px;
+  max-height: 70px;
 }
 #query.active:before {
   content: "";
@@ -472,7 +482,7 @@ input[type="text"] {
   font-size: 11px;
   display: inline-block;
   vertical-align: top;
-  height: 87px;
+  height: 69px;
 }
 .floodRange {
   margin-top: -4px;
@@ -851,7 +861,21 @@ marker#arrow {
    These examples override the primary ('mobile first') styles.
    Modify as content requires.
    ========================================================================== */
+@media all and (min-width: 380px) {
+  #query {
+    max-height: 45px;
+  }
+  #query.active {
+    max-height: 100px;
+  }
+}
 @media all and (min-width: 768px) {
+  #searchMobile {
+    display: none;
+  }
+  #header .navbar.navbar-default .navbar-collapse .nav.navbar-nav.navbar-right {
+    clear: none;
+  }
   #legend {
     position: absolute;
     width: 100%;
@@ -859,7 +883,7 @@ marker#arrow {
     right: 20px;
     margin: 0;
     padding: 0;
-    max-width: 400px;
+    max-width: 320px;
     z-index: 1048;
     background-color: #e4e1dd;
     border-top: 1px solid #999;
@@ -872,6 +896,50 @@ marker#arrow {
     content: "";
     position: absolute;
   }
+  #legend .legend-data {
+    width: 63%;
+    padding-left: 5px;
+  }
+  .floodRange,
+  .apRange,
+  .epRange {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    list-style-type: none;
+    font-size: 11px;
+    display: inline-block;
+    vertical-align: top;
+    height: 87px;
+  }
+  .legend-layer-toggles {
+    max-width: 156px;
+    width: 33%;
+    display: inline-block;
+    vertical-align: top;
+    padding: 15px 8px 16px 8px;
+    min-height: 276px;
+    background: #4c4b4a;
+    color: #FAEBE2;
+  }
+  :root input[type="checkbox"].ios-switch:checked + div {
+    font-size: 20px;
+  }
+  .legend-layer-toggles label {
+    font-weight: 400;
+    font-size: 12px;
+  }
+  .legend-layer-toggles > div {
+    display: block;
+    width: 100%;
+    max-width: 141px;
+    vertical-align: top;
+    height: 81px;
+  }
+  .legend-layer-toggles > div:last-child {
+    height: 58px;
+  }
   #legend #legend-toggle {
     height: 22px;
     width: 130px;
@@ -880,6 +948,7 @@ marker#arrow {
     border-top-right-radius: 3px;
     cursor: pointer;
     display: block;
+    font-size: 15px;
     margin: 0 auto;
     margin-top: -22px;
     padding: 3px 0 0 0;
@@ -906,6 +975,25 @@ marker#arrow {
     content: "";
     display: none;
   }
+  #queryContent {
+    padding: 10px 6px;
+  }
+  #queryContent h4 {
+    font-size: 15px;
+    margin: 0;
+  }
+  #queryContent .metrics {
+    list-style: none;
+    margin: 0;
+    padding-top: 8px;
+    padding-left: 0;
+  }
+  #queryContent .metrics li {
+    font-size: 21px;
+    text-align: left;
+    font-weight: 200;
+    line-height: 26px;
+  }
   #legend-toggle:after {
     content: "Click the arrow to expand the legend.";
     display: block;
@@ -923,7 +1011,8 @@ marker#arrow {
   #legend-toggle.active span {
     transform: rotate(180deg);
   }
-  #search input[type="text"] {
+  #search input[type="text"],
+  #searchButton input[type="text"] {
     width: 100%;
   }
 }

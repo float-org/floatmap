@@ -92,13 +92,22 @@
           if (app.map.marker) {
             app.map.removeLayer(app.map.marker);
           }
-          return marker = app.map.marker = L.marker(latLng, {
+          marker = app.map.marker = L.marker(latLng, {
             icon: defaultIcon
           }).addTo(app.map);
+          if ($("button.navbar-toggle").is(":visible")) {
+            return $("button.navbar-toggle").trigger("click");
+          }
         });
       },
       events: {
         "submit #search": function(e) {
+          var address;
+          e.preventDefault();
+          address = $(e.target).find('.search-input').val();
+          return this.getAddress(address);
+        },
+        "submit #searchMobile": function(e) {
           var address;
           e.preventDefault();
           address = $(e.target).find('.search-input').val();

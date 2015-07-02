@@ -8334,6 +8334,14 @@ module.exports = leafletPip;
         self = this;
         apGrades = _.range(0, 13, 1);
         labels = [];
+        if ($("button.navbar-toggle").is(":visible")) {
+
+        } else {
+          $('.legend-wrapper, #legend-toggle, #legend').addClass('active');
+          setTimeout(function() {
+            return $('.legend-wrapper').removeClass('invisible');
+          }, 150);
+        }
         switches = document.querySelectorAll('input[type="checkbox"].ios-switch');
         for (j = 0, len = switches.length; j < len; j++) {
           i = switches[j];

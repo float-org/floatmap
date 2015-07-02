@@ -573,6 +573,13 @@ This information comes from the Federal Emergency Management Administration (201
       apGrades = _.range(0,13,1)  
       labels = []
 
+      if $("button.navbar-toggle").is(":visible")
+      else
+        $('.legend-wrapper, #legend-toggle, #legend').addClass('active')
+        setTimeout () ->
+            $('.legend-wrapper').removeClass('invisible')
+          , 150
+
       # Create toggle switches oyyyy
 
       switches = document.querySelectorAll('input[type="checkbox"].ios-switch')

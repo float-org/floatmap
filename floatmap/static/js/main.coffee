@@ -456,9 +456,9 @@ This information comes from the Federal Emergency Management Administration (201
       
       ap = window.ap = this.makegeoJsonLayer(window.apData, 'ap')
       ep = window.ep = this.makegeoJsonLayer(window.epData, 'ep')
-      usNoData = window.usNoData = this.makegeoJsonLayer("static/data/layers/US_no_data_topo.geojson", 'usNoData')
-      canada = window.canada = this.makegeoJsonLayer("static/data/layers/canada_topo.geojson", 'canada')
-      mexico = window.mexico = this.makegeoJsonLayer("static/data/layers/mexico_topo.geojson", 'mexico')
+      usNoData = window.usNoData = this.makegeoJsonLayer("static/geojson/layers/US_no_data_topo.geojson", 'usNoData')
+      canada = window.canada = this.makegeoJsonLayer("static/geojson/layers/canada_topo.geojson", 'canada')
+      mexico = window.mexico = this.makegeoJsonLayer("static/geojson/layers/mexico_topo.geojson", 'mexico')
 
       # ...and then append them to the map, in order!
       # TODO: Why doesn't zindex work with geoJson layers?  

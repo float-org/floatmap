@@ -36,7 +36,7 @@ module.exports = function(grunt) {
         // Here we watch the files the sass task will compile to
         // These files are sent to the live reload server after sass compiles to them
         options: { livereload: true },
-        files: ['floatmap/static/css/floatmap.css', 'floatmap/static/js/floatmap.js'],
+        files: ['floatmap/static/css/dist/floatmap.css', 'floatmap/static/js/dist/floatmap.js'],
       },
     },
     concat: {
@@ -59,7 +59,7 @@ module.exports = function(grunt) {
           'floatmap/static/js/vendor/leaflet-omnivore.js',
           'floatmap/static/js/main.js',
         ],
-        dest: 'floatmap/static/js/<%= pkg.name %>.js'
+        dest: 'floatmap/static/js/dist/<%= pkg.name %>.js'
       },
       css: {
         src: ['floatmap/static/css/main.css', 'floatmap/static/css/vendor/*.css'],
@@ -72,14 +72,14 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'floatmap/static/js/<%= pkg.name %>.min.js': ['<%= concat.js.dest %>']
+          'floatmap/static/js/dist/<%= pkg.name %>.min.js': ['<%= concat.js.dest %>']
         }
       }
     },
     cssmin: {
       target: {
         files: {
-          'floatmap/static/css/floatmap.min.css': ['<%= concat.css.dest %>']
+          'floatmap/static/css/dist/floatmap.min.css': ['<%= concat.css.dest %>']
         }
       }
     }

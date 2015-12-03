@@ -451,14 +451,14 @@ This information comes from the Federal Emergency Management Administration (201
       
       # Create our layers
       base = window.base = app.layers['base'] = L.tileLayer(baseURL, {pane: 'tilePane'})
-      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/nfhl_tiles/{z}/{x}/{y}.png', {pane: 'tilePane', errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
+      floods = window.floods = app.layers['floods'] = L.tileLayer('/static/data/floods/tiles/{z}/{x}/{y}.png', {pane: 'tilePane', errorTileUrl: 'http://i.imgur.com/aZejCgY.png'})
       labels = window.labels = app.layers['labels'] = L.tileLayer(labelsURL, {pane: 'tilePane'})
       
       ap = window.ap = this.makegeoJsonLayer(window.apData, 'ap')
       ep = window.ep = this.makegeoJsonLayer(window.epData, 'ep')
-      usNoData = window.usNoData = this.makegeoJsonLayer("static/layers/US_no_data_topo.geojson", 'usNoData')
-      canada = window.canada = this.makegeoJsonLayer("static/layers/canada_topo.geojson", 'canada')
-      mexico = window.mexico = this.makegeoJsonLayer("static/layers/mexico_topo.geojson", 'mexico')
+      usNoData = window.usNoData = this.makegeoJsonLayer("static/data/layers/US_no_data_topo.geojson", 'usNoData')
+      canada = window.canada = this.makegeoJsonLayer("static/data/layers/canada_topo.geojson", 'canada')
+      mexico = window.mexico = this.makegeoJsonLayer("static/data/layers/mexico_topo.geojson", 'mexico')
 
       # ...and then append them to the map, in order!
       # TODO: Why doesn't zindex work with geoJson layers?  

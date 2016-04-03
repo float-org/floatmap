@@ -72,7 +72,7 @@ TEMPLATE_LOADERS = (
 )
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, "templates")
+    os.path.join(BASE_DIR, "templates"),
 )
 
 COMPRESS_JS_FILTERS = [
@@ -143,5 +143,3 @@ try:
     from settings_server import *
 except ImportError:
     pass
-
-

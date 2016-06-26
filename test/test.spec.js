@@ -3,7 +3,7 @@ var mocha = require('mocha');
 
 describe('test', function() {
 
-  it('should pass' function() {
+  it('should pass', function() {
 
     assert.equal(1,1);
 

@@ -12,7 +12,8 @@
     "coffee:watch": "onchange 'floatmap/static/js/**/*.coffee' -- npm run coffee",
     "test": "mocha test",
     "test:watch": "onchange 'floatmap/static/js/**/*.coffee' 'test/**/*.js' -- npm run test",
-    "build": "npm run test && npm run coffee && npm run styles:watch",
+    "prebuild": "npm run test && npm run coffee && npm run styles",
+    "build": "npm run prebuild && npm run bundle",
     "watch": "parallelshell 'npm run styles:watch' 'npm run coffee:watch' 'npm run test:watch'"
   },
   "repository": {

@@ -11,7 +11,7 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-      <script id="headerTemplate" type="template">          
+      <script id="headerTemplate" type="template">
         <nav class="navbar navbar-default navbar-static-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -21,7 +21,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                
+
                 <a class="navbar-brand" href="/">
                   <h1>FLOAT</h1>
                 </a>
@@ -50,10 +50,10 @@
 
       <script id="mapTemplate" type="template"></script>
 
-      <script id="legendTemplate" type="template">   
+      <script id="legendTemplate" type="template">
           <div id="legend-toggle"><span class="glyphicon glyphicon-arrow-up"></span></div>
           <div class="legend-wrapper invisible">
-            <div id="query"></div>  
+            <div id="query"></div>
 
             <div class='legend-layer-toggles'>
               <div id="apToggle">
@@ -62,14 +62,14 @@
 
               <div id="stormsToggle">
                 <label class="switch-container">Storm Frequency <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)'></span><input type="checkbox" name="epLayer-switch" class="ios-switch" data-layer="epLayer" id="epLayer-switch" /></label>
-                
+
               </div>
 
             <div id="floodZonesToggle">
               <label class="switch-container">Flood Zones <span class="glyphicon glyphicon-question-sign" data-toggle='tooltip' title='Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)'></span><input type="checkbox" name="floods-switch" class="ios-switch" data-layer="floods" id="floods-switch" /></label>
-            </div>           
-          </div>  
- 
+            </div>
+          </div>
+
 
 
             <div class='legend-data'>
@@ -93,7 +93,7 @@
                   <text x="0" y="55">Increasing Storm Frequency</text>
                 </svg>
               </div>
-           
+
               <ul class='floodRange'>
                 <li class="year-500">
                   <div></div>
@@ -106,7 +106,7 @@
               </ul>
             </div>
           </div>
-           
+
       </script>
 
       <script id="queryTemplate" type="template">
@@ -139,7 +139,7 @@
                 <p>Float shows the <strong>projected impacts of climate change</strong> on American communities in the <strong>2040-2070 period</strong>.
 
                 <p>Float currently shows how <strong>key risk factors for floods</strong> are projected to worsen in <strong>the Midwest US</strong>.</p>
- 
+
                 <p>If you see areas without some of the data present, that doesn’t mean those places are risk free--it just means the science hasn’t got there yet. <strong>We only show projections where a large majority of studies agree</strong>.</p>
               </div>
               <div class="modal-footer">
@@ -183,7 +183,7 @@
                     <p>We use data only from the most recent available NOAA and FEMA research, and we always share our sources. </p>
                     <p>Float is an independent, non-partisan, not-for-profit organization. Float received the Judges’ Choice and Popular Choice awards in the MIT Climate Colab competition.</p>
                   </div>
-                  
+
                   <h2>
                   <a data-toggle="collapse" data-parent="#accordion" href="#dataSources" aria-expanded="true" aria-controls="dataSources">
                     Data Sources
@@ -214,7 +214,7 @@
                     <div class="headshot">
                       <img src="{{STATIC_URL}}/img/kbb.jpeg" />
                     </div>
-                    <p>Growing up in Oregon, with family on an apple orchard and summers on Cascade trails,  Keith became passionate for protecting how communities depend on their land and climate. After studying Environmental Economics and Geography at UC Berkeley, Keith worked in the energy industry at PG&E and Navigant Consulting, before founding Float in 2013.</p> 
+                    <p>Growing up in Oregon, with family on an apple orchard and summers on Cascade trails,  Keith became passionate for protecting how communities depend on their land and climate. After studying Environmental Economics and Geography at UC Berkeley, Keith worked in the energy industry at PG&E and Navigant Consulting, before founding Float in 2013.</p>
 
                     <h3>Mike Vattuone</h3>
                     <div class="headshot">
@@ -260,10 +260,10 @@
   {%endblock%}
 
 
-  
-  {% block extra_js %} 
+
+  {% block extra_js %}
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-  <script src="{{STATIC_URL}}js/floatmap.js"></script>
+  <script src="{{STATIC_URL}}/bundle.js"></script>
   <script>
     window.epData = $.parseJSON({{epData|safe}});
     window.apData = $.parseJSON({{apData|safe}});

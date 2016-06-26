@@ -9,3 +9,6 @@ nfhl_tiles
 *.db
 *.gz
 *.pyc
+/dist
+*.log.*
+floatmap/static/js/compiled/*.js

@@ -263,9 +263,12 @@
 
   {% block extra_js %}
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  <script>
+    window.application = {};
+  </script>
   <script src="{{STATIC_URL}}/bundle.js"></script>
   <script>
-    window.epData = $.parseJSON({{epData|safe}});
-    window.apData = $.parseJSON({{apData|safe}});
+    window.epData = JSON.parse({{epData|safe}});
+    window.apData = JSON.parse({{apData|safe}});
   </script>
   {% endblock %}

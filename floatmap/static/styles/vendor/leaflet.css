@@ -58,6 +58,9 @@
 	-moz-user-select: none;
 	}
 
+.leaflet-pane {
+	position: absolute;
+}
 .leaflet-tile-pane    { z-index: 2; }
 .leaflet-objects-pane { z-index: 3; }
 .leaflet-overlay-pane { z-index: 4; }

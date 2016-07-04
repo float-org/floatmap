@@ -1,61 +1,35 @@
-import $ from 'jquery';
-import 'bootstrap';
-import DataTourView from './tour';
+import React from 'react';
+import Modal from 'react-modal';
 
-Backbone.Layout.configure({
-  manage: true
-});
+/**
+ * Stateless Component - welcome modal for Float Map
+ * @TODO: Merge w/ welcome modal into one shared component?
+ */
+const Welcome = ({ onClose, onContinue, isWelcomeOpen }) => {
 
-// Display welcome modal - should only appear if a cookie hasn't been set in the browser
-let WelcomeView = application.WelcomeView = Backbone.View.extend({
+  return (
+    <Modal
+      className="component-modal"
+      overlayClassName="component-overlay"
+      isOpen={isWelcomeOpen}
+    >
+      <div className="modal-header">
+        <button className="close" onClick={onClose}><span>&times;</span></button>
+        <h1 className="modal-title">Welcome to Float</h1>
+      </div>
+      <div className="modal-body">
+        <p>Float shows the <strong>projected impacts of climate change</strong> on American communities in the <strong>2040-2070 period</strong>.</p>
 
-  template: "#welcomeTemplate",
+        <p>Float currently shows how <strong>key risk factors for floods</strong> are projected to worsen in <strong>the Midwest US</strong>.</p>
 
-  events: {
-    ['click #startDataTour'](e) {
-      e.preventDefault();
-      let dataTour = new DataTourView();
-      let dataView = this.insertView('#dataTour', dataTour);
-      return dataView.render();
-    },
+        <p>If you see areas without some of the data present, that doesn’t mean those places are risk free--it just means the science hasn’t got there yet. <strong>We only show projections where a large majority of studies agree</strong>.</p>
+      </div>
+      <div className="modal-footer">
+        <button className="btn btn-primary" onClick={onContinue} >Continue</button>
+        <button className="btn btn-default" onClick={onClose}>Close</button>
+      </div>
+    </Modal>
+  );
+}
 
-    ['shown.bs.modal #welcomeModal'](e) {
-      return this.reposition();
-    },
-
-    ['click #closeModal'](e) {
-      application.map.addLayer(floods, 1);
-      $('#floods-switch').prop('checked',true);
-      application.map.addLayer(ap, 2);
-      $('#apLayer-switch').prop('checked',true);
-      application.map.addLayer(ep, 3);
-      return $('#epLayer-switch').prop('checked',true);
-    }
-  },
-
-  initialize(e) {
-    let self = this;
-    return $(window).on('resize', e => self.reposition());
-  },
-
-  // Kick off the modal once the view has been created
-  afterRender() {
-    console.log('laksjg');
-    return $('#welcomeModal').modal({
-      backdrop: 'static',
-      keyboard: true
-    }, 'show');
-  },
-
-  // Keeps the modal centered (more or less)
-  reposition() {
-    let modal = this.$el;
-    let dialog = modal.find('.modal-dialog');
-    modal.css('display', 'block');
-    // Dividing by two centers the modal exactly, but dividing by three
-    // or four works better for larger screens.
-    return dialog.css("margin-top", Math.max(0, ($(window).height() - dialog.height()) / 2));
-  }
-});
-
-export default WelcomeView;
+module.exports = Welcome;

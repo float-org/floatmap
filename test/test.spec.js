@@ -1,5 +1,5 @@
-var assert = require('assert');
-var mocha = require('mocha');
+import assert from 'assert';
+import mocha from 'mocha';
 
 describe('test', function() {
 

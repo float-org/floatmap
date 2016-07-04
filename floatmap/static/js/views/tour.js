@@ -1,126 +1,109 @@
+import React from 'react';
 import $ from 'jquery';
 import Shepherd from 'tether-shepherd';
 
-Backbone.Layout.configure({
-  manage: true
-});
+/**
+ * Tour component - mostly a way to invoke Shepherd outside of component lifecycle (i.e. after render)
+ * @class
+ */
+class Tour extends React.Component {
 
-// Creates tour of the Float interface, using ShepherdJS
-let DataTourView = application.DataTourView = Backbone.View.extend({
+  /**
+   * React Component Lifecycle - Called by React when the component is about to render
+   * @instance
+   */
+  componentWillMount() {
+    this.props.onStart();
+  }
 
-  // Create new tour, use default Shepherd theme for now
-  initialize() {
-    // Remove existing instance of Shepherd Tour
-    // TODO: Still have zombie view problem, which I *thought* LayoutManager helped with...
-    if (window.tour) {
-      if (application.map.marker) {
-        application.map.removeLayer(application.map.marker);
-      }
-      window.tour.complete();
-    }
-    return window.tour = this.tour = new Shepherd.Tour({
+  /**
+   * React Component Lifecycle - Called by React when the component will be removed from the DOM
+   * @instance
+   */
+  componentWillUnmount() {
+    application.tour.complete();
+    application.tour = undefined;
+  }
+
+  /**
+   * React Component Lifecycle - Called by React when the component has rendered
+   * @instance
+   */
+  componentDidMount() {
+    application.tour = new Shepherd.Tour({
       defaults: {
         classes: 'shepherd-theme-arrows',
         scrollTo: true
       }
     });
-  },
 
-  resetMapAfterTour() {
-    if (application.map.marker) {
-      application.map.removeLayer(application.map.marker);
-    }
-    if ($('.active')) {
-      $('.active').removeClass('active').promise().done(() => $('.legend-wrapper').addClass('invisible'));
-    }
-    application.map.setZoom(6);
-    application.map.addLayer(floods, 1);
-    $('#floods-switch').prop('checked',true);
-    application.map.addLayer(ap, 2);
-    $('#apLayer-switch').prop('checked',true);
-    application.map.addLayer(ep, 3);
-    $('#epLayer-switch').prop('checked',true);
-    return tour.complete();
-  },
-
-  resetMapData() {
-    if ($('.active')) {
-      $('.active').removeClass('active').promise().done(() => $('.legend-wrapper').addClass('invisible'));
-    }
-    let iterable = [window.ap, window.ep, window.floods];
-    for (let i = 0; i < iterable.length; i++) {
-      let layer = iterable[i];
-      application.map.removeLayer(layer);
-    }
-    $('#floods-switch').prop('checked',false);
-    $('#apLayer-switch').prop('checked',false);
-    return $('#epLayer-switch').prop('checked',false);
-  },
-
-  // Once view renders, add steps to tour and start it up.
-  afterRender() {
-
-    application.map.setZoom(6);
-    this.resetMapData();
-    $('#welcomeModal').modal('hide');
-    $('#legend-toggle').trigger('click');
+    application.tour.defaultIcon = L.icon({
+      iconUrl: 'static/img/marker-icon.png',
+      shadowUrl: 'static/img/marker-shadow.png'
+    });
 
     L.Icon.Default.imagePath = "../static/img";
 
-    // Display average precipitation layer - this sort of thing happens in tour step action methods hereafter
-    $('#apLayer-switch').trigger('click');
+    $('.flood-zones input').prop('checked',false);
+    $('.annual-precipitation input').prop('checked',false);
+    $('.storm-frequency input').prop('checked',false);
+
+    // @TODO: Probably should utilize promises for better async
+    setTimeout(() => {
+      $('.annual-precipitation .switch').trigger('click');
+    }, 1);
 
     // Avg Precip explanation step
-    this.tour.addStep('ap-step', {
+    application.tour.addStep('ap-step', {
       title: 'Annual Precipitation',
       text: 'The Annual Precipitation layer shows how total rain and snowfall each year is projected to grow by the 2040-2070 period. More annual precipitation means more water going into rivers, lakes and snowbanks, a key risk factor for bigger floods. These projections come from the National Oceanic and Atmospheric Administration (2014).',
-      attachTo: '#apToggle top',
+      attachTo: '.component-layer-switch.annual-precipitation top',
       buttons: [{
         text: 'Next',
         action() {
-          $('#epLayer-switch').trigger('click');
-          return tour.next();
+          $('.storm-frequency .switch').trigger('click');
+          return application.tour.next();
         }
       }
       ]
     });
 
     // Ext Precip explanation step
-    this.tour.addStep('ep-step', {
+    application.tour.addStep('ep-step', {
       title: 'Storm Frequency',
       text: 'The Storm Frequency layer shows how days with heavy rain or snow (over 1 inch per day) are projected to come more often by the 2040-2070 period. More storm frequency means more rapid surges of water into rivers and lakes, a key risk factor for more frequent flooding. These projections also come from the National Oceanic and Atmospheric Administration (2014).',
-      attachTo: '#stormsToggle top',
+      attachTo: '.component-layer-switch.storm-frequency top',
       buttons: [{
         text: 'Next',
         action() {
-          $('#floods-switch').trigger('click');
-          return tour.next();
+          $('.flood-zones .switch').trigger('click');
+          return application.tour.next();
         }
       }
       ]
     });
 
     // Floods explanation step
-    this.tour.addStep('flood-step', {
+    application.tour.addStep('flood-step', {
       title: 'Flood Zones',
       text: 'The Flood Zones show the areas that already are at major risk for flooding, based on where floods have historically reached. If floods become larger and more frequent, many neighboring areas to these historical flood zones are likely to start experience flooding. This information comes from the Federal Emergency Management Administration (2014).',
-      attachTo: '#floodZonesToggle top',
+      attachTo: '.component-layer-switch.flood-zones top',
       buttons: [{
         text: 'Next',
-        action: tour.next
+        action: application.tour.next
       }
       ]
     });
 
     // Display search step
-    this.tour.addStep('search-step', {
+    application.tour.addStep('search-step', {
       title: 'Search',
       text: 'Search for a specific address, city or landmark. Try using the search bar now to find a location you care about in the Midwest.',
-      attachTo: '.search-input bottom',
+      attachTo: '.component-search-form bottom',
       buttons: [{
         text: 'Next',
         action() {
-          return setTimeout(() => tour.next()
+          return setTimeout(() => application.tour.next()
           , 450);
         }
       }
@@ -129,31 +112,31 @@ let DataTourView = application.DataTourView = Backbone.View.extend({
 
     // Display query step
     // TODO: Not totally in love w/ the animation here - play around with it some more.
-    this.tour.addStep('query-step', {
+    application.tour.addStep('query-step', {
       title: 'Inspect',
       text: '<p>Right click anywhere on the map to inspect the numbers for that specific place.</p><br /><p>Take a tour of some communities at high risk for worsened flooding.</p>',
-      attachTo: '#query left',
+      attachTo: '.component-query left',
       buttons: [{
         text: 'Take a Tour',
         action() {
           let latlng = [44.519, -88.019];
-          application.layout.views['map'].setAddress(latlng, 13);
+          application.map.setView(latlng, 13);
           if (application.map.marker) {
             application.map.removeLayer(application.map.marker);
           }
-          let marker = application.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(application.map);
-          return tour.next();
+          let marker = application.map.marker = L.marker(latlng, { icon: application.tour.defaultIcon }).addTo(application.map);
+          return application.tour.next();
         }
       }
       , {
         text: 'Stop Tour',
-        action: this.resetMapAfterTour
+        action: this.props.onComplete
       }
       ]
     });
 
     // The following steps show particular regions on the map
-    this.tour.addStep('map-lambeau', {
+    application.tour.addStep('map-lambeau', {
       title: 'Green Bay, WI',
       text: 'The home of the Packers has a large neighborhood of paper plants and homes at high risk of worsened flooding, with storm days increasing nearly 40% and annual precipitation rising 10% in the next few decades.',
       attachTo: '.leaflet-marker-icon left',
@@ -161,22 +144,22 @@ let DataTourView = application.DataTourView = Backbone.View.extend({
         text: 'Continue',
         action() {
           let latlng = [43.1397, -89.3375];
-          application.layout.views['map'].setAddress(latlng, 13);
+          application.map.setView(latlng, 13);
           if (application.map.marker) {
             application.map.removeLayer(application.map.marker);
           }
-          let marker = application.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(application.map);
-          return tour.next();
+          let marker = application.map.marker = L.marker(latlng, { icon: application.tour.defaultIcon }).addTo(application.map);
+          return application.tour.next();
         }
       }
       , {
         text: 'Stop Tour',
-        action: this.resetMapAfterTour
+        action: this.props.onComplete
       }
       ]
     });
 
-    this.tour.addStep('map-dane', {
+    application.tour.addStep('map-dane', {
       title: 'Madison, WI Airport',
       text: 'Airports are often built on flat areas near rivers, placing them at serious risk of flooding, like Madison’s main airport, serving 1.6 million passengers per year.',
       attachTo: '.leaflet-marker-icon left',
@@ -184,22 +167,22 @@ let DataTourView = application.DataTourView = Backbone.View.extend({
         text: 'Continue',
         action() {
           let latlng = [42.732072157891224, -84.50576305389404];
-          application.layout.views['map'].setAddress([42.73591782230738, -84.48997020721437], 13);
+          application.map.setView([42.73591782230738, -84.48997020721437], 13);
           if (application.map.marker) {
             application.map.removeLayer(application.map.marker);
           }
-          let marker = application.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(application.map);
-          return tour.next();
+          let marker = application.map.marker = L.marker(latlng, { icon: application.tour.defaultIcon }).addTo(application.map);
+          return application.tour.next();
         }
       }
       , {
         text: 'Stop Tour',
-        action: this.resetMapAfterTour
+        action: this.props.onComplete
       }
       ]
     });
 
-    this.tour.addStep('map-lansing', {
+    application.tour.addStep('map-lansing', {
       title: 'Lansing, MI',
       text: 'A large stretch of downtown businesses and homes are at risk of worsened flooding, as well as part of the Michigan State campus.',
       attachTo: '.leaflet-marker-icon left',
@@ -207,35 +190,56 @@ let DataTourView = application.DataTourView = Backbone.View.extend({
         text: 'Continue',
         action() {
           let latlng = [41.726, -90.310];
-          application.layout.views['map'].setAddress([41.7348457153312, -90.310], 13);
+          application.map.setView([41.7348457153312, -90.310], 13);
           if (application.map.marker) {
             application.map.removeLayer(application.map.marker);
           }
-          let marker = application.map.marker = L.marker(latlng, { icon: defaultIcon }).addTo(application.map);
+          let marker = application.map.marker = L.marker(latlng, { icon: application.tour.defaultIcon }).addTo(application.map);
 
-          return tour.next();
+          return application.tour.next();
         }
       }
       , {
         text: 'Stop Tour',
-        action: this.resetMapAfterTour
+        action: this.props.onComplete
       }
       ]
     });
 
-    this.tour.addStep('map-quadcities', {
+    application.tour.addStep('map-quadcities', {
       title: 'Quad Cities Nuclear Generating Station',
       text: 'Power plants, including nuclear plants like the one here, are frequently built on riverbanks to use water for cooling. Larger, more frequent future floods could place these power plants and their communities at risk.',
       attachTo: '.leaflet-marker-icon bottom',
       buttons: [{
         text: 'Stop Tour',
-        action: this.resetMapAfterTour
+        action: this.props.onComplete
       }
       ]
     });
 
-    return this.tour.start();
+    return application.tour.start();
   }
-});
 
-export default DataTourView;
+  /**
+   * React Component Lifecycle - render
+   * @instance
+   */
+  render() {
+    return (
+      <div className="component-tour"></div>
+    )
+  }
+};
+
+/**
+ * Prop Validation
+ * @param {Function} onComplete - callback to fire when tour is done
+ * @param {Function} onStart - callback to fire when tour is starting
+ * @TODO Default props...?
+ */
+Tour.PropTypes = {
+  onComplete: React.PropTypes.func,
+  onStart: React.PropTypes.func
+}
+
+module.exports = Tour;

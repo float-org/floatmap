@@ -1,20 +1,19 @@
-$ = require('jquery');
-window.jQuery = $;
-window.$ = $;
-require('jquery.cookie');
-window.Shepherd = require('tether-shepherd');
-Backbone = require('backbone');
-require('backbone.layoutmanager');
-window.Backbone = Backbone;
+import $ from 'jquery';
+import jQuery from 'jquery';
+import L from './vendor/leaflet';
+import _ from 'underscore';
+import 'jquery.cookie';
+import 'bootstrap';
+import 'backbone.layoutmanager';
+import FloatLayout from './layouts/float';
 
-window._ = require('underscore');
-function requireAll(r) { r.keys().forEach(r); }
-requireAll(require.context('./vendor/', true, /\.js$/));
+Backbone.Layout.configure({
+  manage: true
+});
 
-$(document).ready(function() {
-  window.app = {};
+$(document).ready(() => {
 
-  defaultIcon = L.icon({
+  const defaultIcon = L.icon({
     iconUrl: 'static/img/marker-icon.png',
     shadowUrl: 'static/img/marker-shadow.png'
   });
@@ -23,21 +22,8 @@ $(document).ready(function() {
     manage: true
   });
 
-  leafletPip = require('./vendor/leaflet-pip');
-  Rainbow = require('rainbowvis.js');
-  QueryModel = require('./compiled/queryModel');
-  utils = require('./compiled/utils');
-  HeaderView = require('./compiled/header');
-  DataTourView = require('./compiled/tour');
-  WelcomeView = require('./compiled/welcome');
-  MapView = require('./compiled/map');
-  QueryView = require('./compiled/query');
-  LegendView = require('./compiled/legend');
-  ShareView = require('./compiled/share');
-  FloatLayout = require('./compiled/base');
+  application.layout = new FloatLayout()
+  application.layout.$el.appendTo('#main')
 
-  layout = app.layout = new FloatLayout()
-  layout.$el.appendTo('#main')
-
-  layout.render()
+  application.layout.render()
 });

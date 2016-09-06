@@ -6,14 +6,20 @@ textarea {
   color: #231f20;
 }
 html {
+  box-sizing: border-box;
   font-size: 1em;
   line-height: 1.4;
 }
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 /*
- * Remove text-shadow in selection highlight: h5bp.com/i
- * These selection rule sets have to be separate.
- * Customize the background color to match your design.
- */
+* Remove text-shadow in selection highlight: h5bp.com/i
+* These selection rule sets have to be separate.
+* Customize the background color to match your design.
+*/
 ::-moz-selection {
   background: #b3d4fc;
   text-shadow: none;
@@ -23,8 +29,8 @@ html {
   text-shadow: none;
 }
 /*
- * A better looking default horizontal rule
- */
+* A better looking default horizontal rule
+*/
 hr {
   display: block;
   height: 1px;
@@ -34,9 +40,9 @@ hr {
   padding: 0;
 }
 /*
- * Remove the gap between images, videos, audio and canvas and the bottom of
- * their containers: h5bp.com/i/440
- */
+* Remove the gap between images, videos, audio and canvas and the bottom of
+* their containers: h5bp.com/i/440
+*/
 audio,
 canvas,
 img,
@@ -44,22 +50,22 @@ video {
   vertical-align: middle;
 }
 /*
- * Remove default fieldset styles.
- */
+* Remove default fieldset styles.
+*/
 fieldset {
   border: 0;
   margin: 0;
   padding: 0;
 }
 /*
- * Allow only vertical resizing of textareas.
- */
+* Allow only vertical resizing of textareas.
+*/
 textarea {
   resize: vertical;
 }
 /* ==========================================================================
-   Browse Happy prompt
-   ========================================================================== */
+Browse Happy prompt
+========================================================================== */
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -67,22 +73,32 @@ textarea {
   padding: 0.2em 0;
 }
 /* ==========================================================================
-   Author's custom styles
-   ========================================================================== */
+Author's custom styles
+========================================================================== */
 /* Variables */
 body {
   padding: 0 !important;
   position: relative;
   -webkit-font-smoothing: antialiased;
 }
+
 /* My dumb hacks */
 svg.leaflet-zoom-animated {
   z-index: 4;
   position: relative;
 }
+
 svg.leaflet-zoom-animated path {
   stroke-width: 0;
 }
+
+// Prevent additional space from defs element
+svg defs {
+  width:0;
+  height:0;
+}
+
+// Present map as black and white-ish.
 img[src*="//a.tiles.mapbox.com/v3/floatmap.2ce887fe"],
 img[src*="//b.tiles.mapbox.com/v3/floatmap.2ce887fe"],
 img[src*="//c.tiles.mapbox.com/v3/floatmap.2ce887fe"],
@@ -93,8 +109,9 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
   -o-filter: grayscale(60%);
   filter: grayscale(60%);
 }
+
 /* Base Styles */
-#map {
+.component-map {
   width: 100%;
   height: 100%;
   min-height: 100vh;
@@ -109,88 +126,90 @@ img[src*="//d.tiles.mapbox.com/v3/floatmap.2ce887fe"] {
   stroke-opacity: 0.7;
   fill-opacity: 0.7;
 }
-/* Header Styles */
-.logo,
-header {
+
+.component-logo {
+  display: inline-block;
+  order: 1;
+
+  a {
+    color: #FFF;
+    font-size: 18px;
+    text-decoration: none;
+
+    h1 {
+      display: inline-block;
+      line-height: 18px;
+      font-weight: 100;
+      margin: 0;
+      padding: 10px 0;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.component-header {
+  display: flex;
+  flex-direction: column;
   font-family: 'Montserrat', sans-serif;
-}
-.logo a,
-.logo a:hover,
-header a:hover {
-  color: #FFF;
-  text-decoration: none;
-}
-#header {
-  display: block;
   padding: 18px;
   box-sizing: border-box;
   position: absolute;
   width: 100%;
   background: #141F3D;
-  /* Old browsers */
   z-index: 1049;
-  /* one less than bootstrap modal */
+
+  .navbar.navbar-default {
+    color: #FFF;
+    background-color: #141F3D;
+    /* Old browsers */
+    border: none;
+    margin: 0;
+  }
 }
-#header .navbar.navbar-default {
-  color: #FFF;
-  background-color: #141F3D;
-  /* Old browsers */
-  border: none;
-  margin: 0;
+
+.component-navigation {
+
+  nav {
+    clear: both;
+    display: none;
+    margin-top: 20px;
+    padding: 0;
+
+    ul {
+      margin: 0;
+      padding: 0;
+
+      li a {
+        padding: 8px 0;
+        color: #FFF;
+        font-size: 20px;
+        font-weight: 100;
+        letter-spacing: 0.3px;
+        height: auto;
+      }
+    }
+  }
+
+  &.visible {
+    order: 4;
+
+    nav {
+      display: block;
+    }
+  }
+
+  button {
+    display: inline-block;
+    float: right;
+    width: 40px;
+    order: 2;
+    align-items: baseline;
+    position: absolute;
+    right: 18px;
+    top: 23px;
+  }
 }
-#header .navbar.navbar-default .navbar-collapse {
-  border: none;
-  box-shadow: 0 0 0;
-}
-#header .navbar.navbar-default .navbar-collapse form {
-  margin: 10px 0;
-}
-#header .navbar.navbar-default .navbar-collapse .nav.navbar-nav.navbar-right {
-  clear: both;
-}
-#header .navbar-brand {
-  color: #FFF;
-  padding: 0 15px;
-}
-#header .navbar-brand h1 {
-  margin: 0;
-}
-#header .navbar-toggle {
-  margin-top: 0;
-}
-#header nav li a {
-  color: #FFF;
-  font-size: 20px;
-  margin-left: 20px;
-  font-weight: 100;
-  letter-spacing: 0.3px;
-  padding: 8px 0;
-  height: auto;
-}
-#header #search,
-#header #searchMobile {
-  padding: 0;
-  color: #222;
-}
-#header #search input[type="text"],
-#header #searchMobile input[type="text"],
-#header #search button,
-#header #searchMobile button {
-  float: left;
-  height: 37px;
-}
-#header #search input[type="text"],
-#header #searchMobile input[type="text"] {
-  width: 90%;
-  box-sizing: border-box;
-}
-#search input::-webkit-input-placeholder,
-#search input::-moz-placeholder,
-#search input::-ms-input-placeholder #searchMobile input::-webkit-input-placeholder,
-#searchMobile input::-moz-placeholder,
-#searchMobile input::-ms-input-placeholder {
-  color: #A5A7A9;
-}
+
 .btn.btn-default {
   background-color: #B8B8BA;
   color: #FFF;
@@ -205,50 +224,119 @@ header a:hover {
   background-color: #141F3D;
   color: #FFF;
 }
-#search button,
-#searchMobile button {
-  width: 10%;
-  background-color: #4C4B4A;
-  color: #FAEBE2;
-  border: 0;
-  top: 0;
-  font-size: 17px;
+
+.component-search-form {
+  order: 3;
+  width: 100%;
+
+  input[type="text"],
+  button {
+    height: 37px;
+  }
+
+  input[type="text"] {
+    width: 90%;
+
+    &::-webkit-input-placeholder,
+    &::-moz-placeholder,
+    &::-ms-input-placeholder {
+      color: #A5A7A9;
+    }
+  }
+
+  button {
+    width: 10%;
+    vertical-align: bottom;
+    background-color: #4C4B4A;
+    color: #FAEBE2;
+    border: 0;
+    top: 0;
+    font-size: 17px;
+  }
 }
-nav a,
-button,
-input[type="text"] {
-  font-size: 17px;
-}
+
 /* Modal Styles */
-.fade.in.modal {
-  z-index: 1050;
+
+.component-overlay {
+  position:absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color:rgba(0, 0, 0, 0.50);
+  z-index:99999999;
 }
-.modal-backdrop {
-  height: 100%;
-  z-index: 1049;
+
+.component-modal {
+  max-width: 600px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  width:100%;
+
+  .modal-header {
+    background: #B8B8BA;
+    color: #FFF;
+    padding: 10px;
+    width: 100%;
+  }
+
+  .modal-title {
+    display: inline-block;
+    margin: 0;
+  }
+
+  .close {
+    float: right;
+    margin: 0;
+  }
+
+  .rc-collapse-item {
+    padding: 5px;
+  }
+
+  .rc-collapse-header {
+    cursor: pointer;
+    font-size: 24px;
+  }
+
+  .rc-collapse-content {
+    overflow: hidden;
+  }
+
+  .rc-collapse-content-inactive {
+    display: none;
+  }
+
+  .modal-body .rc-collapse-item,
+  .modal-body,
+  .modal-footer {
+    background: #FFF;
+    border: 1px solid transparent !important;
+  }
+
+  .modal-body {
+    clear: both;
+    max-height: 300px;
+  }
+
+  .modal-footer {
+    width: 100%;
+  }
 }
-.modal-header {
-  background: #B8B8BA;
-  color: #FFF;
-  border: 1px solid transparent !important;
-}
-.modal-body .panel,
-.modal-body,
-.modal-footer {
-  background: #FFF;
-  border: 1px solid transparent !important;
-}
-.modal-body {
-  max-height: 650px;
-  overflow: scroll;
-}
+
 .headshot {
   width: 200px;
   height: 200px;
+
+  img {
+    max-width: 100%;
+  }
 }
-.headshot img {
-  max-width: 100%;
-}
+
 .legend-layer-toggles {
   max-width: 156px;
   width: 30%;
@@ -257,21 +345,24 @@ input[type="text"] {
   padding: 10px 8px 16px 8px;
   background: #4c4b4a;
   color: #FAEBE2;
-}
-.legend-layer-toggles > div {
+
+  & > div {
   display: block;
   width: 100%;
   max-width: 141px;
   vertical-align: top;
   height: 63px;
+    &:last-child {
+      height: 58px;
+    }
+  }
+
+  label {
+    font-weight: 400;
+    font-size: 10px;
+  }
 }
-.legend-layer-toggles > div:last-child {
-  height: 58px;
-}
-.legend-layer-toggles label {
-  font-weight: 400;
-  font-size: 10px;
-}
+
 /* Tour Styles */
 .shepherd-step.shepherd-theme-arrows {
   z-index: 99999999;
@@ -281,25 +372,26 @@ input[type="text"] {
   background: #141f3d !important;
 }
 /* Query Styles */
-#queryContent {
+.query-results {
   padding: 7px 6px;
 }
-#queryContent h4 {
+.query-results h4 {
   font-size: 12px;
   margin: 0;
 }
-#queryContent .metrics {
+.query-results .metrics {
   list-style: none;
   margin: 0;
   padding-left: 0;
 }
-#queryContent .metrics li {
+.query-results .metrics li {
   font-size: 15px;
   text-align: left;
   font-weight: 200;
   line-height: 20px;
 }
-#share {
+
+.component-share {
   position: absolute;
   bottom: 30px;
   width: 150px;
@@ -311,45 +403,47 @@ input[type="text"] {
   border: 1px solid #999;
   border-color: rgba(0, 0, 0, 0.4);
   height: 54px;
+
+  > div {
+    vertical-align: middle;
+    height: 100%;
+    display: inline-block;
+    margin-top: 5px;
+    margin-left: 5px;
+  }
+
+  h5 {
+    margin: 0;
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    left: 2px;
+  }
+
+  .button {
+    background-color: #141F3D;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    border-radius: 9999;
+    display: inline-block;
+    vertical-align: middle;
+
+    &.fb {
+      background-image: url('./img/s-icons_social_media_icons_white_color_transparent_background_32x32_0000_facebook.png');
+      background-position: 1px 0;
+    }
+
+    &.tw {
+      background-image: url('./img/s-icons_social_media_icons_white_color_transparent_background_32x32_0002_twitter.png');
+      background-position: 4px 2px;
+    }
+  }
 }
-#share > div {
-  vertical-align: middle;
-  height: 100%;
-  display: inline-block;
-  margin-top: 5px;
-  margin-left: 5px;
-}
-#share h5 {
-  margin: 0;
-  font-size: 14px;
-  display: inline-block;
-  vertical-align: middle;
-  position: relative;
-  left: 2px;
-}
-#share #shareContent {
-  display: inline-block;
-  margin-left: 6px;
-}
-#share .button {
-  background-color: #141F3D;
-  background-repeat: no-repeat;
-  width: 40px;
-  height: 40px;
-  border-radius: 9999;
-  display: inline-block;
-  vertical-align: middle;
-}
-#share .button.fb {
-  background-image: url('../img/s-icons_social_media_icons_white_color_transparent_background_32x32_0000_facebook.png');
-  background-position: 1px 0;
-}
-#share .button.tw {
-  background-image: url('../img/s-icons_social_media_icons_white_color_transparent_background_32x32_0002_twitter.png');
-  background-position: 4px 2px;
-}
+
 /* Legend Styles */
-#legend {
+.component-legend {
   position: absolute;
   width: 50px;
   bottom: 30px;
@@ -364,7 +458,8 @@ input[type="text"] {
   -moz-transition: width 300ms ease-in;
   transition: width 300ms ease-in;
 }
-#legend:before {
+
+.component-legend:before {
   content: "+";
   position: absolute;
   left: 16px;
@@ -372,15 +467,18 @@ input[type="text"] {
   font-size: 30px;
   cursor: pointer;
 }
-#legend.active {
+
+.component-legend.active {
   width: 93%;
   bottom: 100px;
   max-width: 320px;
 }
-#legend.active:before {
+
+.component-legend.active:before {
   content: "";
 }
-#legend .legend-panel {
+
+.component-legend .legend-panel {
   display: block;
   padding: 10px 12px;
   font-size: 12px;
@@ -394,37 +492,42 @@ input[type="text"] {
   text-shadow: -1px 1px #231f20;
   border: none;
 }
-#legend h3 {
+
+.component-legend h3 {
   display: inline-block;
 }
-#legend h4 {
+
+.component-legend h4 {
   margin: 0 0 5px;
   color: #777;
 }
-#legend .legend-data {
+
+.component-legend .legend-data {
   width: 66%;
   display: inline-block;
   padding-top: 10px;
   padding-left: 0;
 }
-#legend #legend-toggle {
-  display: none;
+
+.component-legend .component-legend-toggle {
   height: 22px;
   width: 130px;
   background: #141f3d;
+  display: none;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   cursor: pointer;
   margin: -22px auto 0 auto;
   padding: 3px 0 0 0;
 }
-#legend #legend-toggle.active {
+
+.component-legend .component-legend-toggle.active {
   display: block;
 }
-#legend #legend-toggle.active span {
+.component-legend .component-legend-toggle.active span {
   transform: rotate(180deg);
 }
-#legend #legend-toggle span {
+.component-legend .component-legend-toggle span {
   -webkit-transition: transform 300ms ease-in;
   -moz-transition: transform 300ms ease-in;
   transition: transform 300ms ease-in;
@@ -432,7 +535,7 @@ input[type="text"] {
   display: block;
   color: #FFF;
 }
-#legend .legend-wrapper {
+.component-legend .legend-wrapper {
   font: 14px/16px Helvetica Neue, sans-serif;
   max-height: 50px;
   overflow: hidden;
@@ -440,27 +543,27 @@ input[type="text"] {
   -moz-transition: max-height 300ms ease-in;
   transition: max-height 300ms ease-in;
 }
-#legend .legend-wrapper.active {
+.component-legend .legend-wrapper.active {
   max-height: 261px;
 }
-#query {
+.component-query {
   max-height: 50px;
   overflow: hidden;
   -webkit-transition: max-height 300ms ease-in;
   -moz-transition: max-height 300ms ease-in;
   transition: max-height 300ms ease-in;
 }
-#query:before {
+.component-query:before {
   content: "Right click on the map to see flood risks for a specific location.";
   display: block;
   text-align: center;
   font-size: 12px;
   padding: 8px 0;
 }
-#query.active {
+.component-query.active {
   max-height: 70px;
 }
-#query.active:before {
+.component-query.active:before {
   content: "";
   display: none;
 }
@@ -515,7 +618,7 @@ input[type="text"] {
   border-top-color: #FFF;
   color: #FFF;
 }
-#legend .tooltip-inner {
+.component-legend .tooltip-inner {
   max-width: 200px;
   padding: 3px 8px;
   color: #fff;
@@ -626,9 +729,9 @@ marker#arrow {
   font-size: 11px;
 }
 /**
- * iOS 6 style switch checkboxes
- * by Lea Verou http://lea.verou.me
- */
+* iOS 6 style switch checkboxes
+* by Lea Verou http://lea.verou.me
+*/
 :root input[type="checkbox"] {
   /* :root here acting as a filter for older browsers */
   position: absolute;
@@ -771,11 +874,11 @@ marker#arrow {
   right: 0px;
 }
 /* ==========================================================================
-   Helper classes
-   ========================================================================== */
+Helper classes
+========================================================================== */
 /*
- * Image replacement
- */
+* Image replacement
+*/
 .ir {
   background-color: transparent;
   border: 0;
@@ -790,15 +893,15 @@ marker#arrow {
   height: 150%;
 }
 /*
- * Hide from both screenreaders and browsers: h5bp.com/u
- */
+* Hide from both screenreaders and browsers: h5bp.com/u
+*/
 .hidden {
   display: none !important;
   visibility: hidden;
 }
 /*
- * Hide only visually, but have it available for screenreaders: h5bp.com/v
- */
+* Hide only visually, but have it available for screenreaders: h5bp.com/v
+*/
 .visuallyhidden {
   border: 0;
   clip: rect(0 0 0 0);
@@ -810,9 +913,9 @@ marker#arrow {
   width: 1px;
 }
 /*
- * Extends the .visuallyhidden class to allow the element to be focusable
- * when navigated to via the keyboard: h5bp.com/p
- */
+* Extends the .visuallyhidden class to allow the element to be focusable
+* when navigated to via the keyboard: h5bp.com/p
+*/
 .visuallyhidden.focusable:active,
 .visuallyhidden.focusable:focus {
   clip: auto;
@@ -823,22 +926,22 @@ marker#arrow {
   width: auto;
 }
 /*
- * Hide visually and from screenreaders, but maintain layout
- */
+* Hide visually and from screenreaders, but maintain layout
+*/
 .invisible {
   visibility: hidden;
 }
 /*
- * Clearfix: contain floats
- *
- * For modern browsers
- * 1. The space content is one way to avoid an Opera bug when the
- *    `contenteditable` attribute is included anywhere else in the document.
- *    Otherwise it causes space to appear at the top and bottom of elements
- *    that receive the `clearfix` class.
- * 2. The use of `table` rather than `block` is only necessary if using
- *    `:before` to contain the top-margins of child elements.
- */
+* Clearfix: contain floats
+*
+* For modern browsers
+* 1. The space content is one way to avoid an Opera bug when the
+*    `contenteditable` attribute is included anywhere else in the document.
+*    Otherwise it causes space to appear at the top and bottom of elements
+*    that receive the `clearfix` class.
+* 2. The use of `table` rather than `block` is only necessary if using
+*    `:before` to contain the top-margins of child elements.
+*/
 .clearfix:before,
 .clearfix:after {
   content: " ";
@@ -850,33 +953,70 @@ marker#arrow {
   clear: both;
 }
 /*
- * For IE 6/7 only
- * Include this rule to trigger hasLayout and contain floats.
- */
+* For IE 6/7 only
+* Include this rule to trigger hasLayout and contain floats.
+*/
 .clearfix {
   *zoom: 1;
 }
 /* ==========================================================================
-   EXAMPLE Media Queries for Responsive Design.
-   These examples override the primary ('mobile first') styles.
-   Modify as content requires.
-   ========================================================================== */
+EXAMPLE Media Queries for Responsive Design.
+These examples override the primary ('mobile first') styles.
+Modify as content requires.
+========================================================================== */
 @media all and (min-width: 380px) {
-  #query {
+  .component-query {
     max-height: 45px;
   }
-  #query.active {
+  .component-query.active {
     max-height: 100px;
   }
 }
+
 @media all and (min-width: 768px) {
-  #searchMobile {
-    display: none;
+  .component-header {
+    flex-direction: row;
+    justify-content: space-between;
+
+    .component-log {
+      order: 1;
+    }
+
+    .component-search-form {
+      order: 2;
+      max-width: 500px;
+    }
+
+    .component-navigation {
+      order: 3;
+      width: 200px;
+
+      nav {
+        display: block;
+        margin: 0;
+        padding: 3px 0;
+        text-align: right;
+
+        .navbar-toggle {
+          display: none;
+        }
+
+        li {
+          display: inline-block;
+
+          a {
+            margin-left: 20px;
+          }
+        }
+      }
+
+      button {
+        display: none;
+      }
+    }
   }
-  #header .navbar.navbar-default .navbar-collapse .nav.navbar-nav.navbar-right {
-    clear: none;
-  }
-  #legend {
+
+  .component-legend {
     position: absolute;
     width: 100%;
     bottom: 30px;
@@ -889,14 +1029,14 @@ marker#arrow {
     border-top: 1px solid #999;
     border-color: rgba(0, 0, 0, 0.4);
   }
-  #legend.active {
+  .component-legend.active {
     bottom: 30px;
   }
-  #legend:before {
+  .component-legend:before {
     content: "";
     position: absolute;
   }
-  #legend .legend-data {
+  .component-legend .legend-data {
     width: 63%;
     padding-left: 5px;
   }
@@ -940,7 +1080,7 @@ marker#arrow {
   .legend-layer-toggles > div:last-child {
     height: 58px;
   }
-  #legend #legend-toggle {
+  .component-legend .component-legend-toggle {
     height: 22px;
     width: 130px;
     background: #141F3D;
@@ -955,7 +1095,7 @@ marker#arrow {
     position: relative;
     top: 0;
   }
-  #legend #legend-toggle span {
+  .component-legend .component-legend-toggle span {
     -webkit-transition: transform 300ms ease-in;
     -moz-transition: transform 300ms ease-in;
     transition: transform 300ms ease-in;
@@ -965,36 +1105,36 @@ marker#arrow {
     position: static;
     transform: rotate(0deg);
   }
-  #legend .legend-wrapper.active {
+  .component-legend .legend-wrapper.active {
     max-height: 331px;
   }
-  #query.active {
+  .component-query.active {
     max-height: 100px;
   }
-  #query.active:before {
+  .component-query.active:before {
     content: "";
     display: none;
   }
-  #queryContent {
+  .query-results {
     padding: 10px 6px;
   }
-  #queryContent h4 {
+  .query-results h4 {
     font-size: 15px;
     margin: 0;
   }
-  #queryContent .metrics {
+  .query-results .metrics {
     list-style: none;
     margin: 0;
     padding-top: 8px;
     padding-left: 0;
   }
-  #queryContent .metrics li {
+  .query-results .metrics li {
     font-size: 21px;
     text-align: left;
     font-weight: 200;
     line-height: 26px;
   }
-  #legend-toggle:after {
+  .component-legend-toggle:after {
     content: "Click the arrow to expand the legend.";
     display: block;
     font-size: 16px;
@@ -1005,24 +1145,20 @@ marker#arrow {
     top: 13px;
     font-weight: 300;
   }
-  #legend-toggle.active:after {
+  .component-legend-toggle.active:after {
     content: "";
   }
-  #legend-toggle.active span {
+  .component-legend-toggle.active span {
     transform: rotate(180deg);
-  }
-  #search input[type="text"],
-  #searchButton input[type="text"] {
-    width: 100%;
   }
 }
 @media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
   /* Style adjustments for high resolution devices */
 }
 /* ==========================================================================
-   Print styles.
-   Inlined to avoid required HTTP connection: h5bp.com/r
-   ========================================================================== */
+Print styles.
+Inlined to avoid required HTTP connection: h5bp.com/r
+========================================================================== */
 @media print {
   * {
     background: transparent !important;
@@ -1042,8 +1178,8 @@ marker#arrow {
     content: " (" attr(title) ")";
   }
   /*
-     * Don't show links for images, or javascript/internal links
-     */
+  * Don't show links for images, or javascript/internal links
+  */
   .ir a:after,
   a[href^="javascript:"]:after,
   a[href^="#"]:after {

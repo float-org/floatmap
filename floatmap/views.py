@@ -17,4 +17,4 @@ def map(request):
         'apData': json.dumps(apFile.read()),
     }
     logger.debug("%s" % context)
-    return render_to_response("map.html",context,context_instance=RequestContext(request))
+    return render_to_response("base.html",context,context_instance=RequestContext(request))

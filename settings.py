@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'compressor',
     'django.contrib.staticfiles',
+    'webpack_loader',
     'floatmap',
 )
 
@@ -137,6 +138,13 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'dist/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    }
 }
 
 try:

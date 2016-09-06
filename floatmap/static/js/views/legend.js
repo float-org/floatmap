@@ -1,126 +1,141 @@
+import React from 'react';
 import $ from 'jquery';
 import 'jquery.cookie';
 import { getColor } from '../utils';
 import _ from 'underscore';
-import L from '../vendor/leaflet';
-import QueryView from './query';
+import L from 'leaflet';
+import Query from './Query';
+import LayerSwitch from './LayerSwitch';
+import ReactTooltip from 'react-tooltip';
 
-Backbone.Layout.configure({
-  manage: true
-});
+const LAYER_TOOLTIPS = {
+  ANNUAL_PRECIPITATION: 'Increase in the average amount of precipitation each year in 2040-2070, relative to the present. (NOAA 2014)',
+  STORM_FREQUENCY: 'Increase in the average number of days with precipitation greater than 1 inch each year in 2040-2070, relative to the present. (NOAA 2014)',
+  FLOOD_ZONES: 'Areas with a serious risk of flooding even without climate change, based on historical record and topography. (FEMA 2014)'
+};
 
-let LegendView = application.LegendView = Backbone.View.extend({
-  template: "#legendTemplate",
+/**
+ * Class representing legend component for Float Map
+ * @TODO This seriously needs some love.
+ * @extends React.Component
+ */
+class Legend extends React.Component {
 
-  events: {
-    ["click #legend-toggle"](e) {
-      if ($('.legend-wrapper').hasClass('active')) { // i.e. if panel is open
-        $('.legend-wrapper').addClass('invisible');
-        return setTimeout(() => $('.legend-wrapper, #legend-toggle, #legend').removeClass('active')
-        , 1);
-      } else {
-        $('.legend-wrapper, #legend-toggle, #legend').addClass('active');
-        return setTimeout(() => $('.legend-wrapper').removeClass('invisible')
-        , 150);
-      }
-    },
+  /**
+   * Create Base Component
+   * @param {Object} Props - Props passed into component
+   * @TODO Probably shouldn't be using so much jQuery
+   */
+  constructor(props) {
+    super(props);
+  }
 
-
-    ["click .switch-container"](e) {
-      e.stopPropagation();
-      let { map } = application;
-      let name = $(e.currentTarget).find('.ios-switch').data('layer');
-      let layer = application.layers[name];
-      let current_ap = application.layers['apLayer'];
-      let current_ep = application.layers['epLayer'];
-
-      // This is super gross and only has to be this complicated because geoJson layers
-      // do not seem to respect zIndex, even though you can set a zIndex on them when
-      // adding them to the map.  Grrrrr.
-
-
-      if ($(e.currentTarget).find('.ios-switch').is(':checked')) {
-        if (layer === current_ap) {
-          if (map.hasLayer(current_ep)) {
-              map.removeLayer(current_ap);
-              map.removeLayer(current_ep);
-              map.addLayer(window.ap, 2);
-              return map.addLayer(window.ep, 3);
-          } else {
-            return map.addLayer(window.ap, 2);
-          }
-        } else if (layer === current_ep) {
-          return map.addLayer(window.ep);
-        } else {
-          return map.addLayer(layer);
-        }
-      } else {
-        if (map.hasLayer(layer)) {
-          return map.removeLayer(layer);
-        }
-      }
-    }
-  },
-
-  //Query popup box as a subview
-  views: {
-    '#query': new QueryView()
-  },
-
-  afterRender() {
-    let self = this;
-    let apGrades = _.range(0,13,1);
-    let labels = [];
-
+  /**
+   * React Component Lifecycle - Called by React when the component has had state update (re-render)
+   * @instance
+   */
+  componentDidUpdate() {
     if (!$("button.navbar-toggle").is(":visible")) {
-      $('.legend-wrapper, #legend-toggle, #legend').addClass('active');
+      $('.legend-wrapper, .component-legend-toggle, .component-legend').addClass('active');
       let callback = () => $('.legend-wrapper').removeClass('invisible');
       setTimeout(callback, 150);
     }
-
-    let switches = document.querySelectorAll('input[type="checkbox"].ios-switch');
-
-    for (let j = 0; j < switches.length; j++) {
-      let i = switches[j];
-      let div = document.createElement('div');
-      div.className = 'switch';
-      i.parentNode.insertBefore(div, i.nextSibling);
-    }
-
-    // ToDo: Worth transferring this HTML to the template at some point?
-    self.$el.find(".apRange").append("<div class='ap-values'></div>");
-    $(apGrades).each(function(index) {
-      let apValue = $(`<div><i style="background:${getColor("ap", this)}"></i></div>`);
-      if (index % 4 === 0) {
-        let textNode = `<span>+${this}%</span>`;
-        apValue.append(textNode);
-      }
-      return self.$el.find(".ap-values").append(apValue);
-    });
-    self.$el.find(".apRange").append("<div class='ap-arrow'></div>");
-    self.$el.find(".apRange").append("<span class='ap-text'>Increasing Average Precipitation</span>");
-    // TODO: Why do I have to do this at all?
-    self.$el.appendTo(application.layout.$el.find('#legend'));
-
-    $('#legend').on("click", function(e) {
-      if ($('#legend').hasClass('active')) {
-        return;
-      } else {
-        $('.legend-wrapper, #legend-toggle, #legend').addClass('active');
-        let callback =  () => $('.legend-wrapper').removeClass('invisible');
-        return setTimeout(callback, 150);
-      }
-    }
-    );
-
-    if ($.cookie('welcomed')) {
-      $('#floods-switch').prop('checked',true);
-      $('#apLayer-switch').prop('checked',true);
-      $('#epLayer-switch').prop('checked',true);
-    }
-
-    return $("[data-toggle=tooltip]").tooltip({ placement: 'left'});
   }
-});
 
-export default LegendView;
+  /**
+   * Handles toggling of legend visibility
+   * Return {Function} setTimeout that then adds or removes a class
+   * @TODO This should be handled by React
+   */
+  _handleLegendToggle(e) {
+    e.stopPropagation();
+    if ($('.legend-wrapper').hasClass('active')) { // i.e. if panel is open
+      $('.legend-wrapper').addClass('invisible');
+      return setTimeout(() => $('.legend-wrapper, .component-legend-toggle, .component-legend').removeClass('active')
+      , 1);
+    } else {
+      $('.legend-wrapper, .component-legend-toggle, .component-legend').addClass('active');
+      return setTimeout(() => $('.legend-wrapper').removeClass('invisible')
+      , 150);
+    }
+  }
+
+  /**
+   * React Component Lifecycle - Render
+   * @instance
+   */
+  render() {
+    const apGrades = _.range(0,13,1);
+    return (
+      <div className={`component-legend ${this.props.className}`}>
+        <div className="mobile-toggle" onClick={this._handleLegendToggle} />
+        <ReactTooltip place="left" type="light" effect="float"/>
+        <div className="component-legend-toggle" onClick={this._handleLegendToggle}><span className="glyphicon glyphicon-arrow-up"></span></div>
+        <div className="legend-wrapper invisible">
+          <Query data={this.props.queryResult} />
+
+          <div className='legend-layer-toggles'>
+            <LayerSwitch type="annual-precipitation" isActive={this.props.layers.showAnnualPrecipitation} tooltipText={LAYER_TOOLTIPS.ANNUAL_PRECIPITATION} isActive />
+            <LayerSwitch type="storm-frequency" isActive={this.props.layers.showStormFrequency} tooltipText={LAYER_TOOLTIPS.STORM_FREQUENCY} />
+            <LayerSwitch type="flood-zones" isActive={this.props.layers.showFloodZones} tooltipText={LAYER_TOOLTIPS.FLOOD_ZONES} />
+          </div>
+          <div className='legend-data'>
+            <div className='apRange'>
+              <div className='ap-values'>
+                {apGrades.map((grade) => {
+                  const label = grade % 4 === 0 ? <span>{grade}%</span> : '';
+                  return (
+                    <div key={grade}>
+                      <i style={{ background: getColor("ap", grade) }} />
+                      {label}
+                    </div>
+                  )
+                })}
+              </div>
+              <div className='ap-arrow' />
+              <span className='ap-text'>Increasing Average Precipitation</span>
+            </div>
+            <div className='epRange'>
+              <svg width="205" height="85">
+                <rect x="0" y="0" width="47" height="23" className="low-mid dots"></rect>
+                <rect x="47" y="0" width="47" height="23" className="mid-high dots"></rect>
+                <rect x="94" y="0" width="47" height="23" className="high-extreme dots"></rect>
+                <rect x="141" y="0" width="47" height="23" className="extreme-severe dots"></rect>
+                <defs>
+                 <marker id="arrow" viewBox="0 -5 10 10" refX="10" refY="0" markerWidth="10" markerHeight="10" orient="auto"><path d="M0,-5L10,0L0,5"></path></marker>
+                </defs>
+                <text x="1" y="37">+12%</text>
+                <text x="56" y="37">+26%</text>
+                <text x="121" y="37">+40%</text>
+                <text x="177" y="37">+54%</text>
+                <line x1="0" y1="45" x2="195" y2="45" className="link arrow" markerEnd="url(#arrow)"></line>
+                <text x="0" y="55">Increasing Storm Frequency</text>
+              </svg>
+            </div>
+
+            <ul className='floodRange'>
+              <li className="year-500">
+                <div></div>
+                <span>High Flooding</span>
+              </li>
+              <li className="year-100">
+                <div></div>
+                <span>Extreme Flooding</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    );
+  }
+};
+
+/**
+ * React context
+ * @param {Func} handleSwitch
+ */
+Legend.contextTypes = {
+  _handleSwitch: React.PropTypes.func
+};
+
+module.exports = Legend;

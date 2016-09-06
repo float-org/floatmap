@@ -1,9 +1,12 @@
 import Rainbow from 'rainbowvis.js';
 
-// Accepts a data type (e.g. 'ex precip, avg precip') and a data value (e.g 'DN')
-// Creates a gradient from the start color and end color using setSpectrum
-// Returns a hex Value that corresponds to the color for that particular number/data value
-exports.getColor = function(type, d) {
+/**
+ * Creates a gradient from the start color and end color using setSpectrum
+ * @param {String} data type - (e.g. 'ex precip, avg precip')
+ * @param {String} data value - value returned from query are associating color with
+ * @return {String} hex Value that corresponds to the color for that particular number/data value
+*/
+const getColor = function(type, d) {
   if (type === 'ap') {
     let rainbow = new Rainbow();
     rainbow.setSpectrum('#94FFDB', '#0003FF'); // Probably just need to set once
@@ -12,9 +15,29 @@ exports.getColor = function(type, d) {
   }
 };
 
-// Accepts a data type and a data value (e.g NOAA Ext. Precipitation DN value)
-// Returns a class which corresponds to one of four SVG patterns, which inherit styles from CSS
-exports.getPattern = function(type, d) {
+/**
+ * Accepts class names in the `foo-bar-baz` format, returning
+ * @param {String} slug - slug to convert to label
+ * @return {String} Readable label for display
+ */
+const makeLabelFromClass = function(slug) {
+  var words = slug.split('-');
+
+  for(var i = 0; i < words.length; i++) {
+    var word = words[i];
+    words[i] = word.charAt(0).toUpperCase() + word.slice(1);
+  }
+
+  return words.join(' ');
+}
+
+/**
+ * Creates a gradient from the start color and end color using setSpectrum
+ * @param {String} data type - (e.g. 'ex precip, avg precip')
+ * @param {String} data value - value returned from query are associating color with
+ * @return {String} class name which corresponds to one of four SVG patterns, which inherit styles from CSS
+*/
+const getPattern = function(type, d) {
   if (type === 'ep') {
     if (d === null) {
       return false;
@@ -32,3 +55,9 @@ exports.getPattern = function(type, d) {
     return pattern;
   }
 };
+
+module.exports = {
+  getColor,
+  getPattern,
+  makeLabelFromClass
+}

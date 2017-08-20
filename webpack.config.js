@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 
 module.exports = {
-  entry: "./lib/floatmap/static/js/app.js",
+  entry: "./floatmap/static/js/app.js",
   module: {
     loaders: [
       {
@@ -17,7 +17,7 @@ module.exports = {
         query: {
           babelrc: false,
           presets: [
-            'es2015-webpack',
+            ['es2015', {"modules": false}]
           ]
         }
       }
@@ -25,7 +25,7 @@ module.exports = {
   },
   output: {
     path: __dirname,
-    filename: "dist/bundle.js"
+    filename: "floatmap/static/bundle.js"
   },
   plugins: [
     new webpack.ProvidePlugin({

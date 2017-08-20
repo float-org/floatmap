@@ -4,6 +4,7 @@ django-compressor==1.4
 South==0.8.4
 django-extensions==1.3.7
 django-geojson==2.5.0
+gunicorn==19.1.1
 psycopg2==2.5.3
 six==1.7.0
 wsgiref==0.1.2

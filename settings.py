@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(__file__)
+APP_DIR = os.path.join(BASE_DIR, 'floatmap')
 
 ALLOWED_HOSTS = ['*'] #http://stackoverflow.com/questions/21399288/bad-request-400-nginx-gunicorn lolz
 
@@ -112,7 +113,7 @@ STATICFILES_FINDERS = (
 
 ES_URL = "http://localhost:9200"
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'dist')
+STATIC_ROOT = os.path.join(APP_DIR, 'static')
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -10,8 +10,8 @@ from django.conf import settings
 def map(request):
     import logging
     logger = logging.getLogger('floatmap')
-    epFile = open(os.path.join(settings.BASE_DIR, 'dist/geojson/floods/noaa_ex_precip.geojson'))
-    apFile = open(os.path.join(settings.BASE_DIR, 'dist/geojson/floods/noaa_avg_precip.geojson'))
+    epFile = open(os.path.join(settings.APP_DIR, 'static/geojson/floods/noaa_ex_precip.geojson'))
+    apFile = open(os.path.join(settings.APP_DIR, 'static/geojson/floods/noaa_avg_precip.geojson'))
     context = {
         'epData': json.dumps(epFile.read()),
         'apData': json.dumps(apFile.read()),
